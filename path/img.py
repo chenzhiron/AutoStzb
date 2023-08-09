@@ -1,0 +1,1 @@
+path = './screenshot/content.png'
