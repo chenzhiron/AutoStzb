@@ -5,6 +5,7 @@
       <excludeFolder url="file://$MODULE_DIR$/tookit" />
       <excludeFolder url="file://$MODULE_DIR$/venv/Scripts" />
       <excludeFolder url="file://$MODULE_DIR$/venv/share" />
+      <excludeFolder url="file://$MODULE_DIR$/venv/Lib" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
