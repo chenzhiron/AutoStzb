@@ -1,16 +1,15 @@
 from device.main import connect_device
-from ocr.main import orc_txt, orc_test
+from ocr.main import ocr_txt_click, ocr_txt
 from path.img import path
 
 
 if __name__ == '__main__':
     d = connect_device()
     d.screenshot().save(path)
-    # result = orc_txt(path, '开始游戏')
     # while 1:
-    #     result = orc_txt(path,'开始游戏')
+    #     result = orc_txt_click(path,'开始游戏')
     #     if result:
     #         break
     # print(result)
-    result = orc_test(path)
+    result = ocr_txt(path)
     print(result)
