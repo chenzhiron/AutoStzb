@@ -1,15 +1,8 @@
 from device.main import connect_device
-from ocr.main import ocr_txt_click, ocr_txt
 from path.img import path
-
-
+from task.modules_start.module_start import module_click_start
+from task.module_shili.module_shili import module_click_shili
 if __name__ == '__main__':
     d = connect_device()
-    d.screenshot().save(path)
-    # while 1:
-    #     result = orc_txt_click(path,'开始游戏')
-    #     if result:
-    #         break
-    # print(result)
-    result = ocr_txt(path)
-    print(result)
+    # module_click_start(path, '开始游戏')
+    module_click_shili(path, '势力')
