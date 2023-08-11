@@ -4,6 +4,7 @@ from ocr.ocr_model_name import vertical_model_name
 from tools.reg_coordinates import reg_coor
 from PIL import Image
 
+from path.img import path
 
 def ocr_v3(img_path):
     orc = CnOcr(rec_model_name=vertical_model_name)
