@@ -1,4 +1,4 @@
-#!G:\czr\demo\auto_stzb\venv\Scripts\python.exe
+#!g:\czr\demo\auto_stzb\venv\scripts\python.exe
 #-------------------------------------------------------------------------------
 # scripts/readelf.py
 #
