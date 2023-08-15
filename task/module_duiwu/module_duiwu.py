@@ -18,3 +18,9 @@ def module_click_duiwu(device, path, auto_txt, is_main=False):
         area = list_click_area
     device.screenshot().save(path)
     return ocr_txt_click(path, auto_txt, vertical_model_name, area, True)
+
+
+if __name__ == '__main__':
+    from path.img import path
+    res = ocr_txt(path)
+    print(res)
