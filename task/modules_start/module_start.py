@@ -1,5 +1,5 @@
 from ocr.main import ocr_txt_click
 
-def module_click_start(device, path, auto_text):
+def module_click_start(device, path, auto_text, model=''):
     device.screenshot().save(path)
-    return ocr_txt_click(path, auto_text)
+    return ocr_txt_click(path, auto_text, model=model)

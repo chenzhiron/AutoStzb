@@ -4,10 +4,10 @@ from ocr.ocr_model_name import vertical_model_name
 from tools.reg_coordinates import reg_coor
 from PIL import Image
 
-from path.img import path
 
 def ocr_v3(img_path):
-    orc = CnOcr(rec_model_name=vertical_model_name)
+    # orc = CnOcr(rec_model_name=det_model_name)
+    orc = CnOcr(rec_model_name='ch_PP-OCRv3')
     return orc.ocr(img_path)
 
 
@@ -20,7 +20,7 @@ def ocr_txt_click(img_path, auto_text, model='', area=[], isADDWH=False):
     if model == 'ch_PP-OCRv3':
         ocr = CnOcr(rec_model_name=model)
     elif model == 'naive_det':
-        ocr = CnOcr(det_model_name='naive_det')
+        ocr = CnOcr(det_model_name=model)
     else:
         ocr = CnOcr()
     if area and len(area) == 4:
@@ -39,3 +39,5 @@ def ocr_txt_click(img_path, auto_text, model='', area=[], isADDWH=False):
             d.click(x, y)
             return True
     return False
+
+
