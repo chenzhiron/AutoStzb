@@ -2,6 +2,7 @@ from cnocr import CnOcr
 from device.main import return_device
 from ocr.ocr_model_name import vertical_model_name
 from tools.reg_coordinates import reg_coor
+from tools.reg_list_name import reg_list_name
 from PIL import Image
 
 
@@ -11,8 +12,18 @@ def ocr_v3(img_path):
     return orc.ocr(img_path)
 
 
-def ocr_txt(img_path):
+def ocr_txt_v3(img_path):
     return ocr_v3(img_path)
+
+
+def ocr_txt_zhengbing(img_path, area, auto_txt):
+    d = return_device()
+    d.screenshot().crop(area).save(img_path)
+    orc = CnOcr()
+    if reg_list_name(orc.ocr(img_path))[0] != auto_txt:
+        return False
+    else:
+        return True
 
 
 def ocr_txt_click(img_path, auto_text, model='', area=[], isADDWH=False):
@@ -39,5 +50,3 @@ def ocr_txt_click(img_path, auto_text, model='', area=[], isADDWH=False):
             d.click(x, y)
             return True
     return False
-
-
