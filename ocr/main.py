@@ -1,13 +1,13 @@
 from cnocr import CnOcr
 from device.main import return_device
-from ocr.ocr_model_name import vertical_model_name,det_model_name
+from ocr.ocr_model_name import vertical_model_name
 from tools.reg_coordinates import reg_coor
 from PIL import Image
 
 
 def ocr_v3(img_path):
     # orc = CnOcr(rec_model_name=det_model_name)
-    orc = CnOcr(model_name='ch_ppocr_mobile_v2.0')
+    orc = CnOcr(rec_model_name='ch_PP-OCRv3')
     return orc.ocr(img_path)
 
 
@@ -39,3 +39,5 @@ def ocr_txt_click(img_path, auto_text, model='', area=[], isADDWH=False):
             d.click(x, y)
             return True
     return False
+
+

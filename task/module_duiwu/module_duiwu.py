@@ -20,7 +20,7 @@ def module_click_duiwu(device, path, auto_txt, is_main=False):
     return ocr_txt_click(path, auto_txt, vertical_model_name, area, True)
 
 
-if __name__ == '__main__':
-    from path.img import path
-    res = ocr_txt(path)
-    print(res)
+# if __name__ == '__main__':
+#     from path.img import path
+#     res = module_ocr_duiwu_name(path,True)
+#     print(res)
