@@ -30,6 +30,8 @@ def fill_non_white(image):
     new_image = new_image.convert("RGB")
 
     return new_image
+
+
 if __name__ == '__main__':
 
     # 打开原图片
