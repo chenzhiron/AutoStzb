@@ -5,6 +5,9 @@ from tools.reg_coordinates import reg_coor
 from tools.reg_list_name import reg_list_name
 from PIL import Image
 
+def ocr_default(path):
+    ocr = CnOcr()
+    return ocr.ocr(path)
 
 def ocr_v3(img_path):
     # orc = CnOcr(rec_model_name=det_model_name)

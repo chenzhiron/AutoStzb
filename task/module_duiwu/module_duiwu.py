@@ -31,10 +31,10 @@ def module_click_chuzheng_duiwu(device, i):
 
 def module_click_zhengbing_duiwu(device, i):
     x, y = zhengbing_direction(i)
-    print(x, y)
     device.click(x, y)
     return True
 
 
 def module_reg_zhengbing_page(path):
     return ocr_txt_zhengbing(path, (0, 0, 240, 88), '势力')
+

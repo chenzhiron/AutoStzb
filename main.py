@@ -6,9 +6,11 @@ from task.module_duiwu.module_duiwu import (module_ocr_duiwu_name,
                                             module_click_duiwu,
                                             module_click_chuzheng_duiwu,
                                             module_click_zhengbing_duiwu,
-                                            module_reg_zhengbing_page)
+                                            module_reg_zhengbing_page,
+                                            )
 from task.module_fanhui.module_fanhui import module_return_main
 from task.module_zhengbing.module_zhengbing import module_zhengbing_click
+from task.module_zhengbing.module_zhengbing import module_swipe_zhengbing_click, module_zhengbing_affirm_btn,module_zhuangbing_time
 
 max = 0
 status = False
@@ -21,25 +23,28 @@ if __name__ == '__main__':
     # module_click_chuzheng_duiwu(d, 4)
     # module_return_main(d)
     # module_return_main(d)
-    while 1:
-        if module_click_shili(d, path, '势力'):
-            while 1:
-                if module_reg_zhengbing_page(path):
-                    module_click_zhengbing_duiwu(d, 1)
-                    while 1:
-                        module_zhengbing_click(d)
-                        status = True
-                        break
-                else:
-                    max += 1
-                    print(max)
-                    if max == 50:
-                        break
-                if status:
-                    break
-        else:
-            if status:
-                break
-            module_return_main(d)
-            break
+    # while 1:
+    #     if module_click_shili(d, path, '势力'):
+    #         while 1:
+    #             if module_reg_zhengbing_page(path):
+    #                 module_click_zhengbing_duiwu(d, 1)
+    #                 while 1:
+    #                     module_zhengbing_click(d)
+    #                     status = True
+    #                     break
+    #             else:
+    #                 max += 1
+    #                 print(max)
+    #                 if max == 50:
+    #                     break
+    #             if status:
+    #                 break
+    #     else:
+    #         if status:
+    #             break
+    #         module_return_main(d)
+    #         break
+    # module_swipe_zhengbing_click(d)
+    # module_zhengbing_affirm_btn(path)
+    module_zhuangbing_time(d,path)
     print('end')
