@@ -1,9 +1,8 @@
 from cnocr import CnOcr
 
-ocr = CnOcr()
+ocr = CnOcr(rec_model_name='ch_PP-OCRv3')
 if __name__ == '__main__':
     from path.img import path
-
     result = ocr.ocr(path)
     print(result)
 

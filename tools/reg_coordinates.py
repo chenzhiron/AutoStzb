@@ -1,13 +1,7 @@
-def reg_coor(position_array, bool = False):
-    x = (position_array[0][0] + position_array[1][0]) / 2  if bool else (position_array[0][0] + position_array[1][0]) / 2
+def reg_coor(position_array, bool=False):
+    x = (position_array[0][0] + position_array[1][0]) / 2 if bool else (position_array[0][0] + position_array[1][0]) / 2
     y = (position_array[0][1] + position_array[2][1]) / 2 if bool else (position_array[0][1] + position_array[2][1]) / 2
-    return [x,y]
-
-
-
-
-
-
+    return [x, y]
 
 # demo
 # if __name__ == '__main__':

@@ -1,10 +1,10 @@
-
-from ocr.main import ocr_txt_click
 from task.module_shili.address_area import area
-from ocr.ocr_model_name import vertical_model_name
+from tools.reg_screenshot import general_screenshot_tools
+from tools.reg_list_name import group_txt_click
+from ocr.main import ocr_v3
 
 
-def module_click_shili(device, path, auto_text):
-    device.screenshot().save(path)
-    result = ocr_txt_click(path, auto_text, vertical_model_name, area, True)
-    return result
+def module_click_shili(path, auto_text):
+    general_screenshot_tools(area)
+    list_txt = ocr_v3(path)
+    return group_txt_click(list_txt, auto_text)

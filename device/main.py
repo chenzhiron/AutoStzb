@@ -8,6 +8,7 @@ def connect_device():
     device = adb.device()
     return device
 
+
 def return_device():
     global device
     return device
