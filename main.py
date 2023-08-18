@@ -15,6 +15,7 @@ max = 0
 status = False
 if __name__ == '__main__':
     d = connect_device()
+    d.screenshot().save(path)
     # 开始游戏
     # module_click_start(path, '开始游戏')
     # 点击势力
@@ -58,5 +59,5 @@ if __name__ == '__main__':
     # module_zhengbing_affirm_btn('确认证兵')
 
     # 队伍征兵时间计算
-    module_zhuangbing_time()
+    # module_zhuangbing_time()
     print('end')
