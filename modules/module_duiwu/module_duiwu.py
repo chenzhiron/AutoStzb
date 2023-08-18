@@ -1,6 +1,6 @@
 from ocr.main import ocr_txt_click, ocr_txt_v3
 from ocr.ocr_model_name import vertical_model_name
-from task.module_duiwu.address_area import list_name_area, list_click_area
+from modules.module_duiwu.address_area import list_name_area, list_click_area
 from tools.reg_list_name import reg_list_name
 from tools.team_direction import chuzheng_direction, zhengbing_direction
 from ocr.main import ocr_txt_zhengbing

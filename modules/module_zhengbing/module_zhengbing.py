@@ -1,7 +1,7 @@
 from PIL import Image
 from path.img import path
 from ocr.main import ocr_txt_zhengbing, ocr_default
-from task.module_zhengbing.module_zhengbing_area import (zhengbing_page_area,
+from modules.module_zhengbing.module_zhengbing_area import (zhengbing_page_area,
                                                          zhengbing_page_area_h,
                                                          zhengbing_page_area_w,
                                                          zhengbing_page_swipe,
@@ -12,7 +12,7 @@ from task.module_zhengbing.module_zhengbing_area import (zhengbing_page_area,
                                                          )
 from tools.reg_screenshot import general_screenshot_tools
 from device.main import return_device
-from tools.reg_time import reg_time
+from tools.reg_time import reg_time_2em
 from tools.reg_coordinates import reg_coor
 
 def module_zhengbing_click():
@@ -45,8 +45,9 @@ def module_zhuangbing_time():
     max_time = []
     for v in res:
         if v['text'] != '确定':
-            max_time.append(reg_time(v['text']))
+            max_time.append(reg_time_2em(v['text']))
     max_time.sort(reverse=True)
+    print(max_time[0])
     x, y = reg_coor(res[-1]['position'])
     device.click(x, y)
     return True
