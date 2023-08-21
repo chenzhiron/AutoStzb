@@ -1,20 +1,12 @@
 from device.main import connect_device
-from path.img import path
-from modules.modules_start.module_start import module_click_start
-from modules.module_shili.module_shili import module_click_shili
-from modules.module_fanhui.module_fanhui import module_return_main
-from modules.module_zhengbing.module_zhengbing import module_zhengbing_click
-from modules.module_zhengbing.module_zhengbing import module_swipe_zhengbing_click, module_zhengbing_affirm_btn, module_zhuangbing_time
 from modules.module_going.module_going import chuzheng
-
 from tasks.zhengbing.main import zhengbing
-
 max = 0
 status = False
 if __name__ == '__main__':
     d = connect_device()
-    # zhengbing(3)
-    chuzheng('出证', 3)
+    zhengbing(4)
+    # chuzheng('出证', 3)
     # d.screenshot().save(path)
     # 开始游戏
     # module_click_start(path, '开始游戏')

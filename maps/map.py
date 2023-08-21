@@ -1,5 +1,5 @@
-from maps.reg_img.main import convert_to_grayscale
 from device.main import connect_device
+from maps.reg_img.main import convert_to_grayscale
 from path.img import path
 
 

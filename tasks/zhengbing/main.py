@@ -10,15 +10,10 @@ from path.img import path
 
 def zhengbing(i):
     module_click_shili(path, '势力')
-    time.sleep(1)
     module_click_zhengbing_duiwu(i)
-    time.sleep(1)
     module_zhengbing_click()
-    time.sleep(1)
     module_swipe_zhengbing_click()
-    time.sleep(1)
     module_zhengbing_affirm_btn('确认证兵')
-    time.sleep(1)
     module_zhuangbing_time()
     time.sleep(1)
     module_return_main()

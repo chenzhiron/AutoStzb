@@ -1,7 +1,7 @@
-from ocr.ocr_model_name import vertical_model_name
-from tools.reg_screenshot import general_screenshot_tools
 from modules.modules_start.module_start_area import start_area
 from ocr.main import ocr_txt_click
+from ocr.ocr_model_name import vertical_model_name
+from tools.reg_screenshot import general_screenshot_tools
 
 
 def module_click_start(path, auto_text):

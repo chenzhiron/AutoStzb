@@ -1,13 +1,14 @@
 import time
 
-from modules.module_duiwu.module_duiwu import module_click_chuzheng_duiwu
-from modules.module_going.module_going_area import address_area, address_area_time_arrive, add_demo_area, chuzheng_btn_area
 from device.main import return_device
-from path.img import path
+from modules.module_duiwu.module_duiwu import module_click_chuzheng_duiwu
+from modules.module_going.module_going_area import address_area_time_arrive, add_demo_area, chuzheng_btn_area
 from ocr.main import ocr_default, ocr_txt_click
+from path.img import path
+from tools.reg_coordinates import reg_coor
 from tools.reg_screenshot import general_screenshot_tools
 from tools.reg_time import reg_time
-from tools.reg_coordinates import reg_coor
+
 
 def chuzheng(auto_txt = '扫荡', i = 1):
     d = return_device()

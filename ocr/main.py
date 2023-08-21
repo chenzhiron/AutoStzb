@@ -1,10 +1,10 @@
+from PIL import Image
 from cnocr import CnOcr
+
 from device.main import return_device
 from tools.reg_coordinates import reg_coor
 from tools.reg_list_name import reg_list_name
-from PIL import Image
 from tools.reg_screenshot import general_screenshot_tools
-
 
 def ocr_default(path):
     ocr = CnOcr()
@@ -21,9 +21,10 @@ def ocr_txt_v3(img_path):
     return ocr_v3(img_path)
 
 
-def ocr_txt_zhengbing(img_path, auto_txt, area=(0, 0, 0, 0)):
+def ocr_txt_verify(img_path, auto_txt, area=(0, 0, 0, 0)):
     general_screenshot_tools(area)
-    if reg_list_name(ocr_default(img_path))[0] != auto_txt:
+    result = reg_list_name(ocr_default(img_path))
+    if len(result) == 0 or result[0] != auto_txt:
         return False
     else:
         return True
