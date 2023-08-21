@@ -1,13 +1,12 @@
 from device.main import connect_device
-from maps.reg_img.main import convert_to_grayscale
+
+from tools.reg_screenshot import general_screenshot_tools
+from maps.map_area import base_area
 from path.img import path
-
-
-def reg_map(path):
-    convert_to_grayscale(path)
-
+from ocr.main import ocr_default
 
 if __name__ == '__main__':
-    device = connect_device()
-    device.screenshot().save(path)
-    reg_map(path)
+    d = connect_device()
+    general_screenshot_tools(base_area)
+    result = ocr_default(path)
+    print(result)
