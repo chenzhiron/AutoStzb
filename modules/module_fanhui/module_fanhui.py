@@ -1,5 +1,6 @@
 from device.main import return_device
 
+# 地址参数需要改变
 curr_w = 1600 - 170
 curr_h = 900 - 855
 
