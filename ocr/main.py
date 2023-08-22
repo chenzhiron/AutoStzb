@@ -6,6 +6,13 @@ from tools.reg_coordinates import reg_coor
 from tools.reg_list_name import reg_list_name
 from tools.reg_screenshot import general_screenshot_tools
 
+
+def ocr_map(path):
+    ocr = CnOcr(det_model_name="naive_det",
+                rec_model_name="ch_ppocr_mobile_v2.0")
+    return ocr.ocr(path)
+
+
 def ocr_default(path):
     ocr = CnOcr()
     return ocr.ocr(path)
