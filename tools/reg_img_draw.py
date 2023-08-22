@@ -1,6 +1,7 @@
 from PIL import Image, ImageDraw
 
 
+# 将图片除区域外其他全部涂黑
 def fill_image(image_path, fill_area):
     image = Image.open(image_path)
     width, height = image.size
@@ -23,6 +24,7 @@ def fill_image(image_path, fill_area):
     filled_image.save(image_path)
 
 
+# 将图片除白色点，其他涂黑
 def convert_non_white_to_black(image_path):
     # 打开图片
     image = Image.open(image_path)
