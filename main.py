@@ -6,8 +6,9 @@ from path.img import path
 status = False
 if __name__ == '__main__':
     d = connect_device()
-    zhengbing(1)
+    zhengbing(5)
     # chuzheng('出证', 3)
     # d.screenshot().save(path)
 
     print('end')
+
