@@ -1,4 +1,4 @@
-from device.main import return_device
+from device.main_device import return_device
 from ocr.main import ocr_txt_verify
 from tools.team_direction import chuzheng_direction, zhengbing_direction
 from modules.module_duiwu.address_area import discern_area

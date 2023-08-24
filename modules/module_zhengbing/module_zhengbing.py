@@ -1,4 +1,4 @@
-from device.main import return_device
+from device.main_device import return_device
 from modules.module_zhengbing.module_zhengbing_area import (zhengbing_page_area,
                                                             zhengbing_page_area_h,
                                                             zhengbing_page_area_w,

@@ -1,7 +1,7 @@
 from PIL import Image
 from cnocr import CnOcr
 
-from device.main import return_device
+from device.main_device import return_device
 from tools.reg_coordinates import reg_coor
 from tools.reg_list_name import reg_list_name
 from tools.reg_screenshot import general_screenshot_tools

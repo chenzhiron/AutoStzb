@@ -1,4 +1,4 @@
-from device.main import return_device
+from device.main_device import return_device
 
 
 curr_w = 1600 - 80

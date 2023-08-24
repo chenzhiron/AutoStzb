@@ -1,6 +1,6 @@
 import time
 
-from device.main import return_device
+from device.main_device import return_device
 from modules.module_duiwu.module_duiwu import module_click_chuzheng_duiwu
 from modules.module_going.module_going_area import address_area_time_arrive, add_demo_area, chuzheng_btn_area
 from ocr.main import ocr_default, ocr_txt_click

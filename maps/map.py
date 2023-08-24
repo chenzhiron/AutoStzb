@@ -1,6 +1,6 @@
 import time
 
-from device.main import connect_device
+from device.main_device import connect_device
 
 from tools.reg_screenshot import general_screenshot_tools
 from maps.map_area import base_area, address_area,const_w,const_h

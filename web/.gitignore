@@ -1,5 +1,3 @@
-**/venv/Lib/sit-packages/**
-/venv/Lib/
 .DS_Store
 dist/electron/*
 dist/web/*

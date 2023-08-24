@@ -1,4 +1,4 @@
-from device.main import return_device
+from device.main_device import return_device
 from path.img import path
 from tools.reg_img_draw import fill_image
 

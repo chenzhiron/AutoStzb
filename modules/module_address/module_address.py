@@ -1,4 +1,4 @@
-from device.main import connect_device, return_device
+from device.main_device import connect_device, return_device
 from modules.module_address.module_address_area import address_start_area_w, address_start_area_y, address_sign_area, \
     address_targe_w, address_targe_h, address_going_area, \
     address_going_list_time, address_result_area
@@ -43,7 +43,7 @@ def module_address_going(auto_txt='扫荡'):
             time_number += 1
         if time_number == 50:
             raise Exception('土地选择异常')
-    module_address_list_going(3)
+    module_address_list_going(4)
 
 
 def module_address_list_going(i):

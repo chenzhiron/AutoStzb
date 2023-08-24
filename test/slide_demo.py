@@ -1,4 +1,4 @@
-from device.main import connect_device
+from device.main_device import connect_device
 
 
 if __name__ == '__main__':
