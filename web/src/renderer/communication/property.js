@@ -1,7 +1,7 @@
 const CLIENT_ID = 'py_auto_stzb'
 
 const HOST = 'localhost'
-const PORT = 33333
+const PORT = 22333
 
 const PROTOCOL = 'ws://'
 

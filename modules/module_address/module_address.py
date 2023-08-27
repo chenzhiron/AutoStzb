@@ -24,7 +24,6 @@ def module_address_start():
             time_number += 1
         if time_number == 50:
             raise Exception('标记土地选择异常')
-    module_address_going()
 
 
 def module_address_going(auto_txt='扫荡'):
@@ -43,10 +42,11 @@ def module_address_going(auto_txt='扫荡'):
             time_number += 1
         if time_number == 50:
             raise Exception('土地选择异常')
-    module_address_list_going(4)
 
 
 def module_address_list_going(i):
+    if int(i) == 0:
+        raise Exception('队伍选择异常')
     device = return_device()
     module_click_chuzheng_duiwu(i)
     while 1:
@@ -66,9 +66,11 @@ def module_address_list_going(i):
                 print(times)
                 break
 
-if __name__ == '__main__':
-    # connect_device()
-    module_address_start()
+
+
+# if __name__ == '__main__':
+#     # connect_device()
+#     module_address_start()
     # module_address_going()
     # module_address_list_going(1)
     # module_address_list_going(1)

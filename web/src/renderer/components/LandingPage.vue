@@ -2,8 +2,7 @@
   <div class="wrapper">
     <div>
       <button @click="start_python">启动</button>
-      <button @click="demo">demo</button>
-      <button @click="start_socket_server">启动服务</button>
+      <button @click="send_task">发送任务</button>
       <div>{{ current_path }}</div>
       <div>
         <div>目前仅支持选项1</div>
@@ -50,32 +49,29 @@ export default {
       options: [0, 0, 0, 0],
       tasks_number: [1, 2, 3, 4, 5],
       troop_number: [1, 2, 3, 4, 5],
-      producer: null
+      producer: null,
+      time: 0
     }
   },
   methods: {
-    demo() {
+    send_task() {
       console.log(this.producer)
-      // console.log(this.producer)
-      this.producer.send([0,1,2,3,4,5])
+      this.producer.send(this.options)
     },
-    start_socket_server() {
-      this.producer = run_server()
+    async start_socket_server() {
+      this.producer = await run_server()
     },
     start_python: function () {
       const pythonProcess = spawn(
           this.pythonExcutePath,
           [
             this.pythonSourcePath,
-            ...this.options
-            // 1, //任务类型编号
-            // 3, //任务操作的队伍，1-5
-            // 2  //任务的次数 0代表无线次数
           ], {
             cwd: this.pythonCwdPath
           })
       // 监听Python进程的stdout流
       pythonProcess.stdout.on('data', data => {
+        console.log('data', data.toString().trim())
         const logMessage = data.toString().trim();
         this.log.push(logMessage);
         // 在这里处理Python的日志输出，比如将其显示在Electron应用的界面上
@@ -83,6 +79,7 @@ export default {
 
       // 监听Python进程的stderr流
       pythonProcess.stderr.on('data', data => {
+        console.log('data', data.toString().trim())
         const errorMessage = data.toString().trim();
         this.log.push(errorMessage);
         // 在这里处理Python的错误日志输出
@@ -93,7 +90,18 @@ export default {
         console.log('Python process exited with code', code);
         // 在这里处理Python进程退出的逻辑
       });
-    },
+      this.time = setInterval(() => {
+        if ((!this.producer) || (!this.producer.url)) {
+          this.start_socket_server();
+          if (this.producer && !this.producer.url) {
+            clearInterval(this.time);
+          }
+        } else {
+          clearInterval(this.time);
+        }
+      }, 500);
+
+    }
   },
   mounted() {
     const mapPath = path.resolve(__dirname)
@@ -107,6 +115,7 @@ export default {
     }
     this.pythonCwdPath = path.join(...pathArray.slice(0, max + 1))
     this.pythonExcutePath = path.join(this.pythonCwdPath, 'tookit', 'python.exe')
+    this.start_python()
   }
 }
 </script>
