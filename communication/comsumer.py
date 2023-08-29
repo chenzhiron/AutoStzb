@@ -4,9 +4,8 @@ import logging
 
 # 配置日志记录器
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', encoding='UTF-16')
-from tasks.saodang import saodang
 from device.main_device import connect_device
-from tasks.zhengbing import zhengbing
+from tasks.main import execute_tasks
 
 d = connect_device()
 
@@ -17,10 +16,8 @@ async def handle_connection(websocket, path):
             message = await websocket.recv()
             task = message.split(',')
             logging.info(':%s', task)
-            if len(task) == 4 and int(task[0]) == 1:
-                zhengbing(task[1])
-            elif len(task) == 4 and int(task[0]) == 2:
-                saodang(task[1])
+            # if len(task) == 5 and int(task[0]) == 1:
+            #     execute_tasks(task)
             # 发送心跳消息
             await websocket.send('1')
             await asyncio.sleep(5)  # 5秒发送一次心跳消息

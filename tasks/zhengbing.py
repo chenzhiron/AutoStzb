@@ -5,7 +5,7 @@ from modules.module_fanhui.module_fanhui import module_return_main, module_retur
 from modules.module_shili.module_shili import module_click_shili
 from modules.module_zhengbing.module_zhengbing import module_zhengbing_click, module_swipe_zhengbing_click, \
     module_zhengbing_affirm_btn, module_zhuangbing_time
-from path.img import path
+from config.img import path
 
 
 def zhengbing(i):

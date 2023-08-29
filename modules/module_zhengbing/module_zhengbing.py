@@ -10,7 +10,7 @@ from modules.module_zhengbing.module_zhengbing_area import (zhengbing_page_area,
                                                             zhengbing_time_queren_area
                                                             )
 from ocr.main import ocr_txt_verify, ocr_default
-from path.img import path
+from config.img import path
 from tools.reg_coordinates import reg_coor
 from tools.reg_screenshot import general_screenshot_tools
 from tools.reg_time import reg_time_2em

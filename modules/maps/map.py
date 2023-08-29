@@ -3,12 +3,11 @@ import time
 from device.main_device import connect_device
 
 from tools.reg_screenshot import general_screenshot_tools
-from maps.map_area import base_area, address_area,const_w,const_h
-from path.img import path
+from modules.maps.map_area import address_area
+from config.img import path
 from ocr.main import ocr_map
-from tools.computed_distance import base_point
 from modules.module_shili.module_shili import module_click_shili
-from maps.map_fn import reg_address
+from modules.maps.map_fn import reg_address
 
 
 

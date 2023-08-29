@@ -5,7 +5,7 @@ from modules.module_address.module_address_area import address_start_area_w, add
 from modules.module_duiwu.module_duiwu import module_click_chuzheng_duiwu
 from ocr.main import ocr_default
 from ocr.main import ocr_txt_verify
-from path.img import path
+from config.img import path
 from tools.reg_coordinates import reg_coor
 from tools.reg_screenshot import general_screenshot_tools
 from tools.reg_time import reg_time

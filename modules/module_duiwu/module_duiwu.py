@@ -13,7 +13,7 @@ def module_click_chuzheng_duiwu(i):
 
 def module_click_zhengbing_duiwu(i):
     time_number = 0
-    from path.img import path
+    from config.img import path
     while 1:
         if ocr_txt_verify(path, '势力', discern_area):
             x, y = zhengbing_direction(i)

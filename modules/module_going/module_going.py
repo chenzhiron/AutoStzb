@@ -4,7 +4,7 @@ from device.main_device import return_device
 from modules.module_duiwu.module_duiwu import module_click_chuzheng_duiwu
 from modules.module_going.module_going_area import address_area_time_arrive, add_demo_area, chuzheng_btn_area
 from ocr.main import ocr_default, ocr_txt_click
-from path.img import path
+from config.img import path
 from tools.reg_coordinates import reg_coor
 from tools.reg_screenshot import general_screenshot_tools
 from tools.reg_time import reg_time

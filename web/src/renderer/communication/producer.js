@@ -1,6 +1,5 @@
 import {PORT} from "./property";
 
-
 let socket = null
 
 async function run_server() {
