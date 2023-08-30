@@ -1,34 +1,14 @@
-from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 
-import json
+# 创建调度器
+scheduler = BackgroundScheduler()
 
-scheduler = 0
 
+# 定义要执行的任务
+def job():
+    print("Hello, World!")
 
-def dispatcher_start():
-    global scheduler
-    scheduler = BlockingScheduler()
+def start_scheduler():
+    # 启动调度器
+    scheduler.start()
     return scheduler
-
-
-def return_dispatcher():
-    return scheduler
-
-
-def my_task():
-    print("Hello, world!")
-    scheduler.remove_job('my_task')
-
-
-def my_task2():
-    print("222333")
-
-
-if __name__ == '__main__':
-    with open('../config/tasks.json') as file:
-        tasks = json.load(file)
-    print(tasks['zhengbing'])
-    print(tasks)
-    # dispatcher_start()
-    # res = scheduler.add_job(my_task, 'interval', seconds=2, id=my_task.__name__)  # 每隔 5 秒执行一次任务
-    # scheduler.start()

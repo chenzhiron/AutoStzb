@@ -9,7 +9,7 @@ async function run_server() {
 
     await socket.addEventListener('open', function (event) {
         // 发送消息给服务器
-        socket.send('connect success');
+        // socket.send('connect success');
     });
 
     // 当接收到来自服务器的消息时

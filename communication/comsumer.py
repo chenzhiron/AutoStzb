@@ -1,7 +1,7 @@
 import asyncio
 import websockets
 import logging
-
+import json
 # 配置日志记录器
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', encoding='UTF-16')
 from device.main_device import connect_device
@@ -14,10 +14,11 @@ async def handle_connection(websocket, path):
     try:
         while True:
             message = await websocket.recv()
-            task = message.split(',')
-            logging.info(':%s', task)
-            # if len(task) == 5 and int(task[0]) == 1:
-            #     execute_tasks(task)
+            message = json.loads(message)
+            logging.info(':%s', message)
+            if type(message) is dict:
+                if message['zhengbing'] is not None:
+                    execute_tasks(message)
             # 发送心跳消息
             await websocket.send('1')
             await asyncio.sleep(5)  # 5秒发送一次心跳消息

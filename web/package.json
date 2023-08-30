@@ -51,6 +51,7 @@
     }
   },
   "dependencies": {
+    "element-ui": "^2.15.14",
     "socket.io": "^4.7.2",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6"
