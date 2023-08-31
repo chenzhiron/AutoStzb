@@ -62,7 +62,6 @@ def module_zhuangbing_time():
                 if v['text'] != '确定':
                     max_time.append(reg_time_2em(v['text']))
             max_time.sort(reverse=True)
-            print(max_time[0])
             x, y = reg_coor(res[-1]['position'])
             device.click(x, y)
             break

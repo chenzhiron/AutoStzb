@@ -21,7 +21,6 @@ def chuzheng(auto_txt = '扫荡', i = 1):
     time.sleep(1)
     general_screenshot_tools(address_area_time_arrive)
     res = ocr_default(path)
-    print(res)
     times = reg_time(res[0]['text'])
     print(times)
     general_screenshot_tools(chuzheng_btn_area)
@@ -29,4 +28,3 @@ def chuzheng(auto_txt = '扫荡', i = 1):
     if v[0]['text'] == auto_txt:
         x2, y2 = reg_coor(v[0]['position'])
         d.click(x2, y2)
-    print(v)

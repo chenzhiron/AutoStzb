@@ -19,9 +19,9 @@ def ocr_default(path):
 
 
 def ocr_v3(img_path):
-    # orc = CnOcr(rec_model_name=det_model_name)
-    orc = CnOcr(rec_model_name='ch_PP-OCRv3')
-    return orc.ocr(img_path)
+    orc = CnOcr(det_model_name="ch_PP-OCRv3_det",
+                rec_model_name="ch_ppocr_mobile_v2.0")
+    return orc.ocr(img_path, rec_batch_size=1,return_cropped_image=False,resized_shape=(4096, 4096))
 
 
 def ocr_txt_v3(img_path):
@@ -51,7 +51,6 @@ def ocr_txt_click(img_path, auto_text, model='', area=(), isADDWH=False):
     else:
         out = ocr.ocr(img_path)
     for v in out:
-        print(v)
         if v['text'] == auto_text:
             x, y = reg_coor(v['position'])
             if isADDWH:

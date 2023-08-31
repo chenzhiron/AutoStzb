@@ -10,5 +10,4 @@ def reg_address(coordinates):
 			# 转换为整数并添加到结果数组
 			result.append([int(x), int(y)])
 
-	print(result)
 	return result

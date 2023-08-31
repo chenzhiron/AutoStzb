@@ -3,7 +3,6 @@ from tools.reg_coordinates import reg_coor
 
 
 def reg_list_name(list_name):
-    print(list_name)
     name = []
     for v in list_name:
         name.append(v['text'])

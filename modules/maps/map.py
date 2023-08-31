@@ -21,7 +21,6 @@ def map_start():
     for v in result:
         list.append(v['text'])
     list = reg_address(list)
-    print(result)
 
 def screen_shot_maps():
     d = connect_device()

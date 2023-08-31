@@ -6,7 +6,12 @@ sys.path.append(p)
 lib_p = os.path.join(p, 'venv', 'Lib', 'site-packages')
 sys.path.append(lib_p)
 
-from communication.comsumer import run_websocket
+from communication.comsumer import start_run_websocket_thread
+from dispatcher.main import start_scheduler
+from tasks.task_queue import start_queue
 
 if __name__ == '__main__':
-    run_websocket()
+    start_scheduler()
+    start_run_websocket_thread()
+    start_queue()
+

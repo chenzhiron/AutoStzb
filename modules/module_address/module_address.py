@@ -10,6 +10,8 @@ from tools.reg_coordinates import reg_coor
 from tools.reg_screenshot import general_screenshot_tools
 from tools.reg_time import reg_time
 
+import logging
+
 
 def module_address_start():
     device = connect_device()
@@ -34,7 +36,6 @@ def module_address_going(auto_txt='扫荡'):
         result = ocr_default(path)
         if len(result) != 0:
             if result[0]['text'] == auto_txt:
-                print(result)
                 x, y = reg_coor(result[0]['position'])
                 device.click(x, y)
                 break
@@ -53,19 +54,16 @@ def module_address_list_going(i):
         if ocr_txt_verify(path, '扫荡',address_result_area):
             general_screenshot_tools(address_going_list_time)
             result = ocr_default(path)
-            print(result)
             if len(result[0]['text']) != 0:
                 times = reg_time(result[0]['text'])
+                logging.info(times)
                 general_screenshot_tools(address_result_area)
                 while 1:
                     end = ocr_default(path)
-                    print(end[0]['text'] == '扫荡')
                     x, y = reg_coor(end[0]['position'])
                     device.click(x, y)
-                    break
-                print(times)
+                    return times
                 break
-
 
 
 # if __name__ == '__main__':

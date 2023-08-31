@@ -1,5 +1,6 @@
 <template>
   <div class="wrapper">
+    <el-button @click="start_python">链接模拟器</el-button>
     <div>
       <el-tabs
         tab-position="top"
@@ -66,8 +67,6 @@
         </el-tab-pane>
         <el-tab-pane label="调度器">调度器</el-tab-pane>
       </el-tabs>
-      <!--      <button @click="start_python">启动</button>-->
-      <button @click="send_task">发送任务</button>
     </div>
     <div>
       <h4 class="top">日志</h4>
@@ -213,7 +212,7 @@
       )
       const tasks_config = path.join(this.pythonCwdPath, "config", "tasks.json")
       this.task_config = read_task(tasks_config)
-      this.start_python()
+      // this.start_python()
     },
   }
 </script>
