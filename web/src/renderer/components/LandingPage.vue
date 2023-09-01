@@ -226,7 +226,9 @@
   .wrapper > div {
     flex: 1;
   }
-
+  .top {
+    text-align: center;
+  }
   .log {
     height: 400px;
     overflow: auto;

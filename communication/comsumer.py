@@ -15,15 +15,13 @@ d = connect_device()
 
 async def handle_connection(websocket, path):
     try:
-        queue = return_task_queue()
         while True:
             message = await websocket.recv()
             message = json.loads(message)
             logging.info(':%s', message)
             if message:
+                queue = return_task_queue()
                 queue.put(message)
-                logging.info(queue.qsize())
-
             # 发送心跳消息
             await websocket.send('1')
             await asyncio.sleep(5)  # 5秒发送一次心跳消息
@@ -48,3 +46,4 @@ def run_websocket():
 def start_run_websocket_thread():
     websocket_thread = threading.Thread(target=run_websocket)
     websocket_thread.start()
+

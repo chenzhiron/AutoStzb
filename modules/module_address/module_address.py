@@ -1,7 +1,9 @@
+import time
+
 from device.main_device import connect_device, return_device
 from modules.module_address.module_address_area import address_start_area_w, address_start_area_y, address_sign_area, \
     address_targe_w, address_targe_h, address_going_area, \
-    address_going_list_time, address_result_area
+    address_going_list_time, address_result_area,address_going_targe_h,address_going_targe_w
 from modules.module_duiwu.module_duiwu import module_click_chuzheng_duiwu
 from ocr.main import ocr_default
 from ocr.main import ocr_txt_verify
@@ -19,8 +21,9 @@ def module_address_start():
     time_number = 0
     while 1:
         if ocr_txt_verify(path, '标记', address_sign_area):
-            # device.click(address_sign_area_w, address_sign_area_w)
             device.click(address_targe_w, address_targe_h)
+            time.sleep(0.5)
+            device.click(address_going_targe_w, address_going_targe_h)
             break
         else:
             time_number += 1
@@ -51,7 +54,7 @@ def module_address_list_going(i):
     device = return_device()
     module_click_chuzheng_duiwu(i)
     while 1:
-        if ocr_txt_verify(path, '扫荡',address_result_area):
+        if ocr_txt_verify(path, '扫荡', address_result_area):
             general_screenshot_tools(address_going_list_time)
             result = ocr_default(path)
             if len(result[0]['text']) != 0:
@@ -67,8 +70,8 @@ def module_address_list_going(i):
 
 
 # if __name__ == '__main__':
-#     # connect_device()
+#     connect_device()
 #     module_address_start()
-    # module_address_going()
-    # module_address_list_going(1)
-    # module_address_list_going(1)
+#     module_address_going()
+#     module_address_list_going(1)
+#     module_address_list_going(1)

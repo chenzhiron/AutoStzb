@@ -6,8 +6,12 @@ address_sign_area_w = 1270
 address_sign_area_h = 250
 
 # 300,666
-address_targe_w = 1150
-address_targe_h = 234
+address_targe_w = 1270
+address_targe_h = 150
+
+
+address_going_targe_h = 230
+address_going_targe_w = 1140
 
 address_going_area = (980, 290, 1300, 625)
 

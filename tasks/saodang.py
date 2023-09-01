@@ -16,6 +16,8 @@ def saodang(going_list=0, max_num=1, auto_txt='扫荡'):
         # scheduler.remove_job(saodang.__name__)
         scheduler.add_job(saodang, 'date', args=[going_list, max_num - 1],
                           next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=(times * 2) + 10),
-                          max_instances=1)
+                        )
 
     logging.info(times)
+
+
