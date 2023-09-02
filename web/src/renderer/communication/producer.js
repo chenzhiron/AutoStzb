@@ -1,5 +1,5 @@
 import {PORT} from "./property";
-
+import Vue from 'vue'
 let socket = null
 
 async function run_server() {
@@ -8,6 +8,11 @@ async function run_server() {
     // 当连接建立时
 
     await socket.addEventListener('open', function (event) {
+        // @ts-ignore
+        Vue.$message({
+            type: 'success',
+            message: '连接成功'
+        })
         // 发送消息给服务器
         // socket.send('connect success');
     });

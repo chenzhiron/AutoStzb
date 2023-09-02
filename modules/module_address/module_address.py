@@ -59,7 +59,7 @@ def module_address_list_going(i):
             result = ocr_default(path)
             if len(result[0]['text']) != 0:
                 times = reg_time(result[0]['text'])
-                logging.info(times)
+                # logging.info(times)
                 general_screenshot_tools(address_result_area)
                 while 1:
                     end = ocr_default(path)
@@ -69,9 +69,13 @@ def module_address_list_going(i):
                 break
 
 
-# if __name__ == '__main__':
-#     connect_device()
-#     module_address_start()
-#     module_address_going()
-#     module_address_list_going(1)
-#     module_address_list_going(1)
+if __name__ == '__main__':
+    connect_device()
+    module_address_start()
+    # module_address_going()
+    module_address_start()
+    # module_address_going()
+    # module_address_list_going(3)
+    # module_address_start()
+    # module_address_going()
+    # module_address_list_going(4)

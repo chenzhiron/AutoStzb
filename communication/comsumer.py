@@ -1,30 +1,35 @@
 import asyncio
 import json
 import logging
+import subprocess
 import threading
+import time
+
 import websockets
-from pip._internal.utils import subprocess
+
+from dispatcher.main import start_scheduler
 
 # 配置日志记录器
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', encoding='UTF-16')
+logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s', encoding='UTF-16')
 from device.main_device import connect_device
-from tasks.task_queue import return_task_queue
+from tasks.task_queue import return_task_queue, start_queue_thread
 
 d = connect_device()
 
 
-async def handle_connection(websocket, path):
+async def handle_connection(websocket):
     try:
+        logging.info('success')
         while True:
             message = await websocket.recv()
             message = json.loads(message)
-            logging.info(':%s', message)
+            logging.error('message:::::'+str(message))
             if message:
                 queue = return_task_queue()
                 queue.put(message)
             # 发送心跳消息
             await websocket.send('1')
-            await asyncio.sleep(5)  # 5秒发送一次心跳消息
+            time.sleep(5)
     except websockets.exceptions.ConnectionClosedOK:
         print('WebSocket connection closed')
         subprocess.kill()
@@ -33,17 +38,20 @@ async def handle_connection(websocket, path):
 
 
 def run_websocket():
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
+    new_loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(new_loop)
     # 创建WebSocket服务器
     start_server = websockets.serve(handle_connection, 'localhost', 22333)
-
     # 运行WebSocket服务器
-    loop.run_until_complete(start_server)
-    loop.run_forever()
+    new_loop.run_until_complete(start_server)
+    try:
+        new_loop.run_forever()
+    finally:
+        new_loop.close()
 
 
 def start_run_websocket_thread():
     websocket_thread = threading.Thread(target=run_websocket)
     websocket_thread.start()
-
+    # run_websocket()
+    # start_queue_thread()
