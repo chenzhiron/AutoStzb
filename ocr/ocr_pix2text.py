@@ -1,4 +1,4 @@
-from pix2text import Pix2Text, merge_line_texts
+from pix2text import Pix2Text
 from config.img import path
 
 if __name__ == '__main__':
