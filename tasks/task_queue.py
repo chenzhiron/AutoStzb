@@ -27,6 +27,7 @@ def start_queue():
                 logging.info(33333333333)
         time.sleep(1)
 
+
 def start_queue_thread():
     queue_thread = threading.Thread(target=start_queue)
     queue_thread.start()

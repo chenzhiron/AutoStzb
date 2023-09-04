@@ -1,62 +1,24 @@
-from PIL import Image
-from cnocr import CnOcr
-
-from device.main_device import return_device
-from tools.reg_coordinates import reg_coor
-from tools.reg_list_name import reg_list_name
+from pix2text import Pix2Text, merge_line_texts
 from tools.reg_screenshot import general_screenshot_tools
 
 
-def ocr_map(path):
-    ocr = CnOcr(det_model_name="naive_det",
-                rec_model_name="ch_ppocr_mobile_v2.0")
-    return ocr.ocr(path)
-
-
 def ocr_default(path):
-    ocr = CnOcr()
-    return ocr.ocr(path)
+    p2t = Pix2Text(analyzer_config=dict(model_name='mfd'))
+    ocr = p2t.recognize(path, resized_shape=608, use_analyzer=False)
+    if ocr:
+        return ocr[0]['text'].replace('\n', '').replace('\r', '')
+    else:
+        return []
 
 
-def ocr_v3(img_path):
-    orc = CnOcr(det_model_name="ch_PP-OCRv3_det",
-                rec_model_name="ch_ppocr_mobile_v2.0")
-    return orc.ocr(img_path, rec_batch_size=1,return_cropped_image=False,resized_shape=(4096, 4096))
-
-
-def ocr_txt_v3(img_path):
-    return ocr_v3(img_path)
-
-
-def ocr_txt_verify(img_path, auto_txt, area=(0, 0, 0, 0)):
+def ocr_txt_verify(path, auto_txt, area=(0, 0, 0, 0)):
     general_screenshot_tools(area)
-    result = reg_list_name(ocr_default(img_path))
-    if len(result) == 0 or result[0] != auto_txt:
-        return False
-    else:
-        return True
-
-
-def ocr_txt_click(img_path, auto_text, model='', area=(), isADDWH=False):
-    d = return_device()
-    if model == 'ch_PP-OCRv3':
-        ocr = CnOcr(rec_model_name=model)
-    elif model == 'naive_det':
-        ocr = CnOcr(det_model_name=model)
-    else:
-        ocr = CnOcr()
-    if area and len(area) == 4:
-        Image.open(img_path).crop(area).save(img_path)
-        out = ocr.ocr(img_path)
-    else:
-        out = ocr.ocr(img_path)
-    for v in out:
-        if v['text'] == auto_text:
-            x, y = reg_coor(v['position'])
-            if isADDWH:
-                x += area[0]
-                y += area[1]
-            print(x, y)
-            d.click(x, y)
+    result = ocr_default(path)
+    if result:
+        if str(result) != str(auto_txt):
+            return False
+        else:
+            print('True:::')
             return True
-    return False
+    else:
+        return False

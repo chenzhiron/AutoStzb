@@ -1,25 +1,24 @@
-from device.main_device import connect_device
-from modules.module_shili.address_area import area
-from ocr.main import ocr_v3
-from tools.reg_list_name import group_txt_click
-from tools.reg_screenshot import general_screenshot_tools
-from config.img import path
+from device.main_device import return_device, connect_device
+from modules.module_shili.address_area import shili_area, zhaomu
+from ocr.main import ocr_txt_verify
 
 
-def module_click_shili(path, auto_text):
-    time_number = 0
-    while 1:
-        general_screenshot_tools(area)
-        list_txt = ocr_v3(path)
-        print(list_txt)
-        if group_txt_click(list_txt, auto_text):
+def module_click_shili(img_path):
+    time_number = 50
+    while time_number > 0:
+        if ocr_txt_verify(img_path, '招募', zhaomu):
+            device = return_device()
+            x, y = shili_area
+            device.click(x, y)
             break
         else:
-            time_number += 1
-        if time_number == 50:
-            raise Exception('点击势力页面失败')
+            time_number -= 1
+    if time_number <= 0:
+        raise Exception('点击势力页面失败')
 
 
 # if __name__ == '__main__':
 #     connect_device()
-#     module_click_shili(path, '势力')
+#     from config.img import path
+#
+#     module_click_shili(path)

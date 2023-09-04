@@ -13,11 +13,8 @@ def reg_time_2em(reg_str):
 
 
 def reg_time(reg_str):
-    # 去除前面2个字符
-    string = reg_str
-
     # 转换为时间对象
-    time_obj = time.strptime(string, '%H:%M:%S')
+    time_obj = time.strptime(reg_str, '%H:%M:%S')
     # 获取时间秒数
     seconds = time_obj.tm_hour * 3600 + time_obj.tm_min * 60 + time_obj.tm_sec
     return seconds

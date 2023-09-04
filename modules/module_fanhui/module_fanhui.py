@@ -1,11 +1,5 @@
 from device.main_device import return_device
-
-
-curr_w = 1600 - 80
-curr_h = 900 - 800
-
-main_w = 1600 - 70
-main_h = 900 - 850
+from modules.module_fanhui.module_fanghui_area import curr_w, curr_h, main_w, main_h
 
 
 def module_return_main():

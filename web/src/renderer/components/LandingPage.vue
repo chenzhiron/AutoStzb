@@ -207,7 +207,7 @@
       this.pythonCwdPath = path.join(...pathArray.slice(0, max + 1))
       this.pythonExcutePath = path.join(
         this.pythonCwdPath,
-        "tookit",
+        "toolkit",
         "python.exe"
       )
       const tasks_config = path.join(this.pythonCwdPath, "config", "tasks.json")
