@@ -1,11 +1,20 @@
 import time
 
+from datetime import datetime
+
 
 def reg_time(reg_str):
     # 转换为时间对象
     time_obj = time.strptime(reg_str, '%H:%M:%S')
     # 获取时间秒数
     seconds = time_obj.tm_hour * 3600 + time_obj.tm_min * 60 + time_obj.tm_sec
+    return seconds
+
+
+def reg_time_ymd(reg_str):
+    # 转换为时间对象
+    time_obj = datetime.strptime(reg_str, '%Y/%m/%d %H:%M:%S')
+    seconds = time_obj.timestamp()
     return seconds
 
 

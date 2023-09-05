@@ -16,4 +16,7 @@ require_zhengbing = '确认征兵'
 
 queding = '确定'
 
-person_battle = '个人战报'
+# 个人战邦 -> 个人战报 模型需要训练
+person_battle = '个人战邦'
+
+battle_details = '战报详情'
