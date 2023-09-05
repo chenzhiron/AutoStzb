@@ -5,14 +5,14 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 # 创建调度器
 scheduler = BackgroundScheduler()
-scheduler.configure(misfire_grace_time=60*60)
+scheduler.configure(misfire_grace_time=60*60, max_instances=1)
 job_state_obj = {
     'state': False
 }
 
 
 def set_scheduler_state(event):
-    logging.error('event:::::::::' + str(event))
+    logging.info('event:::::::::' + str(event)+'\n\r')
     job_state_obj['state'] = not job_state_obj['state']
 
 

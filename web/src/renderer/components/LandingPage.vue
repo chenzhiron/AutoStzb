@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper">
-    <el-button @click="start_python">链接模拟器</el-button>
+    <!-- <el-button @click="start_python">链接模拟器</el-button> -->
+     <el-button @click="start_socket_server">创建通信</el-button>
     <div>
       <el-tabs
         tab-position="top"
@@ -76,7 +77,7 @@
           :key="k"
           class="item"
         >
-          {{ v }}
+          <div v-html="v"></div>
         </div>
       </div>
     </div>
@@ -182,16 +183,16 @@
           console.log("进程退出", code)
           // 在这里处理Python进程退出的逻辑
         })
-        this.time = setInterval(() => {
-          if (!this.producer || !this.producer.url) {
-            this.start_socket_server()
-            if (this.producer && !this.producer.url) {
-              clearInterval(this.time)
-            }
-          } else {
-            clearInterval(this.time)
-          }
-        }, 3000)
+        // this.time = setInterval(() => {
+        //   if (!this.producer || !this.producer.url) {
+        //     this.start_socket_server()
+        //     if (this.producer && !this.producer.url) {
+        //       clearInterval(this.time)
+        //     }
+        //   } else {
+        //     clearInterval(this.time)
+        //   }
+        // }, 5000)
       },
     },
     created() {
@@ -212,7 +213,7 @@
       )
       const tasks_config = path.join(this.pythonCwdPath, "config", "tasks.json")
       this.task_config = read_task(tasks_config)
-      // this.start_python()
+      this.start_python()
     },
   }
 </script>

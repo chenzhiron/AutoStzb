@@ -2,6 +2,7 @@ import {PORT} from "./property";
 import Vue from 'vue'
 let socket = null
 
+console.log(Vue)
 async function run_server() {
     socket = await new WebSocket('ws://localhost:' + PORT);
     // 创建WebSocket连接

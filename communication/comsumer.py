@@ -7,12 +7,11 @@ import time
 
 import websockets
 
-from dispatcher.main import start_scheduler
 
 # 配置日志记录器
-logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s', encoding='UTF-16')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', encoding='UTF-16')
 from device.main_device import connect_device
-from tasks.task_queue import return_task_queue, start_queue_thread
+from tasks.task_queue import return_task_queue
 
 d = connect_device()
 
@@ -23,7 +22,6 @@ async def handle_connection(websocket):
         while True:
             message = await websocket.recv()
             message = json.loads(message)
-            logging.error('message:::::'+str(message))
             if message:
                 queue = return_task_queue()
                 queue.put(message)

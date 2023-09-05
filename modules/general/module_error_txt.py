@@ -1,0 +1,8 @@
+biaoji_error = '标记土地选择异常'
+chuzhengduiwu_error = '出征选择异常'
+xuanze_error = '选择异常:::::'
+click_duiwu_zhengbing_error = '点击队伍，进入征兵页面。执行失败'
+click_shili_error = '点击势力页面失败'
+click_zhengbing_error = '点击征兵，进入征兵进度条失败'
+swipe_zhengbing_error = '拖动征兵进度条失败'
+require_zhengbing_error = '征兵确认点击错误'

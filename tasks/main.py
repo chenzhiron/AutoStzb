@@ -10,7 +10,6 @@ from dispatcher.main import return_scheduler
 
 
 def execute_tasks(task_list):
-    logging.error('task_list:::::::::' + str(task_list))
     scheduler = return_scheduler()
     if name_zhengbing in task_list.keys():
         i = task_list[name_zhengbing]['team']
@@ -23,7 +22,13 @@ def execute_tasks(task_list):
     if name_saodang in task_list.keys():
         i = task_list[name_saodang]['team']
         num = task_list[name_saodang]['number']
-        scheduler.add_job(saodang, 'date', args=[i, num], next_run_time=datetime.now())
+        scheduler.add_job(saodang, 'cron',
+                          args=[i, num, name_saodang + str(i)],
+                          day_of_week='0-6',
+                          next_run_time=datetime.now(),
+                          id=name_saodang + str(i),
+                          max_instances=1)
+        # scheduler.add_job(saodang, 'date', args=[i, num, name_saodang+str(i)], next_run_time=datetime.now(), id=name_saodang+str(i))
         if not scheduler.running:
             scheduler.start()
         else:

@@ -1,12 +1,14 @@
-from device.main_device import return_device, connect_device
-from modules.module_shili.address_area import shili_area, zhaomu
+from device.main_device import return_device
+from modules.general.module_error_txt import click_shili_error
+from modules.general.module_options_name import zhaomu
+from modules.module_shili.address_area import shili_area, zhaomu_area
 from ocr.main import ocr_txt_verify
 
 
 def module_click_shili(img_path):
     time_number = 50
     while time_number > 0:
-        if ocr_txt_verify(img_path, '招募', zhaomu):
+        if ocr_txt_verify(img_path, zhaomu, zhaomu_area):
             device = return_device()
             x, y = shili_area
             device.click(x, y)
@@ -14,7 +16,7 @@ def module_click_shili(img_path):
         else:
             time_number -= 1
     if time_number <= 0:
-        raise Exception('点击势力页面失败')
+        raise Exception(click_shili_error)
 
 
 # if __name__ == '__main__':
