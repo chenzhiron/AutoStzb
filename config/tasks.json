@@ -1,15 +1,96 @@
 {
-  "zhengbing": {
-    "status": 0,
-    "next_execute": "2023-08-29 22:00:00",
-    "number": 1,
-    "team": 1
+  "module_zhengbing": {
+    "zhengbing1": {
+      "id": "list_1",
+      "status": false,
+      "next_execute": "2023-08-29 22:00:00",
+      "number": 1,
+      "infinite": false
+    },
+    "zhengbing2": {
+      "id": "list_2",
+      "status": false,
+      "next_execute": "2023-08-29 22:00:00",
+      "number": 1,
+      "infinite": false
+    },
+    "zhengbing3": {
+      "id": "list_3",
+      "status": false,
+      "next_execute": "2023-08-29 22:00:00",
+      "number": 1,
+      "infinite": false
+    },
+    "zhengbing4": {
+      "id": "list_4",
+      "status": false,
+      "next_execute": "2023-08-29 22:00:00",
+      "number": 1,
+      "infinite": false
+    },
+    "zhengbing5": {
+      "id": "list_5",
+      "status": false,
+      "next_execute": "2023-08-29 22:00:00",
+      "number": 1,
+      "infinite": false
+    }
   },
-  "saodang": {
-    "status": 0,
-    "next_execute": "2023-08-29 22:00:00",
-    "number": 1,
-    "team": 1,
-    "await": "22:00:00"
+  "module_saodang": {
+    "saodang1": {
+      "id": "sd1",
+      "status": false,
+      "next_execute": "2023-08-29 22:00:00",
+      "number": 1,
+      "battle_result": {
+        "result": "deuce",
+        "await": true,
+        "num":0
+      }
+    },
+    "saodang2": {
+      "id": "sd2",
+      "status": false,
+      "next_execute": "2023-08-29 22:00:00",
+      "number": 1,
+      "battle_result": {
+        "result": "deuce",
+        "await": true,
+        "num": 0
+      }
+    },
+    "saodang3": {
+      "id": "sd3",
+      "status": false,
+      "next_execute": "2023-08-29 22:00:00",
+      "number": 1,
+      "battle_result": {
+        "result": "deuce",
+        "await": true,
+        "num": 0
+      }
+    },
+    "saodang4": {
+      "id": "sd4",
+      "status": false,
+      "next_execute": "2023-08-29 22:00:00",
+      "number": 1,
+      "battle_result": {
+        "result": "deuce",
+        "await": true,
+        "num": 0
+      }
+    },
+    "saodang5": {
+      "id": "sd5",
+      "status": false,
+      "next_execute": "2023-08-29 22:00:00",
+      "number": 1,
+      "battle_result": {
+        "result": "deuce",
+        "await": true,
+        "num": 0
+      }
+    }
   }
 }

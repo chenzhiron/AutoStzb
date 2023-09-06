@@ -31,8 +31,10 @@ def module_computed_draw(times, offset=3):
                 battle_result = ocr_default(path)
                 if battle_result == '胜利':
                     data_dist["result"] = "success"
+                    return data_dist
                 elif battle_result == '战败':
                     data_dist["result"] = "lose"
+                    return data_dist
                 elif battle_result == '平局':
                     data_dist["result"] = "deuce"
                 x2, y2 = click_battle
