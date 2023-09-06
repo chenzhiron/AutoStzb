@@ -10,9 +10,9 @@ shili = '势力'
 
 zhaomu = '招募'
 
-zhengbing = '征兵'
+zhengbing = '证兵'
 
-require_zhengbing = '确认征兵'
+require_zhengbing = '确认证兵'
 
 queding = '确定'
 

@@ -4,8 +4,7 @@
     <div>
       <el-tabs tab-position="left" v-if="Object.keys(task_config).length > 0">
         <el-tab-pane label="调度器">
-          {{ this.start_task_list }}
-          {{ this.execute_task_status }}
+          {{start_task_list }}
         </el-tab-pane>
         <template v-if="Object.keys(task_config.module_zhengbing).length > 0">
           <template v-for="v in task_config.module_zhengbing">
@@ -84,31 +83,19 @@ export default {
       log: [],
 
       start_task_list: [],
-      execute_task_status: true,
 
       task_config: {},
 
       producer: null,
     };
   },
-  watch: {
-    execute_task_status(value) {
-      console.log("execute_task_status: ", value);
-      console.log("start_task_list: ", this.start_task_list);
-      console.log("producer: ", this.producer);
-      if (!value && this.producer && this.start_task_list.length > 0) {
-          this.producer.send(JSON.stringify(this.start_task_list.shift()));
-          this.execute_task_status = true;
-      }
-    }
-  },
   methods: {
     change_task(value, task_config) {
       if (value) {
         this.start_task_list.push(task_config);
       } else {
-        let index = this.start_task_list.find((v) => v.id == task_config.id);
-        if (index != -1) {
+        let index = this.start_task_list.find((v) => v.id === task_config.id);
+        if (index !== -1) {
           this.start_task_list.splice(index, 1);
         } else {
           this.$message.error("任务没有找到或者没有启动");
@@ -116,29 +103,21 @@ export default {
       }
     },
     send_task(producer) {
-      if (!this.execute_task_status || this.start_task_list.length == 0) {
+      if (this.start_task_list.length === 0) {
+        producer.send(JSON.stringify(0))
         return false;
       } else {
-        this.execute_task_status = True;
-        console.log('send_task: ', this.send_task);
         producer.send(JSON.stringify(this.start_task_list.shift()));
-        return true;
+        return true
       }
     },
     async start_socket_server() {
       this.producer = await run_server();
       this.producer.addEventListener("message", (event) => {
-        console.log(event.data == "get_task");
-        if (event.data == "start_task") {
-          this.execute_task_status = true;
+        console.log(event.data);
+        if (event.data === "get_task") {
+          this.send_task(this.producer)
         }
-        if (event.data == "get_task") {
-          this.execute_task_status = false;
-          console.log("execute_task_status", event.data, this.execute_task_status);
-          // this.send_task(this.producer)
-        }
-        // 处理接收到的消息
-        console.log("脚本执行信息", event.data);
       });
     },
     start_python: function () {
@@ -153,20 +132,18 @@ export default {
       pythonProcess.stdout.on("data", (data) => {
         const logMessage = data.toString().trim();
         this.log.push(logMessage);
-        // 在这里处理Python的日志输出，比如将其显示在Electron应用的界面上
+
       });
 
       // 监听Python进程的stderr流
       pythonProcess.stderr.on("data", (data) => {
         const errorMessage = data.toString().trim();
         this.log.push(errorMessage);
-        // 在这里处理Python的错误日志输出
       });
 
       // 监听Python进程的退出事件
       pythonProcess.on("close", (code) => {
         console.log("进程退出", code);
-        // 在这里处理Python进程退出的逻辑
       });
     },
   },

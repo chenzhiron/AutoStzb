@@ -1,10 +1,10 @@
 import logging
 
 from apscheduler.events import EVENT_JOB_EXECUTED, EVENT_SCHEDULER_STARTED
-from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.background import BlockingScheduler
 
 # 创建调度器
-scheduler = BackgroundScheduler()
+scheduler = BlockingScheduler()
 scheduler.configure(misfire_grace_time=60*60, max_instances=1)
 job_state_obj = {
     'state': False

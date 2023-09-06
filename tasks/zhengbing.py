@@ -1,5 +1,7 @@
 import time
 
+import logging
+
 from config.img import path
 from modules.module_duiwu.module_duiwu import module_click_zhengbing_duiwu
 from modules.module_fanhui.module_fanhui import module_return_main, module_return_index
@@ -8,7 +10,9 @@ from modules.module_zhengbing.module_zhengbing import module_zhengbing_click, mo
     module_zhengbing_affirm_btn, module_zhengbing_computed_time, module_zhuangbing_require
 
 
+# 添加征兵已满的拦截处理
 def zhengbing(i):
+    logging.info('征兵')
     module_click_shili(path)
     module_click_zhengbing_duiwu(i)
     module_zhengbing_click(path)
@@ -22,4 +26,8 @@ def zhengbing(i):
     module_return_main()
     time.sleep(1)
     module_return_index()
-    return maxtime[0]
+    return maxtime
+
+# if __name__ == '__main__':
+#     connect_device()
+#     zhengbing(5)

@@ -5,43 +5,55 @@
       "status": false,
       "next_execute": "2023-08-29 22:00:00",
       "number": 1,
-      "infinite": false
+      "infinite": false,
+      "type": 1,
+      "list": 1
     },
     "zhengbing2": {
       "id": "list_2",
       "status": false,
       "next_execute": "2023-08-29 22:00:00",
       "number": 1,
-      "infinite": false
+      "infinite": false,
+      "type": 1,
+       "list": 2
     },
     "zhengbing3": {
       "id": "list_3",
       "status": false,
       "next_execute": "2023-08-29 22:00:00",
       "number": 1,
-      "infinite": false
+      "infinite": false,
+        "type": 1,
+       "list": 3
     },
     "zhengbing4": {
       "id": "list_4",
       "status": false,
       "next_execute": "2023-08-29 22:00:00",
       "number": 1,
-      "infinite": false
+      "infinite": false,
+        "type": 1,
+       "list": 4
     },
     "zhengbing5": {
       "id": "list_5",
       "status": false,
       "next_execute": "2023-08-29 22:00:00",
       "number": 1,
-      "infinite": false
+      "infinite": false,
+        "type": 1,
+       "list": 5
     }
   },
   "module_saodang": {
     "saodang1": {
       "id": "sd1",
+      "type": 2,
       "status": false,
       "next_execute": "2023-08-29 22:00:00",
       "number": 1,
+      "list": 1,
       "battle_result": {
         "result": "deuce",
         "await": true,
@@ -50,9 +62,11 @@
     },
     "saodang2": {
       "id": "sd2",
+      "type": 2,
       "status": false,
       "next_execute": "2023-08-29 22:00:00",
       "number": 1,
+      "list": 2,
       "battle_result": {
         "result": "deuce",
         "await": true,
@@ -61,6 +75,8 @@
     },
     "saodang3": {
       "id": "sd3",
+      "type": 2,
+      "list": 3,
       "status": false,
       "next_execute": "2023-08-29 22:00:00",
       "number": 1,
@@ -72,6 +88,8 @@
     },
     "saodang4": {
       "id": "sd4",
+      "type": 2,
+      "list": 4,
       "status": false,
       "next_execute": "2023-08-29 22:00:00",
       "number": 1,
@@ -83,6 +101,8 @@
     },
     "saodang5": {
       "id": "sd5",
+      "type": 2,
+      "list": 5,
       "status": false,
       "next_execute": "2023-08-29 22:00:00",
       "number": 1,

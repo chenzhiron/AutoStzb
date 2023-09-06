@@ -12,8 +12,8 @@ from tasks.zhengbing import zhengbing
 
 def saodang(going_list=0, max_num=1, name_id=0, auto_txt=name_saodang):
     scheduler = return_scheduler()
-    logging.error(name_id +'\n\r' )
-    logging.error(str(scheduler.get_jobs()) +'\n\r')
+    logging.info(name_id +'\n\r' )
+    logging.info(str(scheduler.get_jobs()) +'\n\r')
     module_address_start()
     module_address_going(auto_txt)
     times = module_address_list_going(going_list)

@@ -1,7 +1,6 @@
 from tasks.saodang import saodang
 from tasks.zhengbing import zhengbing
 from datetime import datetime
-import logging
 
 name_saodang = 'saodang'
 name_zhengbing = 'zhengbing'
