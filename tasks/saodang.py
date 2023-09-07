@@ -1,7 +1,6 @@
 import datetime
 
 from communication.task_store import change_store_data_value
-from dispatcher.general import battle_dispose_result
 from dispatcher.main import return_scheduler
 from modules.module_address.module_address import (module_address_start, module_address_going,
                                                    module_address_list_going)
