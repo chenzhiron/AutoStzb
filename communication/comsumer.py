@@ -9,9 +9,9 @@ import logging
 from communication.dispose_task import dispose_task
 
 
-logging.getLogger().setLevel(logging.INFO)
+logging.getLogger().setLevel(logging.ERROR)
 # 配置日志记录器
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(message)s', encoding='UTF-16')
+logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(message)s', encoding='UTF-16')
 from device.main_device import connect_device
 
 connect_device()
@@ -19,12 +19,20 @@ connect_device()
 get_task = 'get_task'
 start_task = 'start_task'
 
+client_websocket = 0
+
+
+def return_client_websocket():
+    return client_websocket
+
 
 async def handle_connection(websocket):
+    global client_websocket
+    client_websocket = websocket
     try:
-        logging.info('success')
+        logging.error('success')
+        await websocket.send(get_task)
         while True:
-            await websocket.send(get_task)
             message = await websocket.recv()
             message = json.loads(message)
             await dispose_task(websocket, message)

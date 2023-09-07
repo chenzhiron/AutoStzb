@@ -4,7 +4,7 @@
     <div>
       <el-tabs tab-position="left" v-if="Object.keys(task_config).length > 0">
         <el-tab-pane label="调度器">
-          {{start_task_list }}
+          {{ start_task_list }}
         </el-tab-pane>
         <template v-if="Object.keys(task_config.module_zhengbing).length > 0">
           <template v-for="v in task_config.module_zhengbing">
@@ -56,10 +56,10 @@
     </div>
     <div>
       <h4 class="top">日志</h4>
-      <div class="log">
-        <div v-for="(v, k) in log" :key="k" class="item">
-          <div v-html="v"></div>
-        </div>
+      <div class="log" ref="scrollContainer">
+          <div v-for="(v, k) in log" :key="k" class="item">
+            <div v-html="v"></div>
+          </div>
       </div>
     </div>
   </div>
@@ -89,6 +89,16 @@ export default {
       producer: null,
     };
   },
+  watch: {
+    log: {
+      handler: function (val, oldVal) {
+        this.$nextTick(() => {
+          const container = this.$refs.scrollContainer;
+          container.scrollTop = container.scrollHeight;
+        });
+      },
+    },
+  },
   methods: {
     change_task(value, task_config) {
       if (value) {
@@ -104,11 +114,11 @@ export default {
     },
     send_task(producer) {
       if (this.start_task_list.length === 0) {
-        producer.send(JSON.stringify(0))
+        producer.send(JSON.stringify(0));
         return false;
       } else {
         producer.send(JSON.stringify(this.start_task_list.shift()));
-        return true
+        return true;
       }
     },
     async start_socket_server() {
@@ -116,7 +126,7 @@ export default {
       this.producer.addEventListener("message", (event) => {
         console.log(event.data);
         if (event.data === "get_task") {
-          this.send_task(this.producer)
+          this.send_task(this.producer);
         }
       });
     },
@@ -132,7 +142,6 @@ export default {
       pythonProcess.stdout.on("data", (data) => {
         const logMessage = data.toString().trim();
         this.log.push(logMessage);
-
       });
 
       // 监听Python进程的stderr流
