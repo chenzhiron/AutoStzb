@@ -1,3 +1,5 @@
+import time
+
 from config.img import path
 from device.main_device import return_device
 from modules.general.module_options_name import person_battle, battle_details
@@ -53,12 +55,15 @@ def module_computed_draw(times, task_id, offset=3):
                         enemy_number = ocr_default(path)
                         data_dist["blue"] = int(person_number.split('/')[0])
                         data_dist["red"] = int(enemy_number.split('/')[0])
+
+                        module_return_index()
+                        time.sleep(0.5)
+                        module_return_index()
                         return data_dist
                     else:
                         time_number -= 1
         else:
             time_number -= 1
-    module_return_index()
     return data_dist
 
 

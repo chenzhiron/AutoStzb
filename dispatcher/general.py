@@ -2,6 +2,7 @@ import datetime
 
 from communication.task_store import get_store_data_value, get_store_data, del_store_data
 from dispatcher.main import return_scheduler
+from modules.module_battle.module_draw import module_computed_draw
 from tasks.zhengbing import zhengbing
 
 
@@ -21,6 +22,9 @@ def battle_dispose_result(event):
                               id=str(task_id) + zhengbing.__name__ + str(result_list)
                               )
         else:
+            scheduler.add_job(module_computed_draw, 'date', args=[datetime.datetime.now().timestamp(), task_id, 300],
+                              next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=10 * 6 * 5),
+                              id=str(task_id) + 'saodang')
             # 平局处理
             pass
 
@@ -41,4 +45,4 @@ def zhengbing_dispose_result(event):
                               'date',
                               args=[task_config['list'],
                                     task_config['id']],
-                              next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=times + 5))
+                              next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=times))

@@ -1,5 +1,7 @@
+from config.img import path
 from device.main_device import return_device
 from modules.general.module_error_txt import click_zhengbing_error, swipe_zhengbing_error, require_zhengbing_error
+from modules.general.module_options_name import zhengbing, require_zhengbing, queding, zhengbing_verify
 from modules.module_address.module_address_area import address_affirm_button
 from modules.module_zhengbing.module_zhengbing_area import (zhengbing_page_area,
                                                             zhengbing_page_swipe,
@@ -11,8 +13,6 @@ from ocr.main import ocr_txt_verify, ocr_default
 from tools.reg_click_direction import reg_direction
 from tools.reg_screenshot import general_screenshot_tools
 from tools.reg_time import split_string, reg_time
-
-from modules.general.module_options_name import zhengbing, require_zhengbing, queding
 
 
 # 进入点击征兵页面
@@ -58,6 +58,14 @@ def module_zhengbing_computed_time(img_path):
     # 后续逻辑
 
 
+def module_verify_zhengbing():
+    time_number = 50
+    while time_number > 0:
+        if ocr_txt_verify(path, zhengbing_verify, zhengbing_page_queren_area):
+            return True
+        time_number -= 1
+    return False
+
 # 点击确认征兵按钮
 def module_zhengbing_affirm_btn():
     device = return_device()
@@ -82,6 +90,8 @@ def module_zhuangbing_require(img_path, auto_txt=queding):
 
 # if __name__ == '__main__':
 #     connect_device()
+#     result = module_verify_zhengbing()
+#     print(result)
 #     module_zhengbing_click(path)
 #     module_swipe_zhengbing_click(path)
 #     maxtime = module_zhengbing_computed_time(path)
