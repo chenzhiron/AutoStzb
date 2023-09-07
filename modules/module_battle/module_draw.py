@@ -1,12 +1,13 @@
-from device.main_device import return_device, connect_device
-from modules.general.module_options_name import person_battle, battle_details
 from config.img import path
-from modules.module_battle.module_draw_area import battlefield, person_battle_area, person_status_number_area, enemy_status_number_area, \
+from device.main_device import return_device
+from modules.general.module_options_name import person_battle, battle_details
+from modules.module_battle.module_draw_area import battlefield, person_battle_area, person_status_number_area, \
+    enemy_status_number_area, \
     status_area, click_battle, discern_time_area
 from modules.module_fanhui.module_fanhui import module_return_index
 from ocr.main import ocr_txt_verify, ocr_default
 from tools.reg_screenshot import general_screenshot_tools
-from tools.reg_time import reg_time, reg_time_ymd
+from tools.reg_time import reg_time_ymd
 
 
 # 点击战报 对比时间 误差3s  查看平局 / 胜利 / 失败 ，截图
@@ -33,9 +34,11 @@ def module_computed_draw(times, task_id, offset=3):
                 battle_result = ocr_default(path)
                 if battle_result == '胜利':
                     data_dist["result"] = "success"
+                    module_return_index()
                     return data_dist
                 elif battle_result == '战败':
                     data_dist["result"] = "lose"
+                    module_return_index()
                     return data_dist
                 elif battle_result == '平局':
                     data_dist["result"] = "deuce"

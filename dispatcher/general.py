@@ -1,6 +1,6 @@
 import datetime
 
-from communication.task_store import get_store_data_value, get_store_data
+from communication.task_store import get_store_data_value, get_store_data, del_store_data
 from dispatcher.main import return_scheduler
 from tasks.zhengbing import zhengbing
 
@@ -34,7 +34,7 @@ def zhengbing_dispose_result(event):
         task_id = zhengbing_result['task_id']
         task_config = get_store_data(task_id)
         if task_config['number'] == 0:
-            scheduler.remove_job(task_id)
+            del_store_data(task_id)
         else:
             from tasks.saodang import saodang
             scheduler.add_job(saodang,
