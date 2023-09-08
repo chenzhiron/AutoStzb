@@ -3,9 +3,6 @@
     <el-button @click="start_socket_server">创建通信</el-button>
     <div>
       <el-tabs tab-position="left" v-if="Object.keys(task_config).length > 0">
-        <el-tab-pane label="调度器">
-          {{ start_task_list }}
-        </el-tab-pane>
         <template v-if="Object.keys(task_config.module_zhengbing).length > 0">
           <template v-for="v in task_config.module_zhengbing">
             <el-tab-pane :label="v.id" :key="v.id">
@@ -53,6 +50,13 @@
           </template>
         </template>
       </el-tabs>
+      <div>
+        <el-tabs>
+          <el-tab-pane label="调度器">
+            {{ start_task_list }}
+          </el-tab-pane>
+        </el-tabs>
+      </div>
     </div>
     <div>
       <h4 class="top">日志</h4>

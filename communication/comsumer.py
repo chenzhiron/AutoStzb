@@ -11,7 +11,7 @@ from communication.dispose_task import dispose_task
 
 logging.getLogger().setLevel(logging.ERROR)
 # 配置日志记录器
-logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(message)s', encoding='UTF-16')
+logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(message)s')
 from device.main_device import connect_device
 
 connect_device()

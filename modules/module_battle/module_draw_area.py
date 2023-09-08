@@ -11,4 +11,4 @@ enemy_status_number_area = (1350,120,1600,200)
 # 胜利 | 失败 | 平局
 status_area = (670,240,850,400)
 
-click_battle = (850,300)
+click_battle = (850,600)

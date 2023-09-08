@@ -12,6 +12,8 @@ def reg_time(reg_str):
 
 
 def reg_time_ymd(reg_str):
+    if len(reg_str) == 18:
+        reg_str = reg_str[:10] + ' ' + reg_str[10:]
     # 转换为时间对象
     time_obj = datetime.strptime(reg_str, '%Y/%m/%d %H:%M:%S')
     seconds = time_obj.timestamp()

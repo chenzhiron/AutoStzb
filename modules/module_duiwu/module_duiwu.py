@@ -6,6 +6,7 @@ from tools.team_direction import chuzheng_direction, zhengbing_direction
 from modules.general.module_options_name import shili
 
 
+# 点击出征的队伍
 def module_click_chuzheng_duiwu(i):
     x, y = chuzheng_direction(i)
     device = return_device()
@@ -13,6 +14,7 @@ def module_click_chuzheng_duiwu(i):
     return True
 
 
+# 点击征兵的队伍
 def module_click_zhengbing_duiwu(i):
     time_number = 50
     device = return_device()
@@ -27,8 +29,7 @@ def module_click_zhengbing_duiwu(i):
     if time_number <= 0:
         raise Exception(click_duiwu_zhengbing_error)
 
-
 # if __name__ == '__main__':
 #     connect_device()
 #     module_click_zhengbing_duiwu(5)
-    # module_click_chuzheng_duiwu(5)
+# module_click_chuzheng_duiwu(5)

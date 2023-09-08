@@ -16,10 +16,10 @@ from tools.reg_time import split_string, reg_time
 
 
 # 进入点击征兵页面
-def module_zhengbing_click(img_path, auto_txt=zhengbing):
+def module_zhengbing_click(auto_txt=zhengbing):
     time_number = 50
     while time_number > 0:
-        if ocr_txt_verify(img_path, auto_txt, zhengbing_page_area):
+        if ocr_txt_verify(path, auto_txt, zhengbing_page_area):
             device = return_device()
             x, y = reg_direction(zhengbing_page_area)
             device.click(x, y)
@@ -31,10 +31,10 @@ def module_zhengbing_click(img_path, auto_txt=zhengbing):
 
 
 # 滑动征兵模块
-def module_swipe_zhengbing_click(img_path, auto_txt=require_zhengbing):
+def module_swipe_zhengbing_click(auto_txt=require_zhengbing):
     time_number = 50
     while time_number > 0:
-        if ocr_txt_verify(img_path, auto_txt, zhengbing_page_queren_area):
+        if ocr_txt_verify(path, auto_txt, zhengbing_page_queren_area):
             for v in zhengbing_page_swipe:
                 device = return_device()
                 device.swipe(sx=v[0], sy=v[1], ex=v[2], ey=v[3], duration=v[4])
@@ -46,9 +46,9 @@ def module_swipe_zhengbing_click(img_path, auto_txt=require_zhengbing):
 
 
 # 计算征兵时间
-def module_zhengbing_computed_time(img_path):
+def module_zhengbing_computed_time():
     general_screenshot_tools(zhengbing_time_area)
-    result = ocr_default(img_path).replace('\n', '').replace('\r', '')
+    result = ocr_default(path).replace('\n', '').replace('\r', '')
     result = split_string(result, 8)
     max_time = []
     for v in result:
@@ -58,13 +58,15 @@ def module_zhengbing_computed_time(img_path):
     # 后续逻辑
 
 
+# 验证征兵已满
 def module_verify_zhengbing():
-    time_number = 50
+    time_number = 10
     while time_number > 0:
         if ocr_txt_verify(path, zhengbing_verify, zhengbing_page_queren_area):
             return True
         time_number -= 1
     return False
+
 
 # 点击确认征兵按钮
 def module_zhengbing_affirm_btn():
@@ -74,11 +76,11 @@ def module_zhengbing_affirm_btn():
 
 
 # 确定征兵
-def module_zhuangbing_require(img_path, auto_txt=queding):
+def module_zhuangbing_require(auto_txt=queding):
     time_number = 50
     while time_number > 0:
         # 确认 区域重新点击
-        if ocr_txt_verify(img_path, auto_txt, zhengbing_time_queren_area):
+        if ocr_txt_verify(path, auto_txt, zhengbing_time_queren_area):
             device = return_device()
             x, y = reg_direction(zhengbing_time_queren_area)
             device.click(x, y)

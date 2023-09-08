@@ -1,7 +1,8 @@
 import sys
 
+import io
 import os
-
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 p = os.getcwd()
 sys.path.append(p)
 lib_p = os.path.join(p, 'venv', 'Lib', 'site-packages')

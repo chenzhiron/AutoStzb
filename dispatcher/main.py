@@ -1,10 +1,11 @@
 import asyncio
 import logging
 from apscheduler.events import EVENT_JOB_EXECUTED, EVENT_SCHEDULER_STARTED
+from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.schedulers.background import BlockingScheduler
 
 # 创建调度器
-scheduler = BlockingScheduler()
+scheduler = BlockingScheduler(executors={'default': ThreadPoolExecutor(max_workers=1)})
 scheduler.configure(misfire_grace_time=60 * 60, max_instances=1)
 
 scheduler_status = {

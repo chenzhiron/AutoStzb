@@ -17,6 +17,6 @@ zhengbing_verify = '证兵已满'
 queding = '确定'
 
 # 个人战邦 -> 个人战报 模型需要训练
-person_battle = '个人战邦'
+person_battle = '个人战书'
 
 battle_details = '战报详情'

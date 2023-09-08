@@ -13,10 +13,6 @@ def saodang(going_list=0, name_id=0, auto_txt=name_saodang):
     module_address_start()
     module_address_going(auto_txt)
     times = module_address_list_going(going_list)
-    # 目前只考虑平局一次的问题
-    # scheduler.add_job(module_computed_draw, 'cron',
-    #                   args=[datetime.datetime.now(), name_id],
-    #                   next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=times))
     scheduler.add_job(module_computed_draw, 'date',
                       args=[datetime.datetime.now().timestamp(), name_id, times],
                       next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=times),

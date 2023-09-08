@@ -16,6 +16,7 @@ from tools.reg_time import reg_time
 from modules.general.module_options_name import saodang, chuzheng, biaoji
 
 
+# 点击标记
 def module_address_start():
     device = connect_device()
     time_number = 50
@@ -33,6 +34,7 @@ def module_address_start():
         raise Exception(biaoji_error)
 
 
+# 点击扫荡
 def module_address_going(auto_txt=saodang):
     device = return_device()
     time_number = 50
@@ -56,6 +58,7 @@ def module_address_going(auto_txt=saodang):
         raise Exception(xuanze_error + auto_txt)
 
 
+# 点击出征队伍和计算时间
 def module_address_list_going(i):
     if 0 >= int(i) > 5:
         raise Exception(chuzhengduiwu_error)

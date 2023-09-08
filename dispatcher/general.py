@@ -13,19 +13,25 @@ def battle_dispose_result(event):
         battle_result = event.retval
         task_id = battle_result['task_id']
         time_seconds = get_store_data_value(task_id, 'next_execute')
+        times = battle_result['times']
         # 胜利或者失败
         if battle_result['result'] == 'success' or battle_result['result'] == 'lose':
             result_list = get_store_data_value(task_id, 'list')
+
             scheduler.add_job(zhengbing, 'date',
                               args=[result_list, task_id],
-                              next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=time_seconds),
+                              next_run_time=datetime.datetime.now() + datetime.timedelta(
+                                  seconds=time_seconds - times if time_seconds - times >= 0 else 0
+                                ),
                               id=str(task_id) + zhengbing.__name__ + str(result_list)
                               )
         else:
-            scheduler.add_job(module_computed_draw, 'date', args=[datetime.datetime.now().timestamp(), task_id, 300],
-                              next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=10 * 6 * 5),
-                              id=str(task_id) + 'saodang')
             # 平局处理
+            scheduler.add_job(module_computed_draw, 'date', args=[datetime.datetime.now().timestamp(), task_id],
+                              next_run_time=datetime.datetime.now() + datetime.timedelta(
+                                  seconds=(10 * 6 * 5) - times if (10 * 6 * 5) - times >= 0 else 0
+                              ),
+                              id=str(task_id) + 'saodang')
             pass
 
 
