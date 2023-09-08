@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from apscheduler.events import EVENT_JOB_EXECUTED, EVENT_SCHEDULER_STARTED
+from apscheduler.events import EVENT_JOB_EXECUTED, EVENT_SCHEDULER_STARTED, EVENT_JOB_ADDED
 from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.schedulers.background import BlockingScheduler
 
@@ -15,6 +15,10 @@ scheduler_status = {
 
 def set_scheduler_status(event):
     scheduler_status['status'] = False
+    jobs = scheduler.get_jobs()
+    if len(jobs) > 0:
+        for job in jobs:
+            job.pause()
 
 
 def get_scheduler_status():
@@ -29,6 +33,7 @@ async def set_scheduler_state(event):
 
 
 def change_scheduler_state(event):
+    scheduler.resume()
     scheduler_status['status'] = True
     asyncio.run(set_scheduler_state(event))
 
@@ -43,12 +48,20 @@ def return_scheduler():
     return scheduler
 
 
+def set_task_status(event):
+    if not get_scheduler_status() and len(scheduler.get_jobs()) > 0:
+        task_id = event.job_id
+        logging.info(task_id)
+        # scheduler.pause_job(task_id)
+
+
 def scheduler_add_listener():
     from dispatcher.general import battle_dispose_result, zhengbing_dispose_result
     scheduler.add_listener(set_scheduler_status, EVENT_SCHEDULER_STARTED)
-    scheduler.add_listener(change_scheduler_state, EVENT_JOB_EXECUTED)
+    scheduler.add_listener(set_task_status, EVENT_JOB_ADDED)
     scheduler.add_listener(battle_dispose_result, EVENT_JOB_EXECUTED)
     scheduler.add_listener(zhengbing_dispose_result, EVENT_JOB_EXECUTED)
+    scheduler.add_listener(change_scheduler_state, EVENT_JOB_EXECUTED)
 
 
 scheduler_add_listener()

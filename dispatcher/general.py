@@ -21,15 +21,16 @@ def battle_dispose_result(event):
             scheduler.add_job(zhengbing, 'date',
                               args=[result_list, task_id],
                               next_run_time=datetime.datetime.now() + datetime.timedelta(
-                                  seconds=time_seconds - times if time_seconds - times >= 0 else 0
+                                  seconds=time_seconds - times if time_seconds - times >= 0 else 1
                                 ),
                               id=str(task_id) + zhengbing.__name__ + str(result_list)
                               )
+
         else:
             # 平局处理
             scheduler.add_job(module_computed_draw, 'date', args=[datetime.datetime.now().timestamp(), task_id],
                               next_run_time=datetime.datetime.now() + datetime.timedelta(
-                                  seconds=(10 * 6 * 5) - times if (10 * 6 * 5) - times >= 0 else 0
+                                  seconds=(10 * 6 * 5) - times if (10 * 6 * 5) - times >= 0 else 1
                               ),
                               id=str(task_id) + 'saodang')
             pass
@@ -41,6 +42,7 @@ def zhengbing_dispose_result(event):
     if 'zhengbing' in event_job_id:
         zhengbing_result = event.retval
         times = zhengbing_result['maxtime']
+        times = 1 if times == 0 else times
         task_id = zhengbing_result['task_id']
         task_config = get_store_data(task_id)
         if task_config['number'] == 0:

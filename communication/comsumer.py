@@ -51,6 +51,7 @@ def run_websocket():
     start_server = websockets.serve(handle_connection, 'localhost', 22333)
     # 运行WebSocket服务器
     new_loop.run_until_complete(start_server)
+    logging.info('初始化websocket')
     try:
         new_loop.run_forever()
     finally:
