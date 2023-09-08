@@ -6,7 +6,7 @@ from apscheduler.schedulers.background import BlockingScheduler
 
 # 创建调度器
 scheduler = BlockingScheduler(executors={'default': ThreadPoolExecutor(max_workers=1)})
-scheduler.configure(misfire_grace_time=60 * 60, max_instances=1)
+scheduler.configure(misfire_grace_time=60 * 60)
 
 scheduler_status = {
     "status": True

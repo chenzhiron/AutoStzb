@@ -79,7 +79,6 @@ def battle_deuce(data_dist, start_time):
     x2, y2 = click_battle
     device.click(x2, y2)
     while time_number > 0:
-        print(battle_details)
         if ocr_txt_verify(path, battle_details, person_battle_area):
             general_screenshot_tools(person_status_number_area)
             person_number = ocr_default(path)

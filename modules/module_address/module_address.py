@@ -20,16 +20,17 @@ from modules.general.module_options_name import saodang, chuzheng, biaoji
 def module_address_start():
     device = connect_device()
     time_number = 50
-    # 假设还没有进行过点击
-    device.click(address_start_area_w, address_start_area_y)
     while time_number > 0:
         if ocr_txt_verify(path, biaoji, address_sign_area):
-            device.click(address_targe_w, address_targe_h)
-            time.sleep(0.5)
-            device.click(address_going_targe_w, address_going_targe_h)
-            break
+            pass
         else:
-            time_number -= 1
+            device.click(address_start_area_w, address_start_area_y)
+        device.click(address_targe_w, address_targe_h)
+        time.sleep(0.5)
+        device.click(address_going_targe_w, address_going_targe_h)
+        break
+    else:
+        time_number -= 1
     if time_number <= 0:
         raise Exception(biaoji_error)
 
