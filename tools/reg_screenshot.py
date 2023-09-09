@@ -1,5 +1,5 @@
 from device.main_device import return_device
-from config.img import path
+from config.paths import path
 from tools.reg_img_draw import fill_image
 
 

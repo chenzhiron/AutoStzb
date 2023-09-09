@@ -1,44 +1,23 @@
-import asyncio
+import datetime
 import logging
-from apscheduler.events import EVENT_JOB_EXECUTED, EVENT_SCHEDULER_STARTED, EVENT_JOB_ADDED
+from apscheduler.events import EVENT_JOB_EXECUTED, EVENT_JOB_MISSED, EVENT_JOB_MODIFIED
 from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.schedulers.background import BlockingScheduler
 
+from dispatcher.execute_type_1 import execute_type_1
+from dispatcher.execute_type_2 import execute_type_2
+from dispatcher.general_prop import tasks_result
+
 # 创建调度器
 scheduler = BlockingScheduler(executors={'default': ThreadPoolExecutor(max_workers=1)})
-scheduler.configure(misfire_grace_time=60 * 60)
-
-scheduler_status = {
-    "status": True
-}
-
-
-def set_scheduler_status(event):
-    scheduler_status['status'] = False
-    jobs = scheduler.get_jobs()
-    if len(jobs) > 0:
-        for job in jobs:
-            job.pause()
-
-
-def get_scheduler_status():
-    return scheduler_status['status']
-
-
-async def set_scheduler_state(event):
-    from communication.comsumer import return_client_websocket, get_task
-    client_websocket = return_client_websocket()
-    logging.error('event:::::::::' + str(event) + '\n\r')
-    await client_websocket.send(get_task)
-
-
-def change_scheduler_state(event):
-    scheduler.resume()
-    scheduler_status['status'] = True
-    asyncio.run(set_scheduler_state(event))
 
 
 def start_scheduler():
+    for task in tasks_result:
+        if tasks_result[task]['type'] == 1:
+            execute_type_1(tasks_result[task])
+        elif tasks_result[task]['type'] == 2:
+            execute_type_2(tasks_result[task])
     # 启动调度器
     scheduler.start()
     return scheduler
@@ -48,20 +27,34 @@ def return_scheduler():
     return scheduler
 
 
-def set_task_status(event):
-    if not get_scheduler_status() and len(scheduler.get_jobs()) > 0:
-        task_id = event.job_id
-        logging.info(task_id)
-        # scheduler.pause_job(task_id)
+def task_start(event):
+    print(str(event))
 
 
-def scheduler_add_listener():
-    from dispatcher.general import battle_dispose_result, zhengbing_dispose_result
-    scheduler.add_listener(set_scheduler_status, EVENT_SCHEDULER_STARTED)
-    scheduler.add_listener(set_task_status, EVENT_JOB_ADDED)
-    scheduler.add_listener(battle_dispose_result, EVENT_JOB_EXECUTED)
-    scheduler.add_listener(zhengbing_dispose_result, EVENT_JOB_EXECUTED)
-    scheduler.add_listener(change_scheduler_state, EVENT_JOB_EXECUTED)
+def tasks_end(event):
+    times = datetime.datetime.strptime("2099/09/09 15:18:00", "%Y/%m/%d %H:%M:%S")
+    scheduler.modify_job(event.job_id, next_run_time=times)
+    jobs = scheduler.get_jobs()
+    for v in jobs:
+        print(str(v))
+    print(str(event))
 
 
-scheduler_add_listener()
+def task_modified(event):
+    # 在此处进行任务排序
+    logging.error('任务在程序外部修改change::::'+'1111111111')
+    logging.error(str(event))
+    print(str(event))
+
+
+def tasks_missed(event):
+    print(str(event))
+
+
+def scheduler_set_addlistener():
+    scheduler.add_listener(task_modified, EVENT_JOB_MODIFIED)
+    scheduler.add_listener(tasks_missed, EVENT_JOB_MISSED)
+    scheduler.add_listener(tasks_end, EVENT_JOB_EXECUTED)
+
+
+scheduler_set_addlistener()

@@ -16,3 +16,11 @@ if __name__ == '__main__':
     start_scheduler()
     while 1:
         pass
+
+# import subprocess
+#
+# # 指定exe文件路径
+# exe_path = "path/to/your/exe/file.exe"
+#
+# # 启动exe文件
+# subprocess.Popen(exe_path)

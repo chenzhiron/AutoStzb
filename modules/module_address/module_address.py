@@ -1,6 +1,6 @@
 import time
 
-from config.img import path
+from config.paths import path
 from device.main_device import connect_device, return_device
 from modules.general.module_error_txt import biaoji_error, chuzhengduiwu_error, xuanze_error
 from modules.module_address.module_address_area import address_start_area_w, address_start_area_y, address_sign_area, \

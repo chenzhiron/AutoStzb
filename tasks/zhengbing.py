@@ -1,5 +1,4 @@
-import time
-
+from device.main_device import connect_device
 from modules.module_duiwu.module_duiwu import module_click_zhengbing_duiwu
 from modules.module_fanhui.module_fanhui import module_return_main, module_return_index
 from modules.module_shili.module_shili import module_click_shili

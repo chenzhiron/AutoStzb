@@ -1,5 +1,5 @@
 from pix2text import Pix2Text
-from config.img import path
+from config.paths import path
 
 if __name__ == '__main__':
     p2t = Pix2Text(analyzer_config=dict(model_name='mfd'))

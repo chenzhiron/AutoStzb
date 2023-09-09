@@ -1,4 +1,4 @@
-from config.img import path
+from config.paths import path
 from device.main_device import connect_device
 
 if __name__ == '__main__':

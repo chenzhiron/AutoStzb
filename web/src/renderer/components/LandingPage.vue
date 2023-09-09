@@ -3,28 +3,26 @@
     <el-button @click="start_socket_server">创建通信</el-button>
     <div>
       <el-tabs tab-position="left" v-if="Object.keys(task_config).length > 0">
-        <template v-if="Object.keys(task_config.module_zhengbing).length > 0">
-          <template v-for="v in task_config.module_zhengbing">
-            <el-tab-pane :label="v.id" :key="v.id">
-              <div>
-                启动
-                <el-checkbox
-                  v-model="v.status"
-                  @change="(value) => change_task(value, v)"
-                ></el-checkbox>
-              </div>
-              <div>
-                次数 <el-input-number v-model="v.number"></el-input-number>
-              </div>
-              <div>
-                无限执行 <el-checkbox v-model="v.infinite"></el-checkbox>
-              </div>
-            </el-tab-pane>
-          </template>
-        </template>
-        <template v-if="Object.keys(task_config.module_saodang).length > 0">
-          <template v-for="v in task_config.module_saodang">
-            <el-tab-pane :label="v.id" :key="v.id">
+          <template v-for="v in task_config">
+            <template v-if="v.id.includes('list')">
+              <el-tab-pane :label="v.id" :key="v.id">
+                          <div>
+                            启动
+                            <el-checkbox
+                              v-model="v.status"
+                              @change="(value) => change_task(value, v)"
+                            ></el-checkbox>
+                          </div>
+                          <div>
+                            次数 <el-input-number v-model="v.number"></el-input-number>
+                          </div>
+                          <div>
+                            无限执行 <el-checkbox v-model="v.infinite"></el-checkbox>
+                          </div>
+                        </el-tab-pane>
+            </template>
+            <template v-if="v.id.includes('sd')">
+ <el-tab-pane :label="v.id" :key="v.id">
               <div>
                 启动
                 <el-checkbox
@@ -47,8 +45,8 @@
                 ></el-input-number>
               </div>
             </el-tab-pane>
+            </template>
           </template>
-        </template>
       </el-tabs>
       <div>
         <el-tabs>

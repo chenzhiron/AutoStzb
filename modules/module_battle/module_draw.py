@@ -1,8 +1,8 @@
 import logging
 import time
 
-from config.img import path
-from device.main_device import return_device, connect_device
+from config.paths import path
+from device.main_device import return_device
 from modules.general.module_options_name import person_battle, battle_details
 from modules.module_battle.module_draw_area import battlefield, person_battle_area, person_status_number_area, \
     enemy_status_number_area, \

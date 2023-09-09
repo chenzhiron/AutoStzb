@@ -1,4 +1,4 @@
-from config.img import path
+from config.paths import path
 
 from device.main_device import return_device
 from modules.modules_start.module_start_area import start_area

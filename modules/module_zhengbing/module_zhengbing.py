@@ -1,4 +1,4 @@
-from config.img import path
+from config.paths import path
 from device.main_device import return_device
 from modules.general.module_error_txt import click_zhengbing_error, swipe_zhengbing_error, require_zhengbing_error
 from modules.general.module_options_name import zhengbing, require_zhengbing, queding, zhengbing_verify

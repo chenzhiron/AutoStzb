@@ -18,7 +18,7 @@ def module_click_chuzheng_duiwu(i):
 def module_click_zhengbing_duiwu(i):
     time_number = 50
     device = return_device()
-    from config.img import path
+    from config.paths import path
     while time_number > 0:
         if ocr_txt_verify(path, shili, discern_area):
             x, y = zhengbing_direction(i)
