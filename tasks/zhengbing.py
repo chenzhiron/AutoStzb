@@ -1,4 +1,3 @@
-from device.main_device import connect_device
 from modules.module_duiwu.module_duiwu import module_click_zhengbing_duiwu
 from modules.module_fanhui.module_fanhui import module_return_main, module_return_index
 from modules.module_shili.module_shili import module_click_shili
@@ -6,11 +5,10 @@ from modules.module_zhengbing.module_zhengbing import module_zhengbing_click, mo
     module_zhengbing_affirm_btn, module_zhengbing_computed_time, module_zhuangbing_require, module_verify_zhengbing
 
 
-#处理 添加征兵队列1个|2个|3个的阻塞拦截
-def zhengbing(i, task_id=0):
+# 处理 添加征兵队列1个|2个|3个的阻塞拦截
+def zhengbing(i):
     zhengbing_status = {
-        "maxtime": 0,
-        "task_id": task_id
+        "maxtime": 0
     }
     module_click_shili()
     module_click_zhengbing_duiwu(i)

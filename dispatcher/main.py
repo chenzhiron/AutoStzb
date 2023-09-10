@@ -1,24 +1,16 @@
 import datetime
 import logging
-from apscheduler.events import EVENT_JOB_EXECUTED, EVENT_JOB_MISSED, EVENT_JOB_MODIFIED
+from apscheduler.events import EVENT_JOB_EXECUTED
 from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.schedulers.background import BlockingScheduler
-
-from dispatcher.execute_type_1 import execute_type_1
-from dispatcher.execute_type_2 import execute_type_2
-from dispatcher.general_prop import tasks_result
+from communication.execute_task_config import return_task_config_obj,insertion_task_config
 
 # 创建调度器
 scheduler = BlockingScheduler(executors={'default': ThreadPoolExecutor(max_workers=1)})
 
 
 def start_scheduler():
-    for task in tasks_result:
-        if tasks_result[task]['type'] == 1:
-            execute_type_1(tasks_result[task])
-        elif tasks_result[task]['type'] == 2:
-            execute_type_2(tasks_result[task])
-    # 启动调度器
+    scheduler_set_addlistener()
     scheduler.start()
     return scheduler
 
@@ -27,34 +19,46 @@ def return_scheduler():
     return scheduler
 
 
-def task_start(event):
-    print(str(event))
-
-
 def tasks_end(event):
-    times = datetime.datetime.strptime("2099/09/09 15:18:00", "%Y/%m/%d %H:%M:%S")
-    scheduler.modify_job(event.job_id, next_run_time=times)
-    jobs = scheduler.get_jobs()
-    for v in jobs:
-        print(str(v))
-    print(str(event))
+    job_id = event.job_id
+    result = event.retval
+    tasks_config_obj = return_task_config_obj()
+    if len(tasks_config_obj[job_id]) == 0:
+        return
+    if 'sd' in job_id:
+        sd_task_event(job_id, result)
 
 
-def task_modified(event):
-    # 在此处进行任务排序
-    logging.error('任务在程序外部修改change::::'+'1111111111')
-    logging.error(str(event))
-    print(str(event))
+def sd_task_event(job_id, result):
+    tasks_config_obj = return_task_config_obj()
+    fn = tasks_config_obj[job_id].pop(0)
+    times = result['times']
+    lists = result['lists']
+    if fn['handle'].__name__ == 'battle':
+        if 'result' in result:
+            if result['result'] == 'deuce':
+                # 需要返回平局计算的耗时，先默认平局 300
+                times = 300 - result['timed']
+                insertion_task_config(job_id, fn)
+            else:
+                fn = tasks_config_obj[job_id].pop(0)
+        # 当调用平局多次的时候， 队伍的出发时间跟回来时间就会出现问题
+        scheduler.add_job(fn['handle'],
+                          id=fn['id'],
+                          trigger='date',
+                          next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=times),
+                          args=[lists, times])
 
+    elif fn['handle'].__name__ == 'zhengbing':
+        times = result['times']
+        going_list = result['lists']
+        scheduler.add_job(fn['handle'],
+                          id=fn['id'],
+                          trigger='date',
+                          next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=times),
+                          args=[going_list])
 
-def tasks_missed(event):
-    print(str(event))
 
 
 def scheduler_set_addlistener():
-    scheduler.add_listener(task_modified, EVENT_JOB_MODIFIED)
-    scheduler.add_listener(tasks_missed, EVENT_JOB_MISSED)
     scheduler.add_listener(tasks_end, EVENT_JOB_EXECUTED)
-
-
-scheduler_set_addlistener()
