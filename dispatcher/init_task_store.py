@@ -39,7 +39,6 @@ class ObservableList(MutableSequence):
 
 class ArrayObserver:
     def update(self, array):
-        print('array'+str(array))
         if len(array) == 0:
             return
         execute_task_list(array)

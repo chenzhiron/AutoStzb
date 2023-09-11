@@ -3,26 +3,26 @@
     <el-button @click="start_socket_server">创建通信</el-button>
     <div>
       <el-tabs tab-position="left" v-if="Object.keys(task_config).length > 0">
-          <template v-for="v in task_config">
-            <template v-if="v.id.includes('list')">
-              <el-tab-pane :label="v.id" :key="v.id">
-                          <div>
-                            启动
-                            <el-checkbox
-                              v-model="v.status"
-                              @change="(value) => change_task(value, v)"
-                            ></el-checkbox>
-                          </div>
-                          <div>
-                            次数 <el-input-number v-model="v.number"></el-input-number>
-                          </div>
-                          <div>
-                            无限执行 <el-checkbox v-model="v.infinite"></el-checkbox>
-                          </div>
-                        </el-tab-pane>
-            </template>
-            <template v-if="v.id.includes('sd')">
- <el-tab-pane :label="v.id" :key="v.id">
+        <template v-for="v in task_config">
+          <template v-if="v.type == 1">
+            <el-tab-pane :label="v.id" :key="v.id">
+              <div>
+                启动
+                <el-checkbox
+                  v-model="v.status"
+                  @change="(value) => change_task(value, v)"
+                ></el-checkbox>
+              </div>
+              <div>
+                次数 <el-input-number v-model="v.number"></el-input-number>
+              </div>
+              <div>
+                无限执行 <el-checkbox v-model="v.infinite"></el-checkbox>
+              </div>
+            </el-tab-pane>
+          </template>
+          <template v-if="v.type == 2">
+            <el-tab-pane :label="v.id" :key="v.id">
               <div>
                 启动
                 <el-checkbox
@@ -45,8 +45,8 @@
                 ></el-input-number>
               </div>
             </el-tab-pane>
-            </template>
           </template>
+        </template>
       </el-tabs>
       <div>
         <el-tabs>
@@ -59,9 +59,9 @@
     <div>
       <h4 class="top">日志</h4>
       <div class="log" ref="scrollContainer">
-          <div v-for="(v, k) in log" :key="k" class="item">
-            <div v-html="v"></div>
-          </div>
+        <div v-for="(v, k) in log" :key="k" class="item">
+          <div v-html="v"></div>
+        </div>
       </div>
     </div>
   </div>

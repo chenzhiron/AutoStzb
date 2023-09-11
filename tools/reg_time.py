@@ -4,19 +4,23 @@ from datetime import datetime
 
 
 def reg_time(reg_str):
-    # 转换为时间对象
-    time_obj = time.strptime(reg_str, '%H:%M:%S')
-    # 获取时间秒数
-    seconds = time_obj.tm_hour * 3600 + time_obj.tm_min * 60 + time_obj.tm_sec
+    try:
+        time_obj = time.strptime(reg_str, '%H:%M:%S')
+        seconds = time_obj.tm_hour * 3600 + time_obj.tm_min * 60 + time_obj.tm_sec
+    except:
+        return 0
     return seconds
 
 
 def reg_time_ymd(reg_str):
-    if len(reg_str) == 18:
-        reg_str = reg_str[:10] + ' ' + reg_str[10:]
-    # 转换为时间对象
-    time_obj = datetime.strptime(reg_str, '%Y/%m/%d %H:%M:%S')
-    seconds = time_obj.timestamp()
+    try:
+        if len(reg_str) == 18:
+            reg_str = reg_str[:10] + ' ' + reg_str[10:]
+            # 转换为时间对象
+        time_obj = datetime.strptime(reg_str, '%Y/%m/%d %H:%M:%S')
+        seconds = time_obj.timestamp()
+    except:
+        return 0
     return seconds
 
 

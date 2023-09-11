@@ -8,7 +8,8 @@ from modules.module_zhengbing.module_zhengbing import module_zhengbing_click, mo
 # 处理 添加征兵队列1个|2个|3个的阻塞拦截
 def zhengbing(i):
     zhengbing_status = {
-        "maxtime": 0
+        "times": 0,
+        'lists': i
     }
     module_click_shili()
     module_click_zhengbing_duiwu(i)
@@ -20,7 +21,7 @@ def zhengbing(i):
         maxtime = module_zhengbing_computed_time()
         module_zhengbing_affirm_btn()
         module_zhuangbing_require()
-        zhengbing_status['maxtime'] = maxtime
+        zhengbing_status['times'] = maxtime
     module_return_main()
     module_return_main()
     module_return_main()

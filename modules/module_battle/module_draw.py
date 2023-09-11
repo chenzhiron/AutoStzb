@@ -1,7 +1,5 @@
 import time
 
-import datetime
-
 from config.paths import path
 
 from modules.general.module_options_name import person_battle, battle_details
@@ -24,7 +22,6 @@ def module_computed_draw(going_list, times):
         "red": 0,
         "result": "",
         "times": 0,
-        "timed": 0,
         'lists': going_list
     }
     x, y = battlefield
@@ -56,7 +53,6 @@ def battle_success(data_dist, start_time):
     data_dist["result"] = "success"
     end_time = time.time()
     data_dist["times"] = int(end_time - start_time)
-    data_dist['timed'] = data_dist['times']
     return data_dist
 
 
@@ -64,7 +60,6 @@ def battle_lose(data_dist, start_time):
     data_dist["result"] = "lose"
     end_time = time.time()
     data_dist["times"] = int(end_time - start_time)
-    data_dist['timed'] = data_dist['times']
     return data_dist
 
 
@@ -85,7 +80,6 @@ def battle_deuce(data_dist, start_time):
             data_dist["red"] = int(enemy_number.split('/')[0])
             end_time = time.time()
             data_dist["times"] = int(end_time - start_time)
-            data_dist['timed'] = data_dist['times']
             return data_dist
         else:
             time_number -= 1

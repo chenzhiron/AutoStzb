@@ -1,5 +1,3 @@
-import logging
-
 from tasks.zhengbing import zhengbing
 from tasks.saodang import saodang
 from tasks.battle import battle
@@ -10,6 +8,9 @@ task_config_obj = {}
 def add_task_config_obj(task_config):
     if task_config['type'] == 1:
         task_config_obj[task_config['id']] = [{
+            'id': task_config['id'],
+            'handle': zhengbing
+        }, {
             'id': task_config['id'],
             'handle': zhengbing
         }]
@@ -25,9 +26,13 @@ def add_task_config_obj(task_config):
             'handle': battle
         },
             {
-            'id': task_config['id'],
-            'handle': zhengbing
-        }]
+                'id': task_config['id'],
+                'handle': battle
+            },
+            {
+                'id': task_config['id'],
+                'handle': zhengbing
+            }]
         task_config_obj[task_config['id']] = current_task_group * task_config['number']
 
 

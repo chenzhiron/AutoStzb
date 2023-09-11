@@ -2,7 +2,6 @@
   "zhengbing1": {
     "id": "list_1",
     "status": false,
-    "next_execute": "2099/08/29 22:00:00",
     "number": 1,
     "infinite": false,
     "type": 1,
@@ -11,7 +10,6 @@
   "zhengbing2": {
     "id": "list_2",
     "status": false,
-    "next_execute": "2099/08/29 22:00:00",
     "number": 1,
     "infinite": false,
     "type": 1,
@@ -20,7 +18,6 @@
   "zhengbing3": {
     "id": "list_3",
     "status": false,
-    "next_execute": "2099/08/29 22:00:00",
     "number": 1,
     "infinite": false,
     "type": 1,
@@ -29,7 +26,6 @@
   "zhengbing4": {
     "id": "list_4",
     "status": false,
-    "next_execute": "2099/09/09 15:14:00",
     "number": 1,
     "infinite": false,
     "type": 1,
@@ -38,7 +34,6 @@
   "zhengbing5": {
     "id": "list_5",
     "status": false,
-    "next_execute": "2099/08/29 22:00:00",
     "number": 1,
     "infinite": false,
     "type": 1,
@@ -48,7 +43,6 @@
     "id": "sd1",
     "type": 2,
     "status": false,
-    "next_execute": "2099/08/29 22:00:00",
     "number": 1,
     "list": 1,
     "battle_result": {
@@ -61,7 +55,6 @@
     "id": "sd2",
     "type": 2,
     "status": false,
-    "next_execute": "2099/08/29 22:00:00",
     "number": 1,
     "list": 2,
     "battle_result": {
@@ -75,7 +68,6 @@
     "type": 2,
     "list": 3,
     "status": false,
-    "next_execute": "2099/08/29 22:00:00",
     "number": 1,
     "battle_result": {
       "result": "deuce",
@@ -88,7 +80,6 @@
     "type": 2,
     "list": 4,
     "status": false,
-    "next_execute": "2099/08/29 22:00:00",
     "number": 1,
     "battle_result": {
       "result": "deuce",
@@ -101,7 +92,6 @@
     "type": 2,
     "list": 5,
     "status": false,
-    "next_execute": "2099/08/29 22:00:00",
     "number": 1,
     "battle_result": {
       "result": "deuce",
