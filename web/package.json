@@ -51,8 +51,10 @@
     }
   },
   "dependencies": {
+    "bufferutil": "^4.0.7",
     "element-ui": "^2.15.14",
     "socket.io": "^4.7.2",
+    "utf-8-validate": "^6.0.3",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6"
   },

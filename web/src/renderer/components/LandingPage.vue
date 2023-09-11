@@ -5,7 +5,7 @@
       <el-tabs tab-position="left" v-if="Object.keys(task_config).length > 0">
         <template v-for="v in task_config">
           <template v-if="v.type == 1">
-            <el-tab-pane :label="v.id" :key="v.id">
+            <el-tab-pane :label="config_obj[v.id]" :key="v.id">
               <div>
                 启动
                 <el-checkbox
@@ -22,7 +22,7 @@
             </el-tab-pane>
           </template>
           <template v-if="v.type == 2">
-            <el-tab-pane :label="v.id" :key="v.id">
+            <el-tab-pane :label="config_obj[v.id]" :key="v.id">
               <div>
                 启动
                 <el-checkbox
@@ -77,6 +77,19 @@ export default {
   name: "landing-page",
   data() {
     return {
+      config_obj: {
+        list_1:'主城征兵队列1',
+        list_2: '主城征兵队列2',
+        list_3: '主城征兵队列3',
+        list_4: '主城征兵队列4',
+        list_5: '主城征兵队列5',
+        sd1: '扫荡队列1',
+        sd2: '扫荡队列2',
+        sd3: '扫荡队列3',
+        sd4: '扫荡队列4',
+        sd5: '扫荡队列5',
+      },
+
       pathSeparator: path.sep,
       pythonSourcePath: "main.py",
       pythonExcutePath: "",
