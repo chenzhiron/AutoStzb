@@ -1,3 +1,6 @@
+import time
+
+from config.const import TIMESLEEP
 from config.paths import path
 
 from device.main_device import return_device
@@ -12,4 +15,5 @@ def module_click_start(auto_text=start_name):
         device = return_device()
         x, y = reg_direction(start_area)
         device.click(x, y)
+        time.sleep(TIMESLEEP)
         return True

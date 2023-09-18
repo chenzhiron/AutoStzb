@@ -1,5 +1,6 @@
 import time
 
+from config.const import TIMESLEEP
 from config.paths import path
 from device.main_device import connect_device, return_device
 from modules.general.module_error_txt import biaoji_error, chuzhengduiwu_error, xuanze_error
@@ -21,12 +22,13 @@ def module_address_start():
     device = connect_device()
     time_number = 50
     while time_number > 0:
+        time.sleep(TIMESLEEP)
         if ocr_txt_verify(path, biaoji, address_sign_area):
             pass
         else:
             device.click(address_start_area_w, address_start_area_y)
         device.click(address_targe_w, address_targe_h)
-        time.sleep(0.5)
+        time.sleep(TIMESLEEP)
         device.click(address_going_targe_w, address_going_targe_h)
         break
     else:
@@ -40,6 +42,7 @@ def module_address_going(auto_txt=saodang):
     device = return_device()
     time_number = 50
     while time_number > 0:
+        time.sleep(TIMESLEEP)
         general_screenshot_tools(address_going_area)
         text = ocr_default(path)
         if len(text) > 0 and auto_txt in text:
@@ -66,6 +69,7 @@ def module_address_list_going(i):
     device = return_device()
     module_click_chuzheng_duiwu(i)
     while 1:
+        time.sleep(TIMESLEEP)
         if ocr_txt_verify(path, saodang, address_result_area):
             general_screenshot_tools(address_going_list_time)
             result = ocr_default(path)
