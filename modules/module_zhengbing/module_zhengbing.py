@@ -1,3 +1,6 @@
+import time
+
+from config.const import TIMESLEEP
 from config.paths import path
 from device.main_device import return_device
 from modules.general.module_error_txt import click_zhengbing_error, swipe_zhengbing_error, require_zhengbing_error
@@ -19,6 +22,7 @@ from tools.reg_time import split_string, reg_time
 def module_zhengbing_click(auto_txt=zhengbing):
     time_number = 50
     while time_number > 0:
+        time.sleep(TIMESLEEP)
         if ocr_txt_verify(path, auto_txt, zhengbing_page_area):
             device = return_device()
             x, y = reg_direction(zhengbing_page_area)
@@ -34,6 +38,7 @@ def module_zhengbing_click(auto_txt=zhengbing):
 def module_swipe_zhengbing_click(auto_txt=require_zhengbing):
     time_number = 50
     while time_number > 0:
+        time.sleep(TIMESLEEP)
         if ocr_txt_verify(path, auto_txt, zhengbing_page_queren_area):
             for v in zhengbing_page_swipe:
                 device = return_device()
@@ -47,6 +52,7 @@ def module_swipe_zhengbing_click(auto_txt=require_zhengbing):
 
 # 计算征兵时间
 def module_zhengbing_computed_time():
+    time.sleep(TIMESLEEP)
     general_screenshot_tools(zhengbing_time_area)
     result = ocr_default(path).replace('\n', '').replace('\r', '')
     result = split_string(result, 8)
@@ -60,8 +66,9 @@ def module_zhengbing_computed_time():
 
 # 验证征兵已满
 def module_verify_zhengbing():
-    time_number = 10
+    time_number = 5
     while time_number > 0:
+        time.sleep(TIMESLEEP)
         if ocr_txt_verify(path, zhengbing_verify, zhengbing_page_queren_area):
             return True
         time_number -= 1
@@ -73,12 +80,14 @@ def module_zhengbing_affirm_btn():
     device = return_device()
     x, y = address_affirm_button
     device.click(x, y)
+    time.sleep(TIMESLEEP)
 
 
 # 确定征兵
 def module_zhuangbing_require(auto_txt=queding):
     time_number = 50
     while time_number > 0:
+        time.sleep(TIMESLEEP)
         # 确认 区域重新点击
         if ocr_txt_verify(path, auto_txt, zhengbing_time_queren_area):
             device = return_device()

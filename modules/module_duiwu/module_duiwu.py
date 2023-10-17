@@ -1,3 +1,6 @@
+import time
+
+from config.const import TIMESLEEP
 from device.main_device import return_device
 from modules.general.module_error_txt import click_duiwu_zhengbing_error
 from modules.module_duiwu.address_area import discern_area
@@ -11,6 +14,7 @@ def module_click_chuzheng_duiwu(i):
     x, y = chuzheng_direction(i)
     device = return_device()
     device.click(x, y)
+    time.sleep(TIMESLEEP)
     return True
 
 
@@ -20,6 +24,7 @@ def module_click_zhengbing_duiwu(i):
     device = return_device()
     from config.paths import path
     while time_number > 0:
+        time.sleep(TIMESLEEP)
         if ocr_txt_verify(path, shili, discern_area):
             x, y = zhengbing_direction(i)
             device.click(x, y)

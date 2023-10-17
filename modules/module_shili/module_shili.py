@@ -1,3 +1,6 @@
+import time
+
+from config.const import TIMESLEEP
 from config.paths import path
 
 from device.main_device import return_device
@@ -10,10 +13,12 @@ from ocr.main import ocr_txt_verify
 def module_click_shili():
     time_number = 50
     while time_number > 0:
+        time.sleep(TIMESLEEP)
         if ocr_txt_verify(path, zhaomu, zhaomu_area):
             device = return_device()
             x, y = shili_area
             device.click(x, y)
+            time.sleep(TIMESLEEP)
             break
         else:
             time_number -= 1

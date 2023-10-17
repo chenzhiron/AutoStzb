@@ -1,5 +1,6 @@
 import time
 
+from config.const import TIMESLEEP
 from config.paths import path
 
 from modules.general.module_options_name import person_battle, battle_details
@@ -27,6 +28,7 @@ def module_computed_draw(going_list, times):
     x, y = battlefield
     device.click(x, y)
     while time_number > 0:
+        time.sleep(TIMESLEEP)
         if ocr_txt_verify(path, person_battle, person_battle_area):
             general_screenshot_tools(status_area)
             battle_result = ocr_default(path)
@@ -39,10 +41,12 @@ def module_computed_draw(going_list, times):
             else:
                 pass
             module_return_index()
+            time.sleep(TIMESLEEP)
             module_return_index()
-            module_return_index()
+            time.sleep(TIMESLEEP)
             module_return_index()
             data_dist['times'] = times - data_dist['times'] if times - data_dist['times'] > 0 else 0
+            time.sleep(TIMESLEEP)
             return data_dist
         else:
             time_number -= 1
@@ -71,6 +75,7 @@ def battle_deuce(data_dist, start_time):
     x2, y2 = click_battle
     device.click(x2, y2)
     while time_number > 0:
+        time.sleep(TIMESLEEP)
         if ocr_txt_verify(path, battle_details, person_battle_area):
             general_screenshot_tools(person_status_number_area)
             person_number = ocr_default(path)
