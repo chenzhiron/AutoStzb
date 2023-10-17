@@ -5,7 +5,7 @@ device = 0
 
 def connect_device():
     global device
-    device = adb.device()
+    device = adb.device('127.0.0.1:62001')
     return device
 
 

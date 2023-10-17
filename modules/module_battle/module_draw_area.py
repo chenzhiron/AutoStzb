@@ -3,7 +3,7 @@ battlefield = (150, 670)
 discern_time_area = (850, 180, 1150, 240)
 
 # 识别左上角
-person_battle_area = (0, 0, 340, 90)
+person_battle_area = (0, 0, 230, 90)
 # 识别我方剩余人数
 person_status_number_area = (0, 120, 250, 200)
 # 识别土地守军剩余人数
