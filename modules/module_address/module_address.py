@@ -1,90 +1,72 @@
-import time
+from device.main_device import return_device
+from modules.general.generalExecuteFn import calculate_max_timestamp, reg_ocr_verify, executeFn
+from modules.module_address.module_address_area import address_sign_area, \
+    address_area_start, address_sign_land_area, address_execute_order_area, \
+    address_execute_list, computed_going_time_area, address_sign_verify
 
-from config.const import TIMESLEEP
-from config.paths import path
-from device.main_device import connect_device, return_device
-from modules.general.module_error_txt import biaoji_error, chuzhengduiwu_error, xuanze_error
-from modules.module_address.module_address_area import address_start_area_w, address_start_area_y, address_sign_area, \
-    address_targe_w, address_targe_h, address_going_area, \
-    address_going_list_time, address_result_area, address_going_targe_h, address_going_targe_w, address_saodang, \
-    address_chuzheng, address_affirm_button
-from modules.module_duiwu.module_duiwu import module_click_chuzheng_duiwu
-from ocr.main import ocr_default
 from ocr.main import ocr_txt_verify
-from tools.reg_screenshot import general_screenshot_tools
-from tools.reg_time import reg_time
 
-from modules.general.module_options_name import saodang, chuzheng, biaoji
+from modules.general.module_options_name import saodang
+
+device = return_device()
 
 
-# 点击标记
+# 点击标记选项
 def module_address_start():
-    device = connect_device()
-    time_number = 50
-    while time_number > 0:
-        time.sleep(TIMESLEEP)
-        if ocr_txt_verify(path, biaoji, address_sign_area):
-            pass
-        else:
-            device.click(address_start_area_w, address_start_area_y)
-        device.click(address_targe_w, address_targe_h)
-        time.sleep(TIMESLEEP)
-        device.click(address_going_targe_w, address_going_targe_h)
-        break
-    else:
-        time_number -= 1
-    if time_number <= 0:
-        raise Exception(biaoji_error)
+    ocr_txt = ocr_txt_verify(address_sign_verify)
+    if ocr_txt is None:
+        device.click(address_area_start[0], address_area_start[1])
+
+
+# 点击区域
+def module_sign_area_area_click():
+    device.click(address_sign_area[0], address_sign_area[1])
+
+
+# 点击标记的土地
+def module_sign_land_area_click():
+    device.click(address_sign_land_area[0], address_sign_land_area[1])
+
+
+# 选择扫荡/出征
+def module_sign_Execute_order(autotxt='扫荡'):
+    import numpy as np
+    from ocr.main import ocr_default
+    img_sources = device.screenshot().crop(address_execute_order_area)
+    result = ocr_default(np.array(img_sources))
+    # 选择扫荡
+    for idx in range(len(result)):
+        res = result[idx]
+        for line in res:
+            if line[1][0] == autotxt:
+                first_list = line[0]
+                center_point = [sum(coord) / len(coord) for coord in zip(*first_list)]
+                device.click(820 + center_point[0], 250 + center_point[1])
+                print(line)
+                break
+
+
+# 选择出征队伍，需要计算传入的值
+def module_execute_list_click(i):
+    device.click(address_execute_list[0], address_execute_list[1])
+    ocr_txt = ocr_txt_verify((820, 250, 1150, 510))
+    print(ocr_txt)
+
+
+# 计算出征时间
+def module_computed_going_time():
+    ocr_txt = ocr_txt_verify(computed_going_time_area)
+    result = calculate_max_timestamp(ocr_txt)
+    print(result)
 
 
 # 点击扫荡
-def module_address_going(auto_txt=saodang):
-    device = return_device()
-    time_number = 50
-    while time_number > 0:
-        time.sleep(TIMESLEEP)
-        general_screenshot_tools(address_going_area)
-        text = ocr_default(path)
-        if len(text) > 0 and auto_txt in text:
-            if auto_txt == saodang:
-                x, y = address_saodang
-                device.click(x, y)
-                break
-            elif auto_txt == chuzheng:
-                x, y = address_chuzheng
-                device.click(x, y)
-                break
-            else:
-                time_number -= 1
-        else:
-            time_number -= 1
-    if time_number <= 0:
-        raise Exception(xuanze_error + auto_txt)
-
-
-# 点击出征队伍和计算时间
-def module_address_list_going(i):
-    if 0 >= int(i) > 5:
-        raise Exception(chuzhengduiwu_error)
-    device = return_device()
-    module_click_chuzheng_duiwu(i)
-    while 1:
-        time.sleep(TIMESLEEP)
-        if ocr_txt_verify(path, saodang, address_result_area):
-            general_screenshot_tools(address_going_list_time)
-            result = ocr_default(path)
-            if result != 0:
-                times = reg_time(result)
-                print(times)
-                x, y = address_affirm_button
-                device.click(x, y)
-                return times
-
-# if __name__ == '__main__':
-#     connect_device()
-#     module_address_start()
-#     module_address_going()
-#     module_address_list_going(4)
-#     module_address_start()
-#     module_address_going()
-#     module_address_list_going(5)
+def executed_going_list():
+    result = executeFn(
+        reg_ocr_verify(
+            (1082, 640, 1150, 680),
+            2
+        ),
+        saodang
+    )
+    print(result)

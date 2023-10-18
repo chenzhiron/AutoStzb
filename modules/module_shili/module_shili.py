@@ -1,33 +1,15 @@
-import time
-
-from config.const import TIMESLEEP
-from config.paths import path
-
 from device.main_device import return_device
-from modules.general.module_error_txt import click_shili_error
-from modules.general.module_options_name import zhaomu
-from modules.module_shili.address_area import shili_area, zhaomu_area
-from ocr.main import ocr_txt_verify
+from modules.general.generalExecuteFn import reg_ocr_verify, executeFn, executeClickArea
+from modules.general.module_options_name import shili
+from modules.module_shili.address_area import shili_area
 
 
 def module_click_shili():
-    time_number = 50
-    while time_number > 0:
-        time.sleep(TIMESLEEP)
-        if ocr_txt_verify(path, zhaomu, zhaomu_area):
-            device = return_device()
-            x, y = shili_area
-            device.click(x, y)
-            time.sleep(TIMESLEEP)
-            break
-        else:
-            time_number -= 1
-    if time_number <= 0:
-        raise Exception(click_shili_error)
-
-
-# if __name__ == '__main__':
-#     connect_device()
-#     from config.img import path
-#
-#     module_click_shili(path)
+    device = return_device()
+    result = executeFn(
+        reg_ocr_verify(shili_area, 2),
+        shili
+    )
+    if result:
+        device.click(executeClickArea(shili_area)[0], executeClickArea(shili_area)[1])
+    print('end')
