@@ -14,7 +14,7 @@ sys.path.append(lib_p)
 # from device.main_device import connect_device
 
 if __name__ == '__main__':
-
+    pass
 
 
     # device = connect_device()
