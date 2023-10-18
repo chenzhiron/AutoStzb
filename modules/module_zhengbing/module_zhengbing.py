@@ -11,11 +11,12 @@ from modules.module_zhengbing.module_zhengbing_area import (zhengbing_page_area,
                                                             )
 
 
-device = return_device()
+
 
 
 # 势力页面点击队伍征兵选项
 def module_zhengbing_list_click(i):
+    device = return_device()
     result = executeFn(reg_ocr_verify(zhengbing_page_verify_area, 2), shili)
     if result:
         # device.click(100, 260)
@@ -25,6 +26,7 @@ def module_zhengbing_list_click(i):
 
 # 点击征兵按钮
 def module_zhengbing_page_click():
+    device = return_device()
     result = executeFn(reg_ocr_verify(zhengbing_page_area, 2), zhengbing)
     if result:
         device.click(executeClickArea(zhengbing_page_area)[0], executeClickArea(zhengbing_page_area)[1])
@@ -32,6 +34,7 @@ def module_zhengbing_page_click():
 
 # 校验是否进入并滑动
 def module_swipe_zhengbing_page():
+    device = return_device()
     result = executeFn(reg_ocr_verify(zhengbing_page_swipe_verify, 4), require_zhengbing)
     if result:
         for v in zhengbing_page_swipe:
@@ -48,21 +51,25 @@ def module_computed_time():
 
 # 确认征兵
 def module_require_zhengbing():
+    device = return_device()
     device.click(zhengbing_require_click[0], zhengbing_require_click[1])
 
 
 # 再次确认
 def module_require_next_click():
+    device = return_device()
     device.click(zhengbing_next_click[0], zhengbing_next_click[1])
 
 
 # 二级返回
 def module_return_page():
+    device = return_device()
     device.click(return_page_area[0], return_page_area[1])
 
 
 # 一级返回
 def module_return_next_page():
+    device = return_device()
     device.click(return_page_next_area[0], return_page_next_area[1])
 
 # 验证征兵已满

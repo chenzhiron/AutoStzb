@@ -10,6 +10,7 @@ def module_click_shili():
         reg_ocr_verify(shili_area, 2),
         shili
     )
+    print(result)
     if result:
-        device.click(executeClickArea(shili_area)[0], executeClickArea(shili_area)[1])
+        device.click(340, 600)
     print('end')

@@ -3,8 +3,6 @@ import sys
 import io
 import os
 
-from device.main_device import connect_device
-
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 p = os.getcwd()
 sys.path.append(p)
@@ -13,14 +11,14 @@ sys.path.append(lib_p)
 
 # from dispatcher.main import start_scheduler
 
+# from device.main_device import connect_device
 
 if __name__ == '__main__':
-    device = connect_device()
 
 
 
-
-
+    # device = connect_device()
+    # start_server(bmi, port=8080)
     # # 征兵模块 start
     # # 点击势力
     # ocr_txt = ocr_txt_verify((295, 575, 340, 650))

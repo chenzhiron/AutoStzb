@@ -1,4 +1,6 @@
-zhengbing_page_verify_area = (100, 0, 200, 60)
+# zhengbing_page_verify_area = (100, 0, 200, 60)
+zhengbing_page_verify_area = (0, 0, 200, 60)
+
 zhengbing_page_area = (575, 470, 705, 520)
 
 zhengbing_page_swipe_verify = (1000, 630, 1130, 670)

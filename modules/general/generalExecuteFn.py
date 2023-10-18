@@ -16,6 +16,7 @@ def executeFn(fn, *args):
 def reg_ocr_verify(area, strlen):
     def fn(areas=area, lens=strlen):
         ocr_txt = ocr_txt_verify(areas)
+        print(ocr_txt)
         result = crop_string(ocr_txt, lens)[0]
         return result
 
@@ -26,11 +27,6 @@ def executeClickArea(xy):
     x = xy[0] + xy[2]
     y = xy[1] + xy[3]
     return x, y
-    # ocr_txt = ocr_txt_verify((295, 575, 340, 650))
-    # result = crop_string(ocr_txt, 2)[0]
-    # if result == '势力':
-    #     device.click(335, 600)
-    # time.sleep(1)
 
 
 def crop_string(strs, length):
