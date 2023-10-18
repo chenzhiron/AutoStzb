@@ -1,5 +1,4 @@
-# zhengbing_page_verify_area = (100, 0, 200, 60)
-zhengbing_page_verify_area = (0, 0, 200, 60)
+zhengbing_page_verify_area = (100, 0, 200, 60)
 
 zhengbing_page_area = (575, 470, 705, 520)
 

@@ -2,6 +2,21 @@ from ocr.main import ocr_txt_verify
 from datetime import datetime
 
 
+def autoRetry(fn, *args):
+    count = 0
+    while 1:
+        if bool(args):
+            result = fn(args)
+        else:
+            result = fn()
+        if bool(result):
+            break
+        else:
+            count += 1
+            if count == 12:
+                break
+
+
 def executeFn(fn, *args):
     try:
         result = fn()
@@ -16,7 +31,6 @@ def executeFn(fn, *args):
 def reg_ocr_verify(area, strlen):
     def fn(areas=area, lens=strlen):
         ocr_txt = ocr_txt_verify(areas)
-        print(ocr_txt)
         result = crop_string(ocr_txt, lens)[0]
         return result
 
@@ -24,8 +38,8 @@ def reg_ocr_verify(area, strlen):
 
 
 def executeClickArea(xy):
-    x = xy[0] + xy[2]
-    y = xy[1] + xy[3]
+    x = (xy[0] + xy[2]) / 2
+    y = (xy[1] + xy[3]) / 2
     return x, y
 
 

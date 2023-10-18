@@ -1,3 +1,5 @@
+import time
+
 from paddleocr import PaddleOCR
 
 from device.main_device import return_device
@@ -26,9 +28,13 @@ def ocr_default(sources):
 
 
 def ocr_txt_verify(area=(0, 0, 0, 0)):
+    start_time = time.time()
     device = return_device()
     img_sources = device.screenshot().crop(area)
     result = ocr_default(np.array(img_sources))
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(f"代码执行耗时：{elapsed_time}秒")
     if bool(result[0]):
         return [item[1][0] for sublist in result for item in sublist]
     else:

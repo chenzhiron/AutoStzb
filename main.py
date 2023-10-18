@@ -2,6 +2,10 @@ import sys
 
 import io
 import os
+import time
+
+from device.main_device import connect_device
+from modules.module_zhengbing.module_zhengbing import module_zhengbing_page_click
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 p = os.getcwd()
@@ -9,15 +13,23 @@ sys.path.append(p)
 lib_p = os.path.join(p, 'venv', 'Lib', 'site-packages')
 sys.path.append(lib_p)
 
+import logging
+
+logging.disable(logging.DEBUG)  # 关闭DEBUG日志的打印
+logging.disable(logging.WARNING)  # 关闭WARNING日志的打印
+
+from tasks.zhengbing import zhengbing
 # from dispatcher.main import start_scheduler
 
 # from device.main_device import connect_device
 
 if __name__ == '__main__':
-    pass
-
-
-    # device = connect_device()
+    device = connect_device()
+    start_time = time.time()
+    zhengbing(1)
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(f"代码执行耗时：{elapsed_time}秒")
     # start_server(bmi, port=8080)
     # # 征兵模块 start
     # # 点击势力
