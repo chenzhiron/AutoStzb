@@ -3,20 +3,20 @@ from datetime import datetime
 
 
 def executeFn(fn, *args):
-    try:
+    count = 0
+    while 1:
         result = fn()
         if bool(result[0]):
             return bool(result == args[0])
         else:
-            return False
-    except Exception as e:
-        print(e)
+            count += 1
+            if count > 12:
+                return False
 
 
 def reg_ocr_verify(area, strlen):
     def fn(areas=area, lens=strlen):
         ocr_txt = ocr_txt_verify(areas)
-        print(ocr_txt)
         result = crop_string(ocr_txt, lens)[0]
         return result
 

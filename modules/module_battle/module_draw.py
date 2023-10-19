@@ -1,4 +1,4 @@
-from device.main_device import return_device
+from device.main import adb_tap
 from modules.general.generalExecuteFn import executeFn, reg_ocr_verify
 
 from modules.general.module_options_name import person_battle, battle_details, shili
@@ -8,8 +8,6 @@ from modules.module_battle.module_draw_area import person_battle_area, person_st
 
 from modules.module_shili.address_area import shili_area
 
-device = return_device()
-
 
 # 点击战报
 def module_click_draw():
@@ -18,7 +16,7 @@ def module_click_draw():
         shili
     )
     if result:
-        device.click(click_draw_area[0], click_draw_area[1])
+        adb_tap(click_draw_area[0], click_draw_area[1])
     print('end')
 
 
@@ -29,7 +27,7 @@ def module_draw_verify():
         person_battle
     )
     if result:
-        device.click(click_draw_detail_area[0], click_draw_detail_area[1])
+        adb_tap(click_draw_detail_area[0], click_draw_detail_area[1])
 
 
 def module_draw_info():
