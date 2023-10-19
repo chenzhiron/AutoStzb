@@ -15,6 +15,7 @@ url = 'http://127.0.0.1:53515/screenshot'
 
 
 def start_adb():
+
     connect_device()
 
 
