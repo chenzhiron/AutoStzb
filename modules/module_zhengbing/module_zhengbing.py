@@ -1,4 +1,4 @@
-from device.main import adb_tap
+from device.main import adb_tap, adb_swipe
 from modules.general.generalExecuteFn import executeFn, reg_ocr_verify, executeClickArea, calculate_max_timestamp
 from modules.general.module_options_name import zhengbing, require_zhengbing, shili
 from modules.module_zhengbing.module_zhengbing_area import (zhengbing_page_area,
@@ -32,11 +32,10 @@ def module_zhengbing_page_click():
 
 # 校验是否进入并滑动
 def module_swipe_zhengbing_page():
-    device = return_device()
     result = executeFn(reg_ocr_verify(zhengbing_page_swipe_verify, 4), require_zhengbing)
     if result:
         for v in zhengbing_page_swipe:
-            device.swipe(sx=v[0], sy=v[1], ex=v[2], ey=v[3])
+            adb_swipe(sx=v[0], sy=v[1], ex=v[2], ey=v[3])
 
 
 # 计算征兵时间

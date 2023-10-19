@@ -24,8 +24,8 @@ def reg_ocr_verify(area, strlen):
 
 
 def executeClickArea(xy):
-    x = xy[0] + xy[2]
-    y = xy[1] + xy[3]
+    x = (xy[0] + xy[2]) / 2
+    y = (xy[1] + xy[3]) / 2
     return x, y
 
 
