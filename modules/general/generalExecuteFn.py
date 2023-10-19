@@ -1,3 +1,5 @@
+import time
+
 from ocr.main import ocr_txt_verify
 from datetime import datetime
 
@@ -5,13 +7,15 @@ from datetime import datetime
 def executeFn(fn, *args):
     count = 0
     while 1:
+        time.sleep(0.3)
         result = fn()
+        print(result)
         if bool(result[0]):
             return bool(result == args[0])
         else:
             count += 1
             if count > 12:
-                return False
+                raise ZeroDivisionError("除数不能为零")
 
 
 def reg_ocr_verify(area, strlen):
@@ -30,10 +34,13 @@ def executeClickArea(xy):
 
 
 def crop_string(strs, length):
-    value = ''.join(strs)
-    # cropped_string = value[:length]
-    cropped_result = [value[i:i + length] for i in range(0, len(value), length)]
-    return cropped_result
+    try:
+        value = ''.join(strs)
+        cropped_result = [value[i:i + length] for i in range(0, len(value), length)]
+        return cropped_result
+    except:
+        print('出错了')
+        return [['']]
 
 
 def calculate_max_timestamp(time_list):

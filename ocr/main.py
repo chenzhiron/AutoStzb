@@ -1,3 +1,5 @@
+import time
+
 from paddleocr import PaddleOCR
 
 from device.main import get_screenshot

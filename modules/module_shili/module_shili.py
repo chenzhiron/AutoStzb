@@ -10,4 +10,4 @@ def module_click_shili():
         shili
     )
     if result:
-        adb_tap(340, 600)
+        adb_tap(326, 640)

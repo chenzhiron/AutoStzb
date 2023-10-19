@@ -9,9 +9,7 @@ from modules.module_zhengbing.module_zhengbing_area import (zhengbing_page_area,
                                                             zhengbing_next_click, return_page_area,
                                                             return_page_next_area,
                                                             )
-
-
-
+from ocr.main import ocr_txt_verify
 
 
 # 势力页面点击队伍征兵选项
@@ -35,12 +33,12 @@ def module_swipe_zhengbing_page():
     result = executeFn(reg_ocr_verify(zhengbing_page_swipe_verify, 4), require_zhengbing)
     if result:
         for v in zhengbing_page_swipe:
-            adb_swipe(sx=v[0], sy=v[1], ex=v[2], ey=v[3])
+            adb_swipe(v[0], v[1], v[2], v[3])
 
 
 # 计算征兵时间
 def module_computed_time():
-    result = reg_ocr_verify(zhengbing_time_area, 999)()
+    result = ocr_txt_verify(zhengbing_time_area)
     times = calculate_max_timestamp(result)
     print(times)
     return times

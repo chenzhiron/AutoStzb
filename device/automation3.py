@@ -8,6 +8,7 @@ import subprocess
 import signal
 
 from config.paths import adb
+
 # adb = './device/adb/adb.exe'
 devices = 0
 screenshot_url = ''
@@ -81,10 +82,6 @@ def print_url():
                       '127.0.0.1'  # str(out)
                       + ':' + str(args_in['port']) + '/screenshot')
 
-    print(
-        ("\n>>> Share the url 'http://%s:%d/screenshot' to see the live screen! <<<\n") %
-        (out, args_in['port']))
-
 
 def handler(signum, frame):
     print('\n>>> Signal caught: ', signum)
@@ -125,13 +122,6 @@ def automate(port):
         print(e)
 
 
-def connect_device(port='127.0.0.1:62001'):
-    adb_command = [adb, '-s', port]
-    global devices
-    devices = subprocess.run(adb_command)
-    automate(args_in['port'])
-
-
 def return_device():
     global devices
     return devices
@@ -139,3 +129,17 @@ def return_device():
 
 def return_url():
     return screenshot_url
+
+
+def connect_device(port='127.0.0.1:62001'):
+    adb_command = [adb, '-s', port]
+    global devices
+    # devices = subprocess.run(adb_command)
+    devices = subprocess.run(adb_command)
+    print(devices)
+    automate(args_in['port'])
+    return devices
+
+
+if __name__ == '__main__':
+    connect_device()
