@@ -122,24 +122,12 @@ def automate(port):
         print(e)
 
 
-def return_device():
-    global devices
-    return devices
-
-
-def return_url():
-    return screenshot_url
-
 
 def connect_device(port='127.0.0.1:62001'):
     adb_command = [adb, '-s', port]
-    global devices
-    # devices = subprocess.run(adb_command)
-    devices = subprocess.run(adb_command)
-    print(devices)
+    subprocess.run(adb_command)
     automate(args_in['port'])
-    return devices
 
 
-if __name__ == '__main__':
-    connect_device()
+# if __name__ == '__main__':
+#     connect_device()
