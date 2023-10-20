@@ -1,6 +1,6 @@
 from pywebio.output import put_text
 from pywebio.input import select
-from tasks.zhengbing import zhengbing
+from modules.tasks.zhengbing import zhengbing
 
 def bmi():
     options = ['队伍一', '队伍二', '队伍三']

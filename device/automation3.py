@@ -9,7 +9,6 @@ import signal
 
 from config.paths import adb
 
-# adb = './device/adb/adb.exe'
 devices = 0
 screenshot_url = ''
 
@@ -122,12 +121,8 @@ def automate(port):
         print(e)
 
 
-
-def connect_device(port='127.0.0.1:62001'):
-    adb_command = [adb, '-s', port]
-    subprocess.run(adb_command)
+def connect_device():
     automate(args_in['port'])
-
 
 # if __name__ == '__main__':
 #     connect_device()

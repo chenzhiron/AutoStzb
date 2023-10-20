@@ -1,5 +1,4 @@
 # http 截图方案
-import time
 
 import requests
 
@@ -9,17 +8,13 @@ from io import BytesIO
 
 from device.automation3 import connect_device
 
-from device.operate import operate_simulator, operate_adb_swipe, operate_adb_tap
+from device.operate import operate_adb_swipe, operate_adb_tap
 
 url = 'http://127.0.0.1:53515/screenshot'
 
 
 def start_adb():
-
     connect_device()
-
-
-adb_connection = None
 
 
 def get_screenshot(area):
@@ -33,11 +28,9 @@ def get_screenshot(area):
 
 
 def adb_tap(x, y):
-    start = time.time()
     operate_adb_tap(x, y)
-    end = time.time()
-    print(end - start)
 
 
 def adb_swipe(x1, y1, x2, y2):
+    print(x1, y1, x2, y2)
     operate_adb_swipe(x1, y1, x2, y2)
