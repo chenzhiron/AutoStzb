@@ -15,6 +15,8 @@ if __name__ == '__main__':
         operate_simulator(operate_url, '127.0.0.1')
         # adb_tap(555,555)
         zhengbing(3)
+        device = return_device()
+        device.stop()
         # start = time.time()
         # module_click_shili()
         # end = time.time()

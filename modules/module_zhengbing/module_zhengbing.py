@@ -1,13 +1,13 @@
 from device.main import adb_tap, adb_swipe
 from modules.general.generalExecuteFn import executeFn, reg_ocr_verify, executeClickArea, calculate_max_timestamp
-from modules.general.module_options_name import zhengbing, require_zhengbing, shili
+from modules.general.module_options_name import zhengbing, require_zhengbing, shili, queding
 from modules.module_zhengbing.module_zhengbing_area import (zhengbing_page_area,
                                                             zhengbing_page_swipe,
                                                             zhengbing_time_area,
                                                             zhengbing_page_verify_area,
                                                             zhengbing_page_swipe_verify, zhengbing_require_click,
                                                             zhengbing_next_click, return_page_area,
-                                                            return_page_next_area,
+                                                            return_page_next_area, queding_area,
                                                             )
 from ocr.main import ocr_txt_verify
 

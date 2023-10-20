@@ -22,6 +22,7 @@ def reg_ocr_verify(area, strlen):
     def fn(areas=area, lens=strlen):
         ocr_txt = ocr_txt_verify(areas)
         result = crop_string(ocr_txt, lens)[0]
+        print(result)
         return result
 
     return fn

@@ -19,8 +19,8 @@ def operate_adb_tap(x, y):
 
 def operate_adb_swipe(x1, y1, x2, y2):
     device.swipe(
-        [(x1, y1, x2, y2)],
-        duration=500,
+        [(x1, y1), (x2, y2)],
+        duration=1000,
         pressure=50
     )
     # device.stop()
