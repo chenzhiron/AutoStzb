@@ -1,5 +1,5 @@
 from device.main import adb_tap
-from modules.general.generalExecuteFn import executeFn, reg_ocr_verify
+from modules.general.generalExecuteFn import executeFn, reg_ocr_verify,ocr_txt_verify
 
 from modules.general.module_options_name import person_battle, battle_details, shili
 from modules.module_battle.module_draw_area import person_battle_area, person_status_number_area, \
@@ -17,7 +17,6 @@ def module_click_draw():
     )
     if result:
         adb_tap(click_draw_area[0], click_draw_area[1])
-    print('end')
 
 
 #     验证是否进入页面
@@ -35,13 +34,16 @@ def module_draw_info():
         reg_ocr_verify(person_detail_battle_area, 4),
         battle_details
     )
-    if result:
-        # 胜利/失败/平局
-        status = reg_ocr_verify(status_area, 2)
-        print(status)
-        # 我方兵力
-        person_number = reg_ocr_verify(person_status_number_area, 999)
-        print(person_number)
-        # 敌方兵力
-        enemy_number = reg_ocr_verify(enemy_status_number_area)
-        print(enemy_number)
+
+    # 胜利/失败/平局
+    status = ocr_txt_verify(status_area)
+    # 我方兵力
+    person_number = ocr_txt_verify(person_status_number_area)
+    # 敌方兵力
+    enemy_number = ocr_txt_verify(enemy_status_number_area)
+    return {
+        'type': 4,
+        'status': status,
+        'person': person_number,
+        'enemy': enemy_number
+    }

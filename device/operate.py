@@ -1,11 +1,12 @@
+# 点击方案
 from utils.pyminitouch_seo.actions import MNTDevice
 
 device = None
 
 
-def operate_simulator(device_id, host):
+def operate_simulator(device_id):
     global device
-    device = MNTDevice(device_id, host)
+    device = MNTDevice(device_id)
 
 
 def return_device():

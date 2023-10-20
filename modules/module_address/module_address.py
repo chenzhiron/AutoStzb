@@ -4,7 +4,7 @@ from modules.module_address.module_address_area import address_sign_area, \
     address_area_start, address_sign_land_area, address_execute_order_area, \
     address_execute_list, computed_going_time_area, address_sign_verify
 
-from ocr.main import ocr_txt_verify
+from ocr.main import ocr_txt_verify,ocr_default
 
 from modules.general.module_options_name import saodang
 
@@ -28,7 +28,6 @@ def module_sign_land_area_click():
 
 # 选择扫荡/出征
 def module_sign_Execute_order(autotxt='扫荡'):
-    from ocr.main import ocr_default
     result = ocr_default(get_screenshot(address_execute_order_area))
     # 选择扫荡
     for idx in range(len(result)):
@@ -44,6 +43,7 @@ def module_sign_Execute_order(autotxt='扫荡'):
 
 # 选择出征队伍，需要计算传入的值
 def module_execute_list_click(i):
+    area = (0,540,200,600)
     adb_tap(address_execute_list[0], address_execute_list[1])
     ocr_txt = ocr_txt_verify((820, 250, 1150, 510))
     print(ocr_txt)

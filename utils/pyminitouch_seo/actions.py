@@ -107,8 +107,8 @@ class MNTDevice(object):
         device.stop()
     """
 
-    def __init__(self, device_id,host='127.0.0.1'):
-        # config.set_config_executor(host)
+    def __init__(self, device_id):
+        # restart_adb()
         self.device_id = device_id
         self.server = None
         self.connection = None

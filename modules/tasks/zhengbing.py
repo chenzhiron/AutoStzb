@@ -12,11 +12,15 @@ def zhengbing(i):
     module_zhengbing_list_click(i)
     module_zhengbing_page_click()
     module_swipe_zhengbing_page()
-    module_computed_time()
+    result = module_computed_time()
     module_require_zhengbing()
     module_require_next_click()
     module_return_page()
     module_return_next_page()
+    return {
+        'type': 1,
+        'result': result
+    }
 # if __name__ == '__main__':
 #     connect_device()
 #     result = zhengbing(3)

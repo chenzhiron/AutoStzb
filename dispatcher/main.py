@@ -11,6 +11,7 @@ scheduler = BackgroundScheduler(executors={'default': ThreadPoolExecutor(max_wor
                                 )
 
 
+# 在此处任务进行校验跟添加任务， 征兵 看返回结果是啥，扫荡的话，需要计算时间误差，然后插入战报校验，/平局处理
 def job_executed(event):
     object_dict = vars(event)
     # 遍历字典并打印属性和值
