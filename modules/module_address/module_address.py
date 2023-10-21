@@ -43,6 +43,7 @@ def module_sign_Execute_order(autotxt='扫荡'):
 
 # 选择出征队伍，需要计算传入的值
 def module_execute_list_click(i):
+    # 选择出征队伍页面校验
     executeFn(reg_ocr_verify(computed_going_list, 5), going_list_txt)
     x,y = address_execute_list
     # 此处需要计算还有重试

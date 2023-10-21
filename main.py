@@ -30,14 +30,6 @@ def work_adb():
     automate()
 
 
-# 选择出征队伍页面校验
-# result = ocr_txt_verify((0, 540, 200, 600))
-# print(result)
-
-# zhengbing(3)
-# result = battle()
-
-
 if __name__ == '__main__':
     try:
         # 模拟器截图方案
