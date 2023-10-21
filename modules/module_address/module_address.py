@@ -2,11 +2,11 @@ from device.main import adb_tap, get_screenshot
 from modules.general.generalExecuteFn import calculate_max_timestamp, reg_ocr_verify, executeFn
 from modules.module_address.module_address_area import address_sign_area, \
     address_area_start, address_sign_land_area, address_execute_order_area, \
-    address_execute_list, computed_going_time_area, address_sign_verify
+    address_execute_list, computed_going_time_area, address_sign_verify, computed_going_list
 
-from ocr.main import ocr_txt_verify,ocr_default
+from ocr.main import ocr_txt_verify, ocr_default
 
-from modules.general.module_options_name import saodang
+from modules.general.module_options_name import saodang, going_list_txt
 
 
 # 点击标记选项
@@ -43,10 +43,12 @@ def module_sign_Execute_order(autotxt='扫荡'):
 
 # 选择出征队伍，需要计算传入的值
 def module_execute_list_click(i):
-    area = (0,540,200,600)
-    adb_tap(address_execute_list[0], address_execute_list[1])
-    ocr_txt = ocr_txt_verify((820, 250, 1150, 510))
-    print(ocr_txt)
+    executeFn(reg_ocr_verify(computed_going_list, 5), going_list_txt)
+    x,y = address_execute_list
+    # 此处需要计算还有重试
+    adb_tap(x,y)
+    # ocr_txt = ocr_txt_verify((820, 250, 1150, 510))
+    # print(ocr_txt)
 
 
 # 计算出征时间

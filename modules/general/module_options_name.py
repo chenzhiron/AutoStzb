@@ -19,3 +19,5 @@ queding = '确定'
 person_battle = '战报'
 
 battle_details = '战报详情'
+
+going_list_txt = '请选择部队'

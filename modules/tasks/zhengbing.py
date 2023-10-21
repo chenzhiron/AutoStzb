@@ -1,5 +1,3 @@
-import time
-from config.const import TIMESLEEP
 from modules.module_zhengbing.module_zhengbing import module_zhengbing_list_click, module_swipe_zhengbing_page, \
     module_zhengbing_page_click, module_computed_time, module_require_zhengbing, module_require_next_click, \
     module_return_page, module_return_next_page

@@ -1,11 +1,6 @@
 #!/usr/local/bin/python -u
 
-# Script (generated for Python 3.6+) to automate the configurations to show the screenshot on your
-# default web browser.
-# To get started, simply run : 'python ./automation.py'
-
 import subprocess
-import signal
 
 from config.paths import adb
 
@@ -47,7 +42,6 @@ def locate_apk_path():
     postfix = ".apk"
     beg = out.index(prefix, 0)
     end = out.rfind(postfix)
-
     return "CLASSPATH=" + out[beg + len(prefix):(end + len(postfix))].strip()
 
 
@@ -82,21 +76,10 @@ def print_url():
                       + ':' + str(args_in['port']) + '/screenshot')
 
 
-def handler(signum, frame):
-    print('\n>>> Signal caught: ', signum)
-    (code, out, err) = run_adb(
-        ["forward", "--remove", "tcp:%d" % args_in['port']])
-    print(">>> adb unforward tcp:%d " % args_in['port'], code)
-
-
-def automate(port):
-    # handle the keyboard interruption explicitly
-    signal.signal(signal.SIGINT, handler)
+def automate():
     try:
         identify_device()
-
         class_path = locate_apk_path()
-
         (code, _, err) = run_adb(
             ["forward", "tcp:%d" % args_in['port'], "tcp:%d" % args_in['port']])
         print(">>> adb forward tcp:%d " % args_in['port'], code)
@@ -120,9 +103,9 @@ def automate(port):
     except (Exception) as e:
         print(e)
 
-
-def connect_device():
-    automate(args_in['port'])
-
+#
 # if __name__ == '__main__':
-#     connect_device()
+#     try:
+#         automate()
+#     except Exception as e:
+#         print(e)

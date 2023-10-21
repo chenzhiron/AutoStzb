@@ -6,3 +6,5 @@ address_sign_land_area = (1050, 185)
 address_execute_order_area = (820, 250, 1150, 510)
 address_execute_list = (555, 580)
 computed_going_time_area = (615, 520, 710, 555)
+
+computed_going_list = (0,540,200,600)

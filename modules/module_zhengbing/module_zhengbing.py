@@ -7,33 +7,30 @@ from modules.module_zhengbing.module_zhengbing_area import (zhengbing_page_area,
                                                             zhengbing_page_verify_area,
                                                             zhengbing_page_swipe_verify, zhengbing_require_click,
                                                             zhengbing_next_click, return_page_area,
-                                                            return_page_next_area, queding_area,
+                                                            return_page_next_area, queding_area, click_list_x_y,
                                                             )
 from ocr.main import ocr_txt_verify
 
 
 # 势力页面点击队伍征兵选项
 def module_zhengbing_list_click(i):
-    result = executeFn(reg_ocr_verify(zhengbing_page_verify_area, 2), shili)
-    if result:
-        # adb_tap(100, 260)
-        # 此处需要计算各队伍坐标
-        adb_tap(100, 260)
+    executeFn(reg_ocr_verify(zhengbing_page_verify_area, 2), shili)
+    x, y = click_list_x_y
+    adb_tap(x * i, y)
 
 
 # 点击征兵按钮
 def module_zhengbing_page_click():
-    result = executeFn(reg_ocr_verify(zhengbing_page_area, 2), zhengbing)
-    if result:
-        adb_tap(executeClickArea(zhengbing_page_area)[0], executeClickArea(zhengbing_page_area)[1])
+    executeFn(reg_ocr_verify(zhengbing_page_area, 2), zhengbing)
+    x,y = executeClickArea(zhengbing_page_area)
+    adb_tap(x, y)
 
 
 # 校验是否进入并滑动
 def module_swipe_zhengbing_page():
-    result = executeFn(reg_ocr_verify(zhengbing_page_swipe_verify, 4), require_zhengbing)
-    if result:
-        for v in zhengbing_page_swipe:
-            adb_swipe(v[0], v[1], v[2], v[3])
+    executeFn(reg_ocr_verify(zhengbing_page_swipe_verify, 4), require_zhengbing)
+    for v in zhengbing_page_swipe:
+        adb_swipe(v[0], v[1], v[2], v[3])
 
 
 # 计算征兵时间
@@ -51,6 +48,7 @@ def module_require_zhengbing():
 
 # 再次确认
 def module_require_next_click():
+    executeFn(reg_ocr_verify(queding_area, 2), queding)
     adb_tap(zhengbing_next_click[0], zhengbing_next_click[1])
 
 
@@ -61,6 +59,7 @@ def module_return_page():
 
 # 一级返回
 def module_return_next_page():
+    # 识别x
     adb_tap(return_page_next_area[0], return_page_next_area[1])
 
 # 验证征兵已满

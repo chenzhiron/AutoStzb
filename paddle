@@ -1,0 +1,6 @@
+安装依赖包出现
+    import paddle
+    ModuleNotFoundError: No module named 'paddle'
+
+执行
+    python -m pip install paddlepaddle==2.5.1 -i https://pypi.tuna.tsinghua.edu.cn/simple
