@@ -2,129 +2,162 @@ from functools import partial
 
 import pywebio.pin as pin
 from pywebio import start_server
-from pywebio.output import put_row, put_column, put_code, put_collapse, put_button, put_text, put_scope, set_scope, \
-    clear, use_scope
+from pywebio.input import checkbox
+from pywebio.output import put_row, put_column, put_code, put_collapse, put_button, put_text, put_scope, use_scope, \
+    put_info
 
-#
-# def bmi():
-#     put_row([
-#         put_column([
-#             put_code('A'),
-#             put_code('C'),
-#             put_code('C'),
-#         ]), None,
-#         put_code('D'), None,
-#         put_table([
-#             ['征兵第二编队',  pin.put_checkbox('demo1', options=['True']),]
-#         ]),
-#     ])
-#
-#
-# def start_web(port=12395):
-#     # start_scheduler()
-#     start_server(bmi, port)
-#
-#
-# if __name__ == '__main__':
-#     start_web()
-
+# from modules.tasks import saodang, zhengbing
 
 # from modules.utils.main import get_current_date
 # from dispatcher.execute_job import sc_cron_add_jobs, start_scheduler
 # from modules.tasks.zhengbing import zhengbing
 
-# checkbox_name = ('zhengbing1', 'zhengbing2', 'zhengbing3', 'zhengbing4', 'zhengbing5',
-#                  'saodang1', 'saodang2', 'saodang3', 'saodang4', 'saodang5')
 
-# def handle_option_change(selected, idx):
-#     if len(selected) > 0:
-#         current_date = get_current_date()
-#         if 0 <= idx <= 4:
-#             idx += 1
-#             sc_cron_add_jobs(zhengbing, idx, current_date['year'], current_date['month'], current_date['day'],
-#                              current_date['hour'], current_date['minute'], current_date['second'] + 1)
-#         elif 5 <= idx <= 9:
-#             idx -= 5
-
-
-# pin.put_checkbox(checkbox_name[0], label='征兵第一编队', options=['True'])
-#    pin.put_checkbox(checkbox_name[1], label='征兵第二编队', options=['True'])
-#    pin.put_checkbox(checkbox_name[2], label='征兵第三编队', options=['True'])
-#    pin.put_checkbox(checkbox_name[3], label='征兵第四编队', options=['True'])
-#    pin.put_checkbox(checkbox_name[4], label='征兵第五编队', options=['True'])
-#    pin.put_checkbox(checkbox_name[5], label='扫荡第一编队', options=['True'])
-#    pin.put_checkbox(checkbox_name[6], label='扫荡第二编队', options=['True'])
-#    pin.put_checkbox(checkbox_name[7], label='扫荡第三编队', options=['True'])
-#    pin.put_checkbox(checkbox_name[8], label='扫荡第四编队', options=['True'])
-#    pin.put_checkbox(checkbox_name[9], label='扫荡第五编队', options=['True'])
-#    pin.pin_on_change(checkbox_name[0], lambda select: handle_option_change(select, 0))
-#    pin.pin_on_change(checkbox_name[1], lambda select: handle_option_change(select, 1))
-#    pin.pin_on_change(checkbox_name[2], lambda select: handle_option_change(select, 2))
-#    pin.pin_on_change(checkbox_name[3], lambda select: handle_option_change(select, 3))
-#    pin.pin_on_change(checkbox_name[4], lambda select: handle_option_change(select, 4))
-#    pin.pin_on_change(checkbox_name[5], lambda select: handle_option_change(select, 5))
-#    pin.pin_on_change(checkbox_name[6], lambda select: handle_option_change(select, 6))
-#    pin.pin_on_change(checkbox_name[7], lambda select: handle_option_change(select, 7))
-#    pin.pin_on_change(checkbox_name[8], lambda select: handle_option_change(select, 8))
-#    pin.pin_on_change(checkbox_name[9], lambda select: handle_option_change(select, 9))
-
-current_status = False
-
-zhengbing_list = ['征兵第一编队', '征兵第二编队', '征兵第三编队']
-saodang_list = ['扫荡第一编队', '扫荡第二编队', '扫荡第三编队', '扫荡第四编队', '扫荡第五编队']
+zhengbing_list = ['征兵一', '征兵二', '征兵三']
+saodang_list = ['扫荡一', '扫荡二', '扫荡三', '扫荡四', '扫荡五']
 
 current_options = ''
 current_index = 0
 
-
-def init():
-    put_row([
-        put_column([
-            put_collapse('征兵', render_button(zhengbing_list, 2)),
-            put_collapse('扫荡', render_button(saodang_list, 2)),
-            None,
-        ]),
-
-        put_scope('center', put_column([
-            None,
-            None,
-        ])),
-
-        put_code('python\n' * 20).style('max-height:200px;'),
-    ])
+# 列个队列，当任务为true时，添加任务，当任务为false时，移除任务
+task_queue = []
 
 
-def bmi():
-    content = put_text('111111111')
-    return content
+def demo1():
+    pass
 
 
-def bmi2():
-    content = put_text('替换')
-    return content
+def demo2():
+    pass
+
+
+def start_scheduler_job():
+    print(current_options, current_index)
+    checkbox_inline = pin.pin['checkbox_inline']
+    if bool(checkbox_inline):
+        going_list = pin.pin['select_list']
+        repetition_number = pin.pin['repetition_number']
+        checkbox_enhance = pin.pin['checkbox_enhance'][0] if bool(pin.pin['checkbox_enhance']) else False
+        task_queue.append(
+            {
+                'name': current_options + str(current_index),
+                'fn': demo1 if current_options == '扫荡' else demo2,
+                'args': [going_list, repetition_number, checkbox_enhance]
+            }
+        )
+    else:
+        for em in task_queue:
+            if em['name'] == (current_options + str(current_index)):
+                task_queue.remove(em)
+                break
+    print(task_queue)
 
 
 def render_button(lists, l):
     button_list = []
     for i, info in enumerate(lists):
-        onclick = partial(add_zhengbing, info=info[:l], index=i + 1)
+        onclick = partial(cut, info=info[:l], index=i + 1)
         button_list.append(put_button(info, onclick=onclick))
     return button_list
 
 
-def add_zhengbing(info, index):
-    global current_index,current_options
+def init():
+    put_info("请先配置选项，再点击启动"),
+    put_row([
+        put_column([
+            put_button('start', onclick=start_scheduler_job),
+            put_collapse('征兵', render_button(zhengbing_list, 2)),
+            put_collapse('扫荡', render_button(saodang_list, 2)),
+            None,
+        ]).style('display: block;'),
+        put_scope('center', put_column([
+            None,
+            None,
+        ])),
+        put_code('日志'),
+    ], size='20% 50% 30%')
+
+
+options = [
+    {
+        "label": "",
+        "value": True
+    },
+]
+options_list = [
+    {
+        'label': 1,
+        'value': 1,
+    },
+    {
+        'label': 2,
+        'value': 2,
+    },
+    {
+        'label': 3,
+        'value': 3
+    },
+    {
+        'label': 4,
+        'value': 4
+    },
+    {
+        'label': 5,
+        'value': 5
+    },
+]
+enhance = [
+    {
+        "label": "",
+        "value": True,
+    },
+]
+
+
+def apply(info):
+    current_name = current_options + str(current_index)
+    start_txt = '启动'
+    going_list = '选择编队'
+    going_list_number = '次数'
+    checkbox_enhance = '扫荡后默认自动征兵' if info == '扫荡' else '当资源不够一次性征兵时，打开此选项'
+
+    inline = False
+    select_list = 1
+    repetition_number = 1
+    checkbox_enhance_inline = True if info == '扫荡' else False
+
+    if len(task_queue) > 0:
+        for em in task_queue:
+            if em['name'] == current_name:
+                inline = True
+                select_list = em['args'][0]
+                repetition_number = em['args'][1]
+                checkbox_enhance_inline = em['args'][2]
+                break
+
+    put_row([
+        put_column([
+            put_text(start_txt),
+            put_text(going_list),
+            put_text(going_list_number) if info == '扫荡' else None,
+            put_text(checkbox_enhance),
+        ]),
+        put_column([
+            pin.put_checkbox('checkbox_inline', options=options, value=inline),
+            pin.put_select('select_list', options=options_list, value=select_list),
+            pin.put_input('repetition_number', value=repetition_number, type='number', ) if info == '扫荡' else None,
+            pin.put_checkbox('checkbox_enhance', options=enhance, value=bool(checkbox_enhance_inline)),
+        ])
+    ])
+    # pin.pin_on_change('s_checkbox_inline', onchange=change_taskconfig(pin.s_checkbox_inline))
+
+
+def cut(info, index):
+    global current_index, current_options
     current_options = info
     current_index = index
     with use_scope('center', clear=True, create_scope=True):
-        if current_options == '征兵':
-            bmi2()
-        elif current_options == '扫荡':
-            bmi()
-
-
-def add_saodnag(i):
-    pass
+        apply(current_options)
 
 
 if __name__ == '__main__':
