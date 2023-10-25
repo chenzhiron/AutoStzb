@@ -4,6 +4,8 @@ from apscheduler.events import EVENT_JOB_EXECUTED
 from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.schedulers.background import BackgroundScheduler
 
+from dispatcher.status import set_status
+
 # 创建调度器
 scheduler = BackgroundScheduler(executors={'default': ThreadPoolExecutor(max_workers=1)},
                                 job_defaults={'misfire_grace_time': 10})
@@ -19,8 +21,7 @@ def job_executed(event):
     # 遍历字典并打印属性和值
     for attribute, value in object_dict.items():
         print(f"{attribute}: {value}")
-
-    print(scheduler.get_jobs())
+    set_status(True)
 
 
 scheduler.add_listener(job_executed, EVENT_JOB_EXECUTED)
@@ -34,7 +35,7 @@ def sc_cron_add_jobs(fn, li, year, month, day, hour, minute, second):
                       hour=hour, minute=minute, second=second,
                       id=fn.__name__ + str(l),
                       args=[li],
-                      misfire_grace_time=1
+                      misfire_grace_time=60*60
                       )
     print(len(scheduler.get_jobs()))
 # if __name__ == '__main__':

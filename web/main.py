@@ -1,4 +1,3 @@
-import threading
 import queue
 import time
 from functools import partial
@@ -8,23 +7,24 @@ from pywebio import start_server
 from pywebio.output import put_row, put_column, put_code, put_collapse, put_button, put_text, put_scope, use_scope, \
     put_info
 
+from dispatcher.main import sc_cron_add_jobs, start_scheduler
+from dispatcher.status import set_status, get_status
+from modules.utils.main import get_current_date
+
 
 # from modules.tasks import saodang, zhengbing
 
-# from modules.utils.main import get_current_date
-# from dispatcher.execute_job import sc_cron_add_jobs, start_scheduler
-# from modules.tasks.zhengbing import zhengbing
 
-def consumer():
+def get_task():
     while True:
+        print('等待task')
         task = task_queue.get()
+        print('拿到task')
         if task['name'] in current_expire_queue:
             continue
         else:
-            task['fn'](*task['args'])
+            return task
 
-
-consumer_thread = threading.Thread(target=consumer)
 
 zhengbing_list = ['征兵一', '征兵二', '征兵三']
 saodang_list = ['扫荡一', '扫荡二', '扫荡三', '扫荡四', '扫荡五']
@@ -71,7 +71,6 @@ def add_scheduler_job(event):
             if em == current_options + str(current_index):
                 current_expire_queue.remove(em)
                 break
-        print(task_queue.qsize())
     else:
         for em in task_list:
             if em['name'] == (current_options + str(current_index)):
@@ -80,8 +79,17 @@ def add_scheduler_job(event):
         current_expire_queue.append(current_options + str(current_index))
 
 
-def start_scheduler():
-    consumer_thread.start()
+def start():
+    start_scheduler()
+    while True:
+        task = get_task()
+        date = get_current_date()
+        sc_cron_add_jobs(task['fn'], task['args'], date['year'], date['month'], date['day'], date['hour'],
+                         date['minute'], date['second'] + 1)
+        set_status(False)
+        while True:
+            if get_status():
+                break
 
 
 def render_button(lists, l):
@@ -96,7 +104,7 @@ def init():
     put_info("请先配置选项，再点击启动"),
     put_row([
         put_column([
-            put_button('启动', onclick=start_scheduler),
+            put_button('启动', onclick=start),
             put_collapse('征兵', render_button(zhengbing_list, 2)),
             put_collapse('扫荡', render_button(saodang_list, 2)),
             None,
@@ -192,6 +200,4 @@ def cut(info, index):
 
 
 if __name__ == '__main__':
-    #
-    # consumer_thread.start()
     start_server(init, 12395)
