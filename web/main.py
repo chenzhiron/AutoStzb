@@ -1,10 +1,13 @@
+import threading
+import queue
+import time
 from functools import partial
 
 import pywebio.pin as pin
 from pywebio import start_server
-from pywebio.input import checkbox
 from pywebio.output import put_row, put_column, put_code, put_collapse, put_button, put_text, put_scope, use_scope, \
     put_info
+
 
 # from modules.tasks import saodang, zhengbing
 
@@ -12,6 +15,16 @@ from pywebio.output import put_row, put_column, put_code, put_collapse, put_butt
 # from dispatcher.execute_job import sc_cron_add_jobs, start_scheduler
 # from modules.tasks.zhengbing import zhengbing
 
+def consumer():
+    while True:
+        task = task_queue.get()
+        if task['name'] in current_expire_queue:
+            continue
+        else:
+            task['fn'](*task['args'])
+
+
+consumer_thread = threading.Thread(target=consumer)
 
 zhengbing_list = ['征兵一', '征兵二', '征兵三']
 saodang_list = ['扫荡一', '扫荡二', '扫荡三', '扫荡四', '扫荡五']
@@ -19,38 +32,56 @@ saodang_list = ['扫荡一', '扫荡二', '扫荡三', '扫荡四', '扫荡五']
 current_options = ''
 current_index = 0
 
-# 列个队列，当任务为true时，添加任务，当任务为false时，移除任务
-task_queue = []
+# 准备执行的队列
+task_queue = queue.Queue()
+# 预备执行的任务
+task_list = []
+# 已取消的任务
+current_expire_queue = []
 
 
-def demo1():
-    pass
+def demo1(*args):
+    time.sleep(5)
+    print(*args)
+    time.sleep(5)
 
 
-def demo2():
-    pass
+def demo2(*args):
+    time.sleep(5)
+    print(*args)
+    time.sleep(5)
 
 
-def start_scheduler_job():
-    print(current_options, current_index)
-    checkbox_inline = pin.pin['checkbox_inline']
-    if bool(checkbox_inline):
+def add_scheduler_job(event):
+    checkbox_inline = event
+    if len(checkbox_inline) > 0:
         going_list = pin.pin['select_list']
         repetition_number = pin.pin['repetition_number']
         checkbox_enhance = pin.pin['checkbox_enhance'][0] if bool(pin.pin['checkbox_enhance']) else False
-        task_queue.append(
-            {
-                'name': current_options + str(current_index),
-                'fn': demo1 if current_options == '扫荡' else demo2,
-                'args': [going_list, repetition_number, checkbox_enhance]
-            }
-        )
-    else:
-        for em in task_queue:
-            if em['name'] == (current_options + str(current_index)):
-                task_queue.remove(em)
+
+        task_fn = {
+            'name': current_options + str(current_index),
+            'fn': demo1 if current_options == '扫荡' else demo2,
+            'args': [going_list, repetition_number, checkbox_enhance]
+        }
+        task_list.append(task_fn)
+        task_queue.put(task_fn)
+
+        for em in current_expire_queue:
+            if em == current_options + str(current_index):
+                current_expire_queue.remove(em)
                 break
-    print(task_queue)
+        print(task_queue.qsize())
+    else:
+        for em in task_list:
+            if em['name'] == (current_options + str(current_index)):
+                task_list.remove(em)
+                break
+        current_expire_queue.append(current_options + str(current_index))
+
+
+def start_scheduler():
+    consumer_thread.start()
 
 
 def render_button(lists, l):
@@ -65,7 +96,7 @@ def init():
     put_info("请先配置选项，再点击启动"),
     put_row([
         put_column([
-            put_button('start', onclick=start_scheduler_job),
+            put_button('启动', onclick=start_scheduler),
             put_collapse('征兵', render_button(zhengbing_list, 2)),
             put_collapse('扫荡', render_button(saodang_list, 2)),
             None,
@@ -126,8 +157,8 @@ def apply(info):
     repetition_number = 1
     checkbox_enhance_inline = True if info == '扫荡' else False
 
-    if len(task_queue) > 0:
-        for em in task_queue:
+    if len(task_list) > 0:
+        for em in task_list:
             if em['name'] == current_name:
                 inline = True
                 select_list = em['args'][0]
@@ -149,7 +180,7 @@ def apply(info):
             pin.put_checkbox('checkbox_enhance', options=enhance, value=bool(checkbox_enhance_inline)),
         ])
     ])
-    # pin.pin_on_change('s_checkbox_inline', onchange=change_taskconfig(pin.s_checkbox_inline))
+    pin.pin_on_change('checkbox_inline', onchange=add_scheduler_job, clear=True)
 
 
 def cut(info, index):
@@ -161,4 +192,6 @@ def cut(info, index):
 
 
 if __name__ == '__main__':
+    #
+    # consumer_thread.start()
     start_server(init, 12395)
