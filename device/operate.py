@@ -7,6 +7,7 @@ device = None
 def operate_simulator(device_id):
     global device
     device = MNTDevice(device_id)
+    print(device, 'device111111111111111111111')
 
 
 def return_device():

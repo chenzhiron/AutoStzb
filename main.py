@@ -3,7 +3,7 @@ import sys
 import os
 import time
 
-from web.main import start_web
+# from web.main import start_web
 
 p = os.getcwd()
 sys.path.append(p)
@@ -14,16 +14,17 @@ import threading
 from device.main import automate
 from device.operate import operate_simulator, return_device
 
-
 # from modules.tasks.zhengbing import zhengbing
 # from modules.tasks.battle import battle
 # from ocr.main import ocr_txt_verify
+from modules.tasks.saodang import saodang
 
 
 # 点击方案
 def start_simulator():
     operate_url = '127.0.0.1:62001'
     operate_simulator(operate_url)
+    print('1111')
 
 
 def work_adb():
@@ -41,17 +42,16 @@ if __name__ == '__main__':
         operate = threading.Thread(target=start_simulator)
         operate.setDaemon(True)
         operate.start()
-
-        start_web()
+        time.sleep(5)
+        saodang()
+        # start_web()
         # operate = threading.Thread(target=start_web)
         # operate.setDaemon(True)
         # operate.start()
-
         device = return_device()
         if device is not None:
             device.stop()
     except Exception as e:
-        print(e)
         device = return_device()
         if device is not None:
             device.stop()

@@ -15,7 +15,7 @@ def executeFn(fn, *args):
         else:
             count += 1
             if count > 12:
-                raise ZeroDivisionError("除数不能为零")
+                raise ZeroDivisionError("识别出错了")
 
 
 def reg_ocr_verify(area, strlen):

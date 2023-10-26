@@ -17,6 +17,7 @@ def saodang(going_list=1, auto_txt=name_saodang):
     times = module_computed_going_time()
     executed_going_list()
     return {
+        "code": 0,
         'type':  2,
         'lists': going_list,
         'times': times,
