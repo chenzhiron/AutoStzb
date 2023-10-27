@@ -1,5 +1,4 @@
 import queue
-import time
 from functools import partial
 
 import pywebio.pin as pin
@@ -9,14 +8,11 @@ from pywebio.output import put_row, put_column, put_code, put_collapse, put_butt
 from dispatcher.main import sc_cron_add_jobs, start_scheduler
 from dispatcher.status import result_queue
 from modules.utils.main import get_current_date
-
-
-# from modules.tasks import saodang, zhengbing
+from modules.tasks.task_group import conscription, mopping_up, set_task_all
 
 
 def get_task():
     while True:
-        print('等待task')
         task = task_queue.get()
         print('拿到task')
         if task['name'] in current_expire_queue:
@@ -31,38 +27,15 @@ saodang_list = ['扫荡一', '扫荡二', '扫荡三', '扫荡四', '扫荡五']
 current_options = ''
 current_index = 0
 
+
+
+
 # 准备执行的队列
 task_queue = queue.Queue()
 # 预备执行的任务
 task_list = []
 # 已取消的任务
 current_expire_queue = []
-
-
-def demo1(*args):
-    time.sleep(5)
-    # 战报
-    return {
-        'code': 0,
-        'type': 3,
-        'result': {
-            'type': 4,
-            'status': '平局',
-            'person': '9000/11200',
-            'enemy': '5600/9000'
-        }
-    }
-
-
-def demo2(*args):
-    time.sleep(5)
-    # 出征
-    return {
-        "code": 0,
-        'type': 2,
-        'lists': 1,
-        'times': 240,
-    }
 
 
 def add_scheduler_job(event):
@@ -74,7 +47,7 @@ def add_scheduler_job(event):
 
         task_fn = {
             'name': current_options + str(current_index),
-            'fn': demo1 if current_options == '扫荡' else demo2,
+            'fn':  mopping_up if current_options == '扫荡' else conscription,
             'args': [going_list, repetition_number, checkbox_enhance]
         }
         task_list.append(task_fn)
@@ -96,14 +69,18 @@ def start():
     start_scheduler()
     while True:
         task = get_task()
+        task_name = task['name']
+        task_fn = task['fn'].pop()
+        set_task_all(task_name, task_fn)
         date = get_current_date()
         if date['second'] == 59:
             date['second'] = 0
             date['minute'] += 1
         else:
             date['second'] += 1
-        sc_cron_add_jobs(task['fn'], task['args'], date['year'], date['month'], date['day'], date['hour'],
-                         date['minute'], date['second'], task['name'])
+
+        sc_cron_add_jobs(task_fn, task['args'], date['year'], date['month'], date['day'], date['hour'],
+                         date['minute'], date['second'], task_name)
         result = result_queue.get()
 
         print('result', result)
