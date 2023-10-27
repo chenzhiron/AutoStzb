@@ -1,6 +1,6 @@
 import queue
 from functools import partial
-
+import copy
 import pywebio.pin as pin
 from pywebio import start_server
 from pywebio.output import put_row, put_column, put_code, put_collapse, put_button, put_text, put_scope, use_scope
@@ -27,9 +27,6 @@ saodang_list = ['扫荡一', '扫荡二', '扫荡三', '扫荡四', '扫荡五']
 current_options = ''
 current_index = 0
 
-
-
-
 # 准备执行的队列
 task_queue = queue.Queue()
 # 预备执行的任务
@@ -44,12 +41,9 @@ def add_scheduler_job(event):
         going_list = pin.pin['select_list']
         repetition_number = pin.pin['repetition_number']
         checkbox_enhance = pin.pin['checkbox_enhance'][0] if bool(pin.pin['checkbox_enhance']) else False
-
-        task_fn = {
-            'name': current_options + str(current_index),
-            'fn':  mopping_up if current_options == '扫荡' else conscription,
-            'args': [going_list, repetition_number, checkbox_enhance]
-        }
+        task_fn = {'name': current_options + str(current_index),
+                   'args': [going_list, repetition_number, checkbox_enhance],
+                   'fn':  copy.deepcopy(mopping_up) if current_options == '扫荡' else copy.deepcopy(conscription)}
         task_list.append(task_fn)
         task_queue.put(task_fn)
 
@@ -70,8 +64,9 @@ def start():
     while True:
         task = get_task()
         task_name = task['name']
-        task_fn = task['fn'].pop()
-        set_task_all(task_name, task_fn)
+        task_fn = task['fn'].pop(0)
+        set_task_all(task_name, task['fn'])
+        print(task_name, task_fn)
         date = get_current_date()
         if date['second'] == 59:
             date['second'] = 0
@@ -79,6 +74,7 @@ def start():
         else:
             date['second'] += 1
 
+        # 目前只需要传入 队列0即可，没有写其他额外选项
         sc_cron_add_jobs(task_fn, task['args'], date['year'], date['month'], date['day'], date['hour'],
                          date['minute'], date['second'], task_name)
         result = result_queue.get()
@@ -192,5 +188,9 @@ def cut(info, index):
         apply(current_options)
 
 
-if __name__ == '__main__':
+def start_web():
     start_server(init, 12395)
+
+
+if __name__ == '__main__':
+    start_web()

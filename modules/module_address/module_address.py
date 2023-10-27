@@ -52,6 +52,7 @@ def module_sign_Execute_order(autotxt='扫荡'):
                     if line[1][0] == autotxt:
                         first_list = line[0]
                         center_point = [sum(coord) / len(coord) for coord in zip(*first_list)]
+                        time.sleep(0.3)
                         adb_tap(820 + center_point[0], 250 + center_point[1])
                         print(line)
                         break
@@ -80,6 +81,8 @@ def module_computed_going_time():
     ocr_txt = ocr_txt_verify(computed_going_time_area)
     result = calculate_max_timestamp(ocr_txt)
     print(result)
+    return result
+
 
 
 # 点击扫荡

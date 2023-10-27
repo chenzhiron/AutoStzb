@@ -17,5 +17,6 @@ def set_task_all(key, value):
 
 
 def get_task_all(key):
+
     return task_all[key]
 

@@ -3,13 +3,14 @@ import sys
 import os
 import time
 
-# from web.main import start_web
+from modules.tasks.battle import battle
 
 p = os.getcwd()
 sys.path.append(p)
 lib_p = os.path.join(p, 'venv', 'Lib', 'site-packages')
 sys.path.append(lib_p)
 
+from web.main import start_web
 import threading
 from device.main import automate
 from device.operate import operate_simulator, return_device
@@ -24,7 +25,6 @@ from modules.tasks.saodang import saodang
 def start_simulator():
     operate_url = '127.0.0.1:62001'
     operate_simulator(operate_url)
-    print('1111')
 
 
 def work_adb():
@@ -42,12 +42,8 @@ if __name__ == '__main__':
         operate = threading.Thread(target=start_simulator)
         operate.setDaemon(True)
         operate.start()
-        time.sleep(5)
-        saodang()
-        # start_web()
-        # operate = threading.Thread(target=start_web)
-        # operate.setDaemon(True)
-        # operate.start()
+        # battle()
+        start_web()
         device = return_device()
         if device is not None:
             device.stop()

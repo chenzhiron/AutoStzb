@@ -8,7 +8,7 @@ from modules.module_address.module_address import (module_address_start,
                                                    module_sign_area_area_click)
 
 
-def saodang(going_list=1, auto_txt=name_saodang):
+def saodang(going_list=1, auto_txt=name_saodang,*args):
     module_address_start()
     module_sign_area_area_click()
     module_sign_land_area_click()

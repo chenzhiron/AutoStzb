@@ -1,5 +1,5 @@
 from device.main import adb_tap
-from modules.general.generalExecuteFn import executeFn, reg_ocr_verify,ocr_txt_verify
+from modules.general.generalExecuteFn import executeFn, reg_ocr_verify, ocr_txt_verify
 
 from modules.general.module_options_name import person_battle, battle_details, shili
 from modules.module_battle.module_draw_area import person_battle_area, person_status_number_area, \
@@ -34,15 +34,19 @@ def module_draw_info():
         reg_ocr_verify(person_detail_battle_area, 4),
         battle_details
     )
-
-    # 胜利/失败/平局
-    status = ocr_txt_verify(status_area)
-    # 我方兵力
-    person_number = ocr_txt_verify(person_status_number_area)
-    # 敌方兵力
-    enemy_number = ocr_txt_verify(enemy_status_number_area)
-    return {
-        'status': status,
-        'person': person_number,
-        'enemy': enemy_number
-    }
+    if result:
+        # 胜利/失败/平局
+        status = ''
+        person_number = ''
+        enemy_number = ''
+        while not bool(status) and not bool(person_number) and not bool(enemy_number):
+            status = ocr_txt_verify(status_area)
+            # 我方兵力
+            person_number = ocr_txt_verify(person_status_number_area)
+            # 敌方兵力
+            enemy_number = ocr_txt_verify(enemy_status_number_area)
+        return {
+            'status': status[0],
+            'person': person_number[0],
+            'enemy': enemy_number[0]
+        }

@@ -47,7 +47,10 @@ def crop_string(strs, length):
 def calculate_max_timestamp(time_list):
     timestamp_list = []
     for times in time_list:
-        dt = datetime.strptime(times, '%H:%M:%S')
-        timestamp = dt.hour * 3600 + dt.minute * 60 + dt.second
-        timestamp_list.append(timestamp)
+        try:
+            dt = datetime.strptime(times, '%H:%M:%S')
+            timestamp = dt.hour * 3600 + dt.minute * 60 + dt.second
+            timestamp_list.append(timestamp)
+        except Exception as e:
+            timestamp_list.append(0)
     return max(timestamp_list)

@@ -5,9 +5,7 @@ from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from dispatcher.status import result_queue
-# from modules.tasks.battle import battle
 from modules.tasks.task_group import get_task_all
-# from modules.tasks.zhengbing import zhengbing
 from modules.utils.main import get_current_date
 
 # 创建调度器
@@ -23,6 +21,7 @@ def start_scheduler():
 # 在此处任务进行校验跟添加任务
 def job_executed(event):
     object_dict = vars(event)
+    print(object_dict)
     task_id = object_dict['job_id']
     result = object_dict['retval']
     task_next_fn = get_task_all(task_id)
@@ -33,7 +32,7 @@ def job_executed(event):
             l = result['lists']
             seconds = result['times']
             current_date = get_current_date(seconds)
-            sc_cron_add_jobs(task_next_fn.pop(), [l, seconds],
+            sc_cron_add_jobs(task_next_fn.pop(0), [l, seconds],
                              current_date['year'], current_date['month'], current_date['day'],
                              current_date['hour'], current_date['minute'], current_date['second'],
                              task_id)
@@ -44,8 +43,8 @@ def job_executed(event):
                 l = result['lists']
                 seconds = result['times']
                 current_date = get_current_date(seconds)
-                sc_cron_add_jobs(task_next_fn.pop(),[l],
-                                 current_date['year'], current_date['month'],current_date['day'],
+                sc_cron_add_jobs(task_next_fn.pop(0), [l],
+                                 current_date['year'], current_date['month'], current_date['day'],
                                  current_date['hour'], current_date['minute'], current_date['second'],
                                  task_id)
             elif result['result']['status'] == '平局':
@@ -63,10 +62,9 @@ def sc_cron_add_jobs(fn, li, year, month, day, hour, minute, second, info_id):
                       id=info_id,
                       year=year, month=month, day=day,
                       hour=hour, minute=minute, second=second,
-                      args=[li],
+                      args=li,
                       misfire_grace_time=60 * 60
                       )
-
 
 # if __name__ == '__main__':
 #     scheduler.start()

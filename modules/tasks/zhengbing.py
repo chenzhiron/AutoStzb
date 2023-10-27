@@ -5,7 +5,7 @@ from modules.module_shili.module_shili import module_click_shili
 
 
 # 处理 添加征兵队列1个|2个|3个的阻塞拦截
-def zhengbing(i):
+def zhengbing(i,*args):
     module_click_shili()
     module_zhengbing_list_click(i)
     module_zhengbing_page_click()
