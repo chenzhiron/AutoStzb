@@ -4,11 +4,10 @@ from functools import partial
 
 import pywebio.pin as pin
 from pywebio import start_server
-from pywebio.output import put_row, put_column, put_code, put_collapse, put_button, put_text, put_scope, use_scope, \
-    put_info
+from pywebio.output import put_row, put_column, put_code, put_collapse, put_button, put_text, put_scope, use_scope
 
 from dispatcher.main import sc_cron_add_jobs, start_scheduler
-from dispatcher.status import set_status, get_status
+from dispatcher.status import result_queue
 from modules.utils.main import get_current_date
 
 
@@ -42,14 +41,28 @@ current_expire_queue = []
 
 def demo1(*args):
     time.sleep(5)
-    print(*args)
-    time.sleep(5)
+    # 战报
+    return {
+        'code': 0,
+        'type': 3,
+        'result': {
+            'type': 4,
+            'status': '平局',
+            'person': '9000/11200',
+            'enemy': '5600/9000'
+        }
+    }
 
 
 def demo2(*args):
     time.sleep(5)
-    print(*args)
-    time.sleep(5)
+    # 出征
+    return {
+        "code": 0,
+        'type': 2,
+        'lists': 1,
+        'times': 240,
+    }
 
 
 def add_scheduler_job(event):
@@ -84,12 +97,16 @@ def start():
     while True:
         task = get_task()
         date = get_current_date()
+        if date['second'] == 59:
+            date['second'] = 0
+            date['minute'] += 1
+        else:
+            date['second'] += 1
         sc_cron_add_jobs(task['fn'], task['args'], date['year'], date['month'], date['day'], date['hour'],
-                         date['minute'], date['second'] + 1)
-        set_status(False)
-        while True:
-            if get_status():
-                break
+                         date['minute'], date['second'], task['name'])
+        result = result_queue.get()
+
+        print('result', result)
 
 
 def render_button(lists, l):
@@ -101,7 +118,6 @@ def render_button(lists, l):
 
 
 def init():
-    put_info("请先配置选项，再点击启动"),
     put_row([
         put_column([
             put_button('启动', onclick=start),

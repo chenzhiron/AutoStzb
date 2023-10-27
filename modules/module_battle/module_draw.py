@@ -42,7 +42,6 @@ def module_draw_info():
     # 敌方兵力
     enemy_number = ocr_txt_verify(enemy_status_number_area)
     return {
-        'type': 4,
         'status': status,
         'person': person_number,
         'enemy': enemy_number
