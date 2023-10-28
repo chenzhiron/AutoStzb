@@ -1,9 +1,6 @@
 import sys
 
 import os
-import time
-
-from modules.tasks.battle import battle
 
 p = os.getcwd()
 sys.path.append(p)
@@ -27,14 +24,10 @@ def start_simulator():
     operate_simulator(operate_url)
 
 
-def work_adb():
-    automate()
-
-
 if __name__ == '__main__':
     try:
         # 模拟器截图方案
-        operate2 = threading.Thread(target=work_adb)
+        operate2 = threading.Thread(target=automate)
         operate2.setDaemon(True)
         operate2.start()
 
@@ -42,7 +35,7 @@ if __name__ == '__main__':
         operate = threading.Thread(target=start_simulator)
         operate.setDaemon(True)
         operate.start()
-        # battle()
+
         start_web()
         device = return_device()
         if device is not None:

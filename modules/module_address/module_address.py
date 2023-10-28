@@ -77,12 +77,10 @@ def module_execute_list_click(i):
 
 # 计算出征时间
 def module_computed_going_time():
-    time.sleep(1)
     ocr_txt = ocr_txt_verify(computed_going_time_area)
     result = calculate_max_timestamp(ocr_txt)
     print(result)
     return result
-
 
 
 # 点击扫荡
@@ -94,4 +92,4 @@ def executed_going_list():
     #     ),
     #     saodang
     # )
-    adb_tap(1020,660)
+    adb_tap(1020, 660)

@@ -43,7 +43,10 @@ def add_scheduler_job(event):
         checkbox_enhance = pin.pin['checkbox_enhance'][0] if bool(pin.pin['checkbox_enhance']) else False
         task_fn = {'name': current_options + str(current_index),
                    'args': [going_list, repetition_number, checkbox_enhance],
-                   'fn':  copy.deepcopy(mopping_up) if current_options == '扫荡' else copy.deepcopy(conscription)}
+                   'fn':  copy.deepcopy(mopping_up) * repetition_number
+                   if current_options == '扫荡'
+                   else copy.deepcopy(conscription)
+                   }
         task_list.append(task_fn)
         task_queue.put(task_fn)
 
