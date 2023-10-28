@@ -10,7 +10,7 @@ from device.automation3 import automate
 
 from device.operate import operate_adb_swipe, operate_adb_tap
 
-url = 'http://127.0.0.1:53515/screenshot'
+url = 'http://127.0.0.1:53520/screenshot'
 
 
 def get_screenshot(area):

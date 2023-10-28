@@ -41,6 +41,7 @@ if __name__ == '__main__':
         if device is not None:
             device.stop()
     except Exception as e:
+        print(e)
         device = return_device()
         if device is not None:
             device.stop()

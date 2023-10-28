@@ -10,6 +10,10 @@ from dispatcher.status import result_queue
 from modules.utils.main import get_current_date
 from modules.tasks.task_group import conscription, mopping_up, set_task_all
 
+from pywebio import session
+
+
+
 
 def get_task():
     while True:
@@ -94,6 +98,11 @@ def render_button(lists, l):
 
 
 def init():
+    js_code = """
+    document.querySelector('footer').style.display = 'none';
+    document.body.style.overflow = 'hidden';
+    """
+    session.run_js(js_code)
     put_row([
         put_column([
             put_button('启动', onclick=start),
@@ -192,7 +201,7 @@ def cut(info, index):
 
 
 def start_web():
-    start_server(init, 12395)
+    start_server(init, 18878)
 
 
 if __name__ == '__main__':

@@ -9,7 +9,7 @@ screenshot_url = ''
 
 args_in = {
     'device_serial': '127.0.0.1:62001',
-    'port': 53515
+    'port': 53520
 }
 
 
