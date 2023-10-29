@@ -1,9 +1,9 @@
 import time
 from contextlib import contextmanager
 
-from utils.pyminitouch_seo.connection import MNTConnection, MNTServer, safe_connection
-from utils.pyminitouch_seo import config
-from utils.pyminitouch_seo.utils import restart_adb
+from device.pyminitouch_seo.connection import MNTConnection, MNTServer, safe_connection
+from device.pyminitouch_seo import config
+from device.pyminitouch_seo.utils import restart_adb
 
 
 class CommandBuilder(object):
@@ -259,47 +259,47 @@ def safe_device(device_id):
         _device.stop()
 
 
-if __name__ == "__main__":
-    restart_adb()
-
-    _DEVICE_ID = "4df189487c7b6fef"
-
-    with safe_connection(_DEVICE_ID) as d:
-        builder = CommandBuilder()
-        builder.down(0, 400, 400, 50)
-        builder.commit()
-        builder.move(0, 500, 500, 50)
-        builder.commit()
-        builder.move(0, 800, 400, 50)
-        builder.commit()
-        builder.up(0)
-        builder.commit()
-        builder.publish(d)
-
-    with safe_device(_DEVICE_ID) as d:
-        builder = CommandBuilder()
-        builder.down(0, 400, 400, 50)
-        builder.commit()
-        builder.move(0, 500, 500, 50)
-        builder.commit()
-        builder.move(0, 800, 400, 50)
-        builder.commit()
-        builder.up(0)
-        builder.commit()
-        builder.publish(d.connection)
-
-    # option1:
-    device = MNTDevice(_DEVICE_ID)
-    device.tap([(400, 500), (500, 500)], duration=1000)
-
-    # you should control time delay by yourself
-    # otherwise when connection lost, action will never stop.
-    time.sleep(1)
-
-    device.stop()
-
-    # option2:
-    with safe_device(_DEVICE_ID) as device:
-        device.tap([(400, 500), (500, 500)])
-        device.swipe([(400, 500), (500, 500)], duration=500)
-        time.sleep(0.5)
+# if __name__ == "__main__":
+#     restart_adb()
+#
+#     _DEVICE_ID = "4df189487c7b6fef"
+#
+#     with safe_connection(_DEVICE_ID) as d:
+#         builder = CommandBuilder()
+#         builder.down(0, 400, 400, 50)
+#         builder.commit()
+#         builder.move(0, 500, 500, 50)
+#         builder.commit()
+#         builder.move(0, 800, 400, 50)
+#         builder.commit()
+#         builder.up(0)
+#         builder.commit()
+#         builder.publish(d)
+#
+#     with safe_device(_DEVICE_ID) as d:
+#         builder = CommandBuilder()
+#         builder.down(0, 400, 400, 50)
+#         builder.commit()
+#         builder.move(0, 500, 500, 50)
+#         builder.commit()
+#         builder.move(0, 800, 400, 50)
+#         builder.commit()
+#         builder.up(0)
+#         builder.commit()
+#         builder.publish(d.connection)
+#
+#     # option1:
+#     device = MNTDevice(_DEVICE_ID)
+#     device.tap([(400, 500), (500, 500)], duration=1000)
+#
+#     # you should control time delay by yourself
+#     # otherwise when connection lost, action will never stop.
+#     time.sleep(1)
+#
+#     device.stop()
+#
+#     # option2:
+#     with safe_device(_DEVICE_ID) as device:
+#         device.tap([(400, 500), (500, 500)])
+#         device.swipe([(400, 500), (500, 500)], duration=500)
+#         time.sleep(0.5)

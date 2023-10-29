@@ -1,10 +1,10 @@
 import platform
 from config.paths import adb
-from config.const import operate_port
+from config.const import operate_change_port, operate_url
 
 # connection
-DEFAULT_HOST = "127.0.0.1"
-PORT_SET = operate_port
+DEFAULT_HOST = operate_url
+PORT_SET = operate_change_port
 DEFAULT_BUFFER_SIZE = 0
 DEFAULT_CHARSET = "utf-8"
 

@@ -1,21 +1,19 @@
-#!/usr/local/bin/python -u
-
 import subprocess
+import time
+from io import BytesIO
+
+import numpy as np
+import requests
+from PIL import Image
 
 from config.paths import adb
-
-devices = 0
-screenshot_url = ''
-
-args_in = {
-    'device_serial': '127.0.0.1:62001',
-    'port': 53520
-}
+from config.const import auto_mation, screenshot_url
 
 
 def run_adb(args, pipeOutput=True):
-    if args_in['device_serial']:
-        args = [adb] + ['-s' + args_in['device_serial']] + args
+    if auto_mation['device_serial']:
+        args = [adb] + ['-s' + auto_mation['device_serial']] + args
+        print('exec cmd : %s' % auto_mation['device_serial'])
     else:
         args = [adb] + args
 
@@ -27,7 +25,7 @@ def run_adb(args, pipeOutput=True):
                           for arg in args], stdout=out, encoding='utf-8')
     p = subprocess.Popen(args, stdout=out, encoding='utf-8')
     stdout, stderr = p.communicate()
-    return (p.returncode, stdout, stderr)
+    return p.returncode, stdout, stderr
 
 
 def locate_apk_path():
@@ -53,7 +51,7 @@ def identify_device():
         # Output as following:
         # List of devices attached
         # 6466eb0c	device
-        device_serial_no = args_in['device_serial']
+        device_serial_no = auto_mation['device_serial']
 
         devicesInfo = str(out)
         deviceCnt = devicesInfo.count('device') - 1
@@ -66,44 +64,47 @@ def identify_device():
                 "Please specify the serial number of target device you want to use ('-s serial_number').")
 
 
-def print_url():
-    # ip route:
-    # e.g. 192.168.0.0/24 dev wlan0 proto kernel scope link src 192.168.0.125
-    (rc, out, _) = run_adb(
-        ["shell", "ip route | awk '/wlan*/{ print $9 }'| tr -d '\n'"])
-    screenshot_url = ('http://' +
-                      '127.0.0.1'  # str(out)
-                      + ':' + str(args_in['port']) + '/screenshot')
-
-
 def automate():
     try:
         identify_device()
         class_path = locate_apk_path()
         (code, _, err) = run_adb(
-            ["forward", "tcp:%d" % args_in['port'], "tcp:%d" % args_in['port']])
-        print(">>> adb forward tcp:%d " % args_in['port'], code)
-
-        print_url()
+            ["forward", "tcp:%d" % auto_mation['port'], "tcp:%d" % auto_mation['port']])
+        print(">>> adb forward tcp:%d " % auto_mation['port'], code)
 
         args = ["shell",
                 class_path,
                 "app_process",
                 "/",  # unused
                 "com.rayworks.droidcast.Main",
-                "--port=%d" % args_in['port']]
+                "--port=%d" % auto_mation['port']]
 
-        # delay opening the web page
-        # t = Timer(2, open_browser)
-        # t.start()
-
-        # event loop starts
         run_adb(args, pipeOutput=False)
 
     except (Exception) as e:
-        print(e)
+        print('截图方案出错了', e)
 
-#
+
+# http 截图方案
+
+def get_screenshot(area):
+    response = requests.get(screenshot_url)
+    if response.status_code == 200:
+        image = Image.open(BytesIO(response.content)).crop(area)
+        return np.array(image)
+    else:
+        print('截图失败')
+        return None
+
+
+def get_screenshots():
+    time.sleep(0.3)
+    response = requests.get(screenshot_url)
+    if response.status_code == 200:
+        return Image.open(BytesIO(response.content))
+    else:
+        print('截图失败')
+        return None
 # if __name__ == '__main__':
 #     try:
 #         automate()

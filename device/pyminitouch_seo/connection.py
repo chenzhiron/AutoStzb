@@ -5,9 +5,9 @@ import os
 import random
 from contextlib import contextmanager
 
-from utils.pyminitouch_seo.logger import logger
-from utils.pyminitouch_seo import config
-from utils.pyminitouch_seo.utils import (
+from device.pyminitouch_seo.logger import logger
+from device.pyminitouch_seo import config
+from device.pyminitouch_seo.utils import (
     str2byte,
     download_file,
     is_port_using,

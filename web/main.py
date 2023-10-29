@@ -4,15 +4,13 @@ import copy
 import pywebio.pin as pin
 from pywebio import start_server
 from pywebio.output import put_row, put_column, put_code, put_collapse, put_button, put_text, put_scope, use_scope
+from pywebio import session
 
+from config.const import web_host, web_port
 from dispatcher.main import sc_cron_add_jobs, start_scheduler
 from dispatcher.status import result_queue
 from modules.utils.main import get_current_date
 from modules.tasks.task_group import conscription, mopping_up, set_task_all
-
-from pywebio import session
-
-
 
 
 def get_task():
@@ -47,7 +45,7 @@ def add_scheduler_job(event):
         checkbox_enhance = pin.pin['checkbox_enhance'][0] if bool(pin.pin['checkbox_enhance']) else False
         task_fn = {'name': current_options + str(current_index),
                    'args': [going_list, repetition_number, checkbox_enhance],
-                   'fn':  copy.deepcopy(mopping_up) * repetition_number
+                   'fn': copy.deepcopy(mopping_up) * repetition_number
                    if current_options == '扫荡'
                    else copy.deepcopy(conscription)
                    }
@@ -201,7 +199,7 @@ def cut(info, index):
 
 
 def start_web():
-    start_server(init, 18878)
+    start_server(init, port=web_port, host=web_host)
 
 
 if __name__ == '__main__':

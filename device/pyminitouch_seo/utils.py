@@ -3,7 +3,7 @@ import tempfile
 import socket
 import subprocess
 
-from utils.pyminitouch_seo import config
+from device.pyminitouch_seo import config
 
 
 def str2byte(content):

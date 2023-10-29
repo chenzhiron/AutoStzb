@@ -1,4 +1,4 @@
-from device.main import adb_tap
+from device.operate import operate_adb_tap
 from modules.general.generalExecuteFn import executeFn, reg_ocr_verify, ocr_txt_verify
 
 from modules.general.module_options_name import person_battle, battle_details, shili
@@ -11,22 +11,20 @@ from modules.module_shili.address_area import shili_area
 
 # 点击战报
 def module_click_draw():
-    result = executeFn(
+    executeFn(
         reg_ocr_verify(shili_area, 2),
         shili
     )
-    if result:
-        adb_tap(click_draw_area[0], click_draw_area[1])
+    operate_adb_tap(click_draw_area[0], click_draw_area[1])
 
 
 #     验证是否进入页面
 def module_draw_verify():
-    result = executeFn(
+    executeFn(
         reg_ocr_verify(person_battle_area, 2),
         person_battle
     )
-    if result:
-        adb_tap(click_draw_detail_area[0], click_draw_detail_area[1])
+    operate_adb_tap(click_draw_detail_area[0], click_draw_detail_area[1])
 
 
 def module_draw_info():

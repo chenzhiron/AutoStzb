@@ -1,5 +1,5 @@
 # 点击方案
-from utils.pyminitouch_seo.actions import MNTDevice
+from device.pyminitouch_seo.actions import MNTDevice
 
 device = None
 
@@ -7,12 +7,11 @@ device = None
 def operate_simulator(device_id):
     global device
     device = MNTDevice(device_id)
-    print(device, 'device111111111111111111111')
 
 
-def return_device():
-    global device
-    return device
+def disconnect_simulator():
+    if device:
+        device.stop()
 
 
 def operate_adb_tap(x, y):
@@ -25,7 +24,6 @@ def operate_adb_swipe(x1, y1, x2, y2):
         duration=1000,
         pressure=50
     )
-    # device.stop()
 
 # if __name__ == '__main__':
 #     operate_simulator('127.0.0.1:62001')

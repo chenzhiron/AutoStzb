@@ -1,28 +1,25 @@
 import sys
 
 import os
+import time
+
 
 p = os.getcwd()
 sys.path.append(p)
 lib_p = os.path.join(p, 'venv', 'Lib', 'site-packages')
 sys.path.append(lib_p)
 
-from web.main import start_web
+# from web.main import start_web
 import threading
-from device.main import automate
-from device.operate import operate_simulator, return_device
+from device.operate import operate_simulator, disconnect_simulator
+from device.automation import automate
+from config.const import operate_url, operate_port
 
 # from modules.tasks.zhengbing import zhengbing
 # from modules.tasks.battle import battle
 # from ocr.main import ocr_txt_verify
-from modules.tasks.saodang import saodang
-
-
-# 点击方案
-def start_simulator():
-    operate_url = '127.0.0.1:62001'
-    operate_simulator(operate_url)
-
+# from modules.tasks.saodang import saodang
+from modules.pageSwitch.page_in import handle_in_map_conscription
 
 if __name__ == '__main__':
     try:
@@ -32,16 +29,13 @@ if __name__ == '__main__':
         operate2.start()
 
         # 模拟器点击方案
-        operate = threading.Thread(target=start_simulator)
+        operate = threading.Thread(target=operate_simulator(operate_url+':'+str(operate_port)))
         operate.setDaemon(True)
         operate.start()
-
-        start_web()
-        device = return_device()
-        if device is not None:
-            device.stop()
+        # time.sleep(20)
+        handle_in_map_conscription(1)
+        # start_web()
+        disconnect_simulator()
     except Exception as e:
-        print(e)
-        device = return_device()
-        if device is not None:
-            device.stop()
+        print('发生了错误', e)
+        disconnect_simulator()

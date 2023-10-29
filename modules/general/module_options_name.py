@@ -13,7 +13,7 @@ zhaomu = '招募'
 zhengbing = '证兵'
 
 require_zhengbing = '确认证兵'
-zhengbing_verify = '证兵已满'
+zhengbing_satisfy = '证兵已满'
 queding = '确定'
 
 person_battle = '战报'
