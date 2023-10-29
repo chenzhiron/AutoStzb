@@ -7,3 +7,4 @@ npm-debug.log.*
 thumbs.db
 !.gitkeep
 node_modules/
+*.pyc
