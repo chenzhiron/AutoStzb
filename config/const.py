@@ -20,6 +20,5 @@ auto_mation = {
 # 链接成功后访问该网址拿到截图
 screenshot_url = 'http://' + operate_url + ':' + str(auto_mation['port']) + '/screenshot'
 
-# web操作url
-web_host = 'http://127.0.0.1'
+# web页面port
 web_port = 18878

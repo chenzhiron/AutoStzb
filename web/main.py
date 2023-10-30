@@ -6,7 +6,7 @@ from pywebio import start_server
 from pywebio.output import put_row, put_column, put_code, put_collapse, put_button, put_text, put_scope, use_scope
 from pywebio import session
 
-from config.const import web_host, web_port
+from config.const import web_port
 from dispatcher.main import sc_cron_add_jobs, start_scheduler
 from dispatcher.status import result_queue
 from modules.utils.main import get_current_date
@@ -199,7 +199,7 @@ def cut(info, index):
 
 
 def start_web():
-    start_server(init, port=web_port, host=web_host)
+    start_server(init, port=web_port)
 
 
 if __name__ == '__main__':

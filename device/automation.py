@@ -87,16 +87,6 @@ def automate():
 
 # http 截图方案
 
-def get_screenshot(area):
-    response = requests.get(screenshot_url)
-    if response.status_code == 200:
-        image = Image.open(BytesIO(response.content)).crop(area)
-        return np.array(image)
-    else:
-        print('截图失败')
-        return None
-
-
 def get_screenshots():
     time.sleep(0.3)
     response = requests.get(screenshot_url)
