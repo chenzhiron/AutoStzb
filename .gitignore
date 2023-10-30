@@ -7,3 +7,4 @@ thumbs.db
 !.gitkeep
 node_modules/
 *.pyc
+.idea
