@@ -44,7 +44,9 @@ def add_scheduler_job(event):
         repetition_number = pin.pin['repetition_number']
         checkbox_enhance = pin.pin['checkbox_enhance'][0] if bool(pin.pin['checkbox_enhance']) else False
         task_fn = {'name': current_options + str(current_index),
-                   'args': [going_list, repetition_number, checkbox_enhance],
+                   'args': [going_list,
+                            '扫荡' if current_options == '扫荡' else repetition_number,
+                            checkbox_enhance],
                    'fn': copy.deepcopy(mopping_up) * repetition_number
                    if current_options == '扫荡'
                    else copy.deepcopy(conscription)
@@ -71,7 +73,6 @@ def start():
         task_name = task['name']
         task_fn = task['fn'].pop(0)
         set_task_all(task_name, task['fn'])
-        print(task_name, task_fn)
         date = get_current_date()
         if date['second'] == 59:
             date['second'] = 0

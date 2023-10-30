@@ -2,12 +2,13 @@ import sys
 
 import os
 import threading
+
 p = os.getcwd()
-# parent_dir = os.path.dirname(p)
-# sys.path.append(parent_dir)
+parent_dir = os.path.dirname(p)
+sys.path.append(parent_dir)
 sys.path.append(p)
-lib_p = os.path.join(p, 'toolkit', 'Lib', 'site-packages')
-sys.path.append(lib_p)
+# lib_p = os.path.join(p, 'toolkit', 'Lib', 'site-packages')
+# sys.path.append(lib_p)
 
 from device.operate import operate_simulator, disconnect_simulator
 from device.automation import automate
@@ -25,6 +26,7 @@ if __name__ == '__main__':
         operate = threading.Thread(target=operate_simulator(operate_url + ':' + str(operate_port)))
         operate.setDaemon(True)
         operate.start()
+        # handle_in_battle_result(1, 0)
         # handle_in_map_conscription(1)
         start_web()
         disconnect_simulator()
