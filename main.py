@@ -1,13 +1,13 @@
 import sys
 
 import os
-
-p = os.getcwd()
-sys.path.append(p)
-lib_p = os.path.join(p, 'venv', 'Lib', 'site-packages')
-sys.path.append(lib_p)
-
 import threading
+p = os.getcwd()
+parent_dir = os.path.dirname(p)
+sys.path.append(parent_dir)
+# sys.path.append(p)
+# sys.path.append(lib_p)
+
 from device.operate import operate_simulator, disconnect_simulator
 from device.automation import automate
 from config.const import operate_url, operate_port

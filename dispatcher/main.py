@@ -1,5 +1,3 @@
-import datetime
-
 from apscheduler.events import EVENT_JOB_EXECUTED
 from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.schedulers.background import BackgroundScheduler

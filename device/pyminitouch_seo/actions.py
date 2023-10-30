@@ -1,9 +1,8 @@
 import time
 from contextlib import contextmanager
 
-from device.pyminitouch_seo.connection import MNTConnection, MNTServer, safe_connection
+from device.pyminitouch_seo.connection import MNTConnection, MNTServer
 from device.pyminitouch_seo import config
-from device.pyminitouch_seo.utils import restart_adb
 
 
 class CommandBuilder(object):
@@ -108,7 +107,6 @@ class MNTDevice(object):
     """
 
     def __init__(self, device_id):
-        # restart_adb()
         self.device_id = device_id
         self.server = None
         self.connection = None
@@ -260,7 +258,6 @@ def safe_device(device_id):
 
 
 # if __name__ == "__main__":
-#     restart_adb()
 #
 #     _DEVICE_ID = "4df189487c7b6fef"
 #

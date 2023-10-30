@@ -4,8 +4,7 @@ import time
 import os
 import random
 from contextlib import contextmanager
-
-from device.pyminitouch_seo.logger import logger
+from loguru import logger
 from device.pyminitouch_seo import config
 from device.pyminitouch_seo.utils import (
     str2byte,
@@ -16,9 +15,9 @@ from device.pyminitouch_seo.utils import (
 
 _ADB = config.ADB_EXECUTOR
 
+
 class MNTInstaller(object):
     """ install minitouch for android devices """
-
 
     def __init__(self, device_id):
         self.device_id = device_id

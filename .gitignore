@@ -1,5 +1,4 @@
-**/venv/Lib/sit-packages/**
-/venv/Lib/
+/toolkit/Lib/
 .DS_Store
 dist/electron/*
 npm-debug.log

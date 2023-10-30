@@ -4,7 +4,7 @@
   "description": "web_stzb",
   "main": "index.js",
   "scripts": {
-    "serve":  "electron .",
+    "serve": "electron ./index.js -p 18878 -s 80979",
     "start": "electron-forge start",
     "test": "echo \"Error: no test specified\" && exit 1",
     "package": "electron-forge package",
@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "@electron-forge/cli": "^6.4.2",
+    "commander": "^11.1.0",
     "electron-squirrel-startup": "^1.0.0"
   },
   "devDependencies": {
