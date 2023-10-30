@@ -1,11 +1,8 @@
-from modules.tasks.battle import battle
-from modules.tasks.saodang import saodang
-from modules.tasks.zhengbing import zhengbing
-
+from modules.pageSwitch.page_switch import *
 # 征兵
-conscription = [zhengbing]
+conscription = [handle_in_map_conscription]
 # 扫荡
-mopping_up = [saodang, battle, zhengbing]
+mopping_up = [handle_in_lists_action, handle_in_battle_result, handle_in_map_conscription]
 # 出征
 
 
@@ -17,6 +14,4 @@ def set_task_all(key, value):
 
 
 def get_task_all(key):
-
     return task_all[key]
-

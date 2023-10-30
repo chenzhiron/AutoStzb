@@ -1,7 +1,6 @@
 import sys
 
 import os
-import time
 
 
 p = os.getcwd()
@@ -19,7 +18,7 @@ from config.const import operate_url, operate_port
 # from modules.tasks.battle import battle
 # from ocr.main import ocr_txt_verify
 # from modules.tasks.saodang import saodang
-from modules.pageSwitch.page_in import handle_in_map_conscription
+from modules.pageSwitch.page_switch import handle_in_map_conscription
 
 if __name__ == '__main__':
     try:
