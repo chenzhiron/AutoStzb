@@ -1,4 +1,3 @@
-import queue
 from functools import partial
 import copy
 import pywebio.pin as pin
@@ -12,110 +11,8 @@ from dispatcher.status import result_queue
 from modules.utils.main import get_current_date
 from modules.tasks.task_group import conscription, mopping_up, set_task_all
 
-
-def get_task():
-    while True:
-        task = task_queue.get()
-        print('拿到task')
-        if task['name'] in current_expire_queue:
-            continue
-        else:
-            return task
-
-
 zhengbing_list = ['征兵一', '征兵二', '征兵三']
 saodang_list = ['扫荡一', '扫荡二', '扫荡三', '扫荡四', '扫荡五']
-
-current_options = ''
-current_index = 0
-
-# 准备执行的队列
-task_queue = queue.Queue()
-# 预备执行的任务
-task_list = []
-# 已取消的任务
-current_expire_queue = []
-
-
-def add_scheduler_job(event):
-    checkbox_inline = event
-    if len(checkbox_inline) > 0:
-        going_list = pin.pin['select_list']
-        repetition_number = pin.pin['repetition_number']
-        checkbox_enhance = pin.pin['checkbox_enhance'][0] if bool(pin.pin['checkbox_enhance']) else False
-        task_fn = {'name': current_options + str(current_index),
-                   'args': [going_list,
-                            '扫荡' if current_options == '扫荡' else repetition_number,
-                            checkbox_enhance],
-                   'fn': copy.deepcopy(mopping_up) * repetition_number
-                   if current_options == '扫荡'
-                   else copy.deepcopy(conscription)
-                   }
-        task_list.append(task_fn)
-        task_queue.put(task_fn)
-
-        for em in current_expire_queue:
-            if em == current_options + str(current_index):
-                current_expire_queue.remove(em)
-                break
-    else:
-        for em in task_list:
-            if em['name'] == (current_options + str(current_index)):
-                task_list.remove(em)
-                break
-        current_expire_queue.append(current_options + str(current_index))
-
-
-def start():
-    start_scheduler()
-    while True:
-        task = get_task()
-        task_name = task['name']
-        task_fn = task['fn'].pop(0)
-        set_task_all(task_name, task['fn'])
-        date = get_current_date()
-        if date['second'] == 59:
-            date['second'] = 0
-            date['minute'] += 1
-        else:
-            date['second'] += 1
-
-        # 目前只需要传入 队列0即可，没有写其他额外选项
-        sc_cron_add_jobs(task_fn, task['args'], date['year'], date['month'], date['day'], date['hour'],
-                         date['minute'], date['second'], task_name)
-        result = result_queue.get()
-
-        print('result', result)
-
-
-def render_button(lists, l):
-    button_list = []
-    for i, info in enumerate(lists):
-        onclick = partial(cut, info=info[:l], index=i + 1)
-        button_list.append(put_button(info, onclick=onclick))
-    return button_list
-
-
-def init():
-    js_code = """
-    document.querySelector('footer').style.display = 'none';
-    document.body.style.overflow = 'hidden';
-    """
-    session.run_js(js_code)
-    put_row([
-        put_column([
-            put_button('启动', onclick=start),
-            put_collapse('征兵', render_button(zhengbing_list, 2)),
-            put_collapse('扫荡', render_button(saodang_list, 2)),
-            None,
-        ]).style('display: block;'),
-        put_scope('center', put_column([
-            None,
-            None,
-        ])),
-        put_code('日志'),
-    ], size='20% 50% 30%')
-
 
 options = [
     {
@@ -152,7 +49,66 @@ enhance = [
     },
 ]
 
+current_options = ''
+current_index = 0
 
+# 预备执行的任务
+task_list = []
+
+
+# 队列
+def get_task():
+    while True:
+        if len(task_list) > 0:
+            return task_list.pop(0)
+
+
+# 调度器添加任务
+def add_scheduler_job(event):
+    # 这是个 [True] 或者 [False]
+    checkbox_inline = event
+    if len(checkbox_inline) > 0:
+        going_list = pin.pin['select_list']
+        repetition_number = pin.pin['repetition_number']
+        checkbox_enhance = pin.pin['checkbox_enhance'][0] if bool(pin.pin['checkbox_enhance']) else False
+        task_fn = {'name': current_options + str(current_index),
+                   'args': [going_list,
+                            '扫荡' if current_options == '扫荡' else repetition_number,
+                            checkbox_enhance],
+                   'fn': copy.deepcopy(mopping_up) * repetition_number
+                   if current_options == '扫荡'
+                   else copy.deepcopy(conscription)
+                   }
+        task_list.append(task_fn)
+        render_tasked(task_list)
+    else:
+        remove_tasked(current_options + str(current_index))
+
+
+# 调度器启动
+def start():
+    start_scheduler()
+    while True:
+        task = get_task()
+        task_name = task['name']
+        task_fn = task['fn'].pop(0)
+        set_task_all(task_name, task['fn'])
+        date = get_current_date()
+        if date['second'] == 59:
+            date['second'] = 0
+            date['minute'] += 1
+        else:
+            date['second'] += 1
+
+        # 目前只需要传入 队列0即可，没有写其他额外选项
+        sc_cron_add_jobs(task_fn, task['args'], date['year'], date['month'], date['day'], date['hour'],
+                         date['minute'], date['second'], task_name)
+        result = result_queue.get()
+
+        print('result', result)
+
+
+# 不同页面展示不同选项
 def apply(info):
     current_name = current_options + str(current_index)
     start_txt = '启动'
@@ -191,6 +147,7 @@ def apply(info):
     pin.pin_on_change('checkbox_inline', onchange=add_scheduler_job, clear=True)
 
 
+# 切换页面
 def cut(info, index):
     global current_index, current_options
     current_options = info
@@ -199,6 +156,61 @@ def cut(info, index):
         apply(current_options)
 
 
+# 渲染函数
+def render_button(lists, l):
+    button_list = []
+    for i, info in enumerate(lists):
+        onclick = partial(cut, info=info[:l], index=i + 1)
+        button_list.append(put_button(info, onclick=onclick))
+    return button_list
+
+
+def remove_tasked(info):
+    for i, task in enumerate(task_list):
+        if task['name'] == info:
+            task_list.pop(i)
+            break
+    with use_scope('cancal', clear=True, create_scope=True):
+        put_collapse('任务取消', render_tasked_group(task_list))
+
+
+def render_tasked_group(lists):
+    button_list = []
+    for i, info in enumerate(lists):
+        onclick = partial(remove_tasked, info=info['name'])
+        button_list.append(put_button(info['name'], onclick=onclick))
+    return button_list
+
+
+def render_tasked(lists):
+    with use_scope('cancal', clear=True, create_scope=True):
+        put_collapse('取消任务', render_tasked_group(lists))
+
+
+# 初始化函数
+def init():
+    js_code = """
+    document.querySelector('footer').style.display = 'none';
+    document.body.style.overflow = 'hidden';
+    """
+    session.run_js(js_code)
+    put_row([
+        put_column([
+            put_button('启动', onclick=start),
+            put_scope('cancel', None),
+            put_collapse('征兵', render_button(zhengbing_list, 2)),
+            put_collapse('扫荡', render_button(saodang_list, 2)),
+            None,
+        ]).style('display: block;'),
+        put_scope('center', put_column([
+            None,
+            None,
+        ])),
+        put_code('日志'),
+    ], size='20% 50% 30%')
+
+
+# 启动web
 def start_web():
     start_server(init, port=web_port)
 
