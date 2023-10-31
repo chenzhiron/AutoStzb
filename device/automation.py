@@ -2,7 +2,6 @@ import subprocess
 import time
 from io import BytesIO
 
-import numpy as np
 import requests
 from PIL import Image
 
