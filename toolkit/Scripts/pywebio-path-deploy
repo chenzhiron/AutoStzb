@@ -1,4 +1,4 @@
-#!G:\czr\demo\auto_stzb\toolkit\python.exe
+#!e:\auto_stzb\toolkit\python.exe
 import argparse
 from pywebio.platform import path_deploy, path_deploy_http
 

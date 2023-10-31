@@ -9,6 +9,8 @@ computed_going_time_area = (615, 520, 710, 555)
 computed_going_list_area = (0, 540, 200, 600)
 address_going_require = (1082, 640, 1150, 680)
 
+tili_area = (495, 590, 595, 625)
+
 #——--------------------------------------------
 # 战报
 discern_time_area = (850, 180, 1150, 240)
