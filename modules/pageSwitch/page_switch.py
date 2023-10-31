@@ -201,6 +201,35 @@ def handle_in_battle_result(l, times, *args):
             return None
 
 
+def handle_battel_draw_result():
+    while 1:
+        try:
+            image = get_screenshots()
+
+            if appear_then_click(image.crop(shili_area), shili_area, [shili], False):
+                operate_adb_tap(click_draw_area[0], click_draw_area[1])
+                continue
+            if appear_then_click(image.crop(person_battle_area), person_battle_area, [person_battle], False):
+                time.sleep(0.5)
+                operate_adb_tap(click_draw_detail_area[0], click_draw_detail_area[1])
+                continue
+            if appear_then_click(image.crop((700, 670, 840, 710)), (700, 670, 840, 710), ['战斗地点']):
+                continue
+            if appear_then_click(image.crop((710, 450, 850, 490)), (710, 450, 850, 490), ['确定']):
+                time.sleep(3)
+                operate_adb_tap(640, 360)
+                time.sleep(2)
+                continue
+            if appear_then_click(image.crop((1040,300,1130,330)),(1040,300,1130,330),['撤退']):
+                time.sleep(2)
+                continue
+            if appear_then_click(image.crop((1110,640,1200,680)), (1110,640,1200,680), ['撤退']):
+                return
+        except Exception as e:
+            print('战报平局模块发生了错误', e)
+            return None
+
+
 def ocr_reg(res):
     if bool(res[0]):
         return [item[1][0] for sublist in res for item in sublist]
