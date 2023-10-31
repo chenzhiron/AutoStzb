@@ -1,3 +1,4 @@
+import datetime
 import time
 
 import numpy as np
@@ -12,8 +13,24 @@ from modules.general.option_verify_area import address_area_start, address_sign_
     address_going_require, click_draw_area, click_draw_detail_area, person_battle_area, person_detail_battle_area, \
     person_status_number_area, enemy_status_number_area, status_area, shili_area, zhengbing_page_verify_area, \
     click_list_x_y, zhengbing_page_area, zhengbing_page_swipe_verify, zhengbing_page_swipe, zhengbing_time_area, \
-    queding_area, tili_area, zhaomu_area
+    queding_area, tili_area, zhaomu_area, return_area
 from ocr.main import ocr_default
+
+
+def handle_out_map():
+    while 1:
+        try:
+            image = get_screenshots()
+            result = ocr_default(np.array(image.crop(zhaomu_area)))
+            result = ocr_reg(result)
+            if len(result) > 0 and result[0] == '招募':
+                return True
+            else:
+                x, y = return_area
+                operate_adb_tap(x, y)
+        except Exception as e:
+            print('返回主页面发生了错误', e)
+            return False
 
 
 def handle_in_map_conscription(l, *args):
@@ -45,11 +62,13 @@ def handle_in_map_conscription(l, *args):
                                  False):
                 for v in zhengbing_page_swipe:
                     operate_adb_swipe(v[0], v[1], v[2], v[3])
+                image = get_screenshots()
                 time_res = ocr_reg(ocr_default(np.array(image.crop(zhengbing_time_area))))
                 times = calculate_max_timestamp(time_res)
                 result_conscription['times'] = times
                 # 如果是满兵，则不需要征兵
                 if times == 0:
+                    handle_out_map()
                     return result_conscription
 
                 x, y = executeClickArea(zhengbing_page_swipe_verify)
@@ -57,25 +76,11 @@ def handle_in_map_conscription(l, *args):
                 continue
             # 点击确定
             if appear_then_click(image.crop(queding_area), queding_area, queding):
+                handle_out_map()
                 return result_conscription
         except Exception as e:
             print('征兵模块 发生了错误', e)
             return None
-
-
-def handle_out_map():
-    while 1:
-        try:
-            image = get_screenshots()
-            result = ocr_default(np.array(image.crop(zhaomu_area)))
-            if ocr_reg(result)[0] == '招募':
-                return True
-            else:
-                operate_adb_tap(1130, 35)
-                operate_adb_tap(1200, 80)
-        except Exception as e:
-            print('返回主页面发生了错误', e)
-            return False
 
 
 def appear_then_click(img_source, click_area, check_txt, clicked=True):
@@ -111,7 +116,6 @@ def handle_in_lists_action(l, txt=saodang, *args):
             if appear_then_click(image.crop(address_going_require), address_going_require, [txt], False):
                 time_res = ocr_reg(ocr_default(np.array(image.crop(computed_going_time_area))))
                 times = calculate_max_timestamp(time_res)
-                print('------', times)
                 x, y = executeClickArea(address_going_require)
                 operate_adb_tap(x, y)
                 result_action['times'] = times
@@ -159,6 +163,7 @@ def handle_in_lists_action(l, txt=saodang, *args):
 
 def handle_in_battle_result(l, times, *args):
     battle_result = {}
+    start_time = time.time()
     while 1:
         try:
             image = get_screenshots()
@@ -167,6 +172,7 @@ def handle_in_battle_result(l, times, *args):
                 operate_adb_tap(click_draw_area[0], click_draw_area[1])
                 continue
             if appear_then_click(image.crop(person_battle_area), person_battle_area, [person_battle], False):
+                time.sleep(0.5)
                 operate_adb_tap(click_draw_detail_area[0], click_draw_detail_area[1])
                 continue
             if appear_then_click(image.crop(person_detail_battle_area), person_detail_battle_area, [battle_details],
@@ -182,11 +188,12 @@ def handle_in_battle_result(l, times, *args):
                 battle_result['status'] = status
                 battle_result['person'] = person_number
                 battle_result['enemy'] = enemy_number
+                handle_out_map()
                 return {
                     'type': 3,
                     'result': battle_result,
                     'lists': l,
-                    'times': times,
+                    'times': times - (int(time.time()) - int(start_time)),
                     'args': args
                 }
         except Exception as e:

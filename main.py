@@ -28,6 +28,7 @@ if __name__ == '__main__':
         operate.start()
         main_process_id = os.getpid()
         print(main_process_id)
+
         # operate_electron = threading.Thread(target=run_electron,
         #                                     args=('http://' + operate_url + ':' + str(web_port), main_process_id))
         # operate_electron.setDaemon(True)
