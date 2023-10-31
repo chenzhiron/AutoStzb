@@ -12,7 +12,7 @@ from modules.general.option_verify_area import address_area_start, address_sign_
     address_going_require, click_draw_area, click_draw_detail_area, person_battle_area, person_detail_battle_area, \
     person_status_number_area, enemy_status_number_area, status_area, shili_area, zhengbing_page_verify_area, \
     click_list_x_y, zhengbing_page_area, zhengbing_page_swipe_verify, zhengbing_page_swipe, zhengbing_time_area, \
-    queding_area, tili_area
+    queding_area, tili_area, zhaomu_area
 from ocr.main import ocr_default
 
 
@@ -25,7 +25,6 @@ def handle_in_map_conscription(l, *args):
     }
     while 1:
         try:
-            time.sleep(0.3)
             image = get_screenshots()
             # 点击势力
             if appear_then_click(image.crop(shili_area), shili_area, [shili]):
@@ -60,12 +59,23 @@ def handle_in_map_conscription(l, *args):
             if appear_then_click(image.crop(queding_area), queding_area, queding):
                 return result_conscription
         except Exception as e:
-            print('发生了错误', e)
+            print('征兵模块 发生了错误', e)
             return None
 
 
 def handle_out_map():
-    pass
+    while 1:
+        try:
+            image = get_screenshots()
+            result = ocr_default(np.array(image.crop(zhaomu_area)))
+            if ocr_reg(result)[0] == '招募':
+                return True
+            else:
+                operate_adb_tap(1130, 35)
+                operate_adb_tap(1200, 80)
+        except Exception as e:
+            print('返回主页面发生了错误', e)
+            return False
 
 
 def appear_then_click(img_source, click_area, check_txt, clicked=True):
@@ -88,12 +98,12 @@ def appear_then_click(img_source, click_area, check_txt, clicked=True):
 
 def handle_in_lists_action(l, txt=saodang, *args):
     result_action = {
-                    'type': 2,
-                    'result': None,
-                    'times': 0,
-                    'lists': l,
-                    'args': args
-                }
+        'type': 2,
+        'result': None,
+        'times': 0,
+        'lists': l,
+        'args': args
+    }
     while 1:
         try:
             image = get_screenshots()
@@ -143,12 +153,8 @@ def handle_in_lists_action(l, txt=saodang, *args):
                 operate_adb_tap(address_area_start[0], address_area_start[1])
                 continue
         except Exception as e:
-            print('发生了错误', e)
+            print('扫荡/出征发生了错误', e)
             return None
-
-
-def handle_out_lists_action():
-    pass
 
 
 def handle_in_battle_result(l, times, *args):
