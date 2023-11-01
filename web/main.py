@@ -9,7 +9,7 @@ from config.const import web_port
 from dispatcher.main import sc_cron_add_jobs, start_scheduler
 from dispatcher.status import result_queue
 from modules.utils.main import get_current_date
-from modules.tasks.task_group import conscription, mopping_up, set_task_all
+from dispatcher.task_group import conscription, mopping_up, set_task_all
 
 zhengbing_list = ['征兵一', '征兵二', '征兵三']
 saodang_list = ['扫荡一', '扫荡二', '扫荡三', '扫荡四', '扫荡五']
@@ -65,7 +65,7 @@ def get_task():
 
 # 调度器添加任务
 def add_scheduler_job(event):
-    # 这是个 [True] 或者 [False]
+    # 这是个 [True] 或者 []
     checkbox_inline = event
     if len(checkbox_inline) > 0:
         going_list = pin.pin['select_list']
@@ -73,11 +73,11 @@ def add_scheduler_job(event):
         checkbox_enhance = pin.pin['checkbox_enhance'][0] if bool(pin.pin['checkbox_enhance']) else False
         task_fn = {'name': current_options + str(current_index),
                    'args': [going_list,
-                            '扫荡' if current_options == '扫荡' else repetition_number,
+                            '扫荡' if current_options == '扫荡' else
                             checkbox_enhance],
                    'fn': copy.deepcopy(mopping_up) * repetition_number
                    if current_options == '扫荡'
-                   else copy.deepcopy(conscription)
+                   else copy.deepcopy(conscription) * 2
                    }
         task_list.append(task_fn)
         render_tasked(task_list)

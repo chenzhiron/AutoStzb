@@ -3,7 +3,8 @@ from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from dispatcher.status import result_queue
-from modules.tasks.task_group import get_task_all
+from dispatcher.task_group import get_task_all
+from modules.pageSwitch.page_switch import handle_in_lists_action, handle_battel_draw_result
 from modules.utils.main import get_current_date
 
 # 创建调度器
@@ -25,32 +26,60 @@ def job_executed(event):
     task_next_fn = get_task_all(task_id)
     if len(task_next_fn) > 0:
         # 1.扫荡 -> 2.查看战报 -> 3.胜利-失败/平局
+
+        # 出发/扫荡
         if result['type'] == 2:
-            # 此处添加战报查看函数
             l = result['lists']
             seconds = result['times']
             current_date = get_current_date(seconds)
-            sc_cron_add_jobs(task_next_fn.pop(0), [l, seconds],
+            # 如果没有体力 进行等待 再进行出发
+            next_fn = task_next_fn.pop(0) if result['result'] is not None else handle_in_lists_action
+            # 等待执行下一步任务
+            sc_cron_add_jobs(next_fn, [l, seconds],
                              current_date['year'], current_date['month'], current_date['day'],
                              current_date['hour'], current_date['minute'], current_date['second'],
                              task_id)
-
+        # 战报结果
         elif result['type'] == 3:
+            l = result['lists']
+            seconds = result['times']
             if result['result']['status'] == '胜利' or result['result']['status'] == '失败':
-                # 判断胜利要求 # 设置等待征兵延时 并返回结果，如果扫荡次数大于1，需要减少，并添加到队列中
-                l = result['lists']
-                seconds = result['times']
                 current_date = get_current_date(seconds)
                 sc_cron_add_jobs(task_next_fn.pop(0), [l],
                                  current_date['year'], current_date['month'], current_date['day'],
                                  current_date['hour'], current_date['minute'], current_date['second'],
                                  task_id)
             elif result['result']['status'] == '平局':
+                # 判断平局要求，是否等待，然后触发撤回的函数
+                person = result['result']['person']
+                enemy = result['result']['enemy']
+                # 默认平局就撤退
+                current_date = get_current_date(1)
+                sc_cron_add_jobs(handle_battel_draw_result, [l, seconds],
+                                 current_date['year'], current_date['month'], current_date['day'],
+                                 current_date['hour'], current_date['minute'], current_date['second'],
+                                 task_id)
+                # 添加等待任务
 
-                # 判断平局要求，是否等待，然后触发撤回的函数，设置征兵任务，扫荡次数大于一，减少并添加到新的队列中
-                pass
+        elif result['type'] == 4:
+            if result['status'] == 0:
+                l = result['lists']
+                seconds = result['times']
+                current_date = get_current_date(seconds)
+                sc_cron_add_jobs(task_next_fn.pop(0), [l],
+                                 current_date['year'], current_date['month'], current_date['day'],
+                                 current_date['hour'], current_date['minute'], current_date['second'],
+                                 task_id
+                                 )
+
         elif result['type'] == 1:
-            pass
+            current_lists = result['lists']
+            next_time = result['times']
+            current_date = get_current_date(next_time)
+            sc_cron_add_jobs(task_next_fn.pop(0), [current_lists],
+                             current_date['year'], current_date['month'], current_date['day'],
+                             current_date['hour'], current_date['minute'], current_date['second'],
+                             task_id)
     result_queue.put(event)
 
 

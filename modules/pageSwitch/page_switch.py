@@ -40,6 +40,7 @@ def handle_in_map_conscription(l, *args):
         'lists': l,
         'args': args
     }
+    enhance = args[0]
     while 1:
         try:
             image = get_screenshots()
@@ -61,7 +62,10 @@ def handle_in_map_conscription(l, *args):
                                  [require_zhengbing, zhengbing_satisfy],
                                  False):
                 for v in zhengbing_page_swipe:
-                    operate_adb_swipe(v[0], v[1], v[2], v[3])
+                    if enhance:
+                        operate_adb_swipe(v[0], v[1], int(v[2] * 0.2), v[3])
+                    else:
+                        operate_adb_swipe(v[0], v[1], v[2], v[3])
                 image = get_screenshots()
                 time_res = ocr_reg(ocr_default(np.array(image.crop(zhengbing_time_area))))
                 times = calculate_max_timestamp(time_res)
@@ -85,20 +89,19 @@ def handle_in_map_conscription(l, *args):
 
 def appear_then_click(img_source, click_area, check_txt, clicked=True):
     res = ocr_default(np.array(img_source))
-    if bool(res[0]):
-        result = ''
-        for sublist in res:
-            for item in sublist:
-                result += item[1][0]
-        if result in check_txt:
-            if clicked:
-                x, y = executeClickArea(click_area)
-                operate_adb_tap(x, y)
-            return True
-        else:
-            return False
-    else:
-        return False
+    if not bool(res[0]): return False
+
+    result = ''
+    for sublist in res:
+        for item in sublist:
+            result += item[1][0]
+
+    if not (result in check_txt): return False
+
+    if clicked:
+        x, y = executeClickArea(click_area)
+        operate_adb_tap(x, y)
+    return True
 
 
 def handle_in_lists_action(l, txt=saodang, *args):
@@ -201,10 +204,23 @@ def handle_in_battle_result(l, times, *args):
             return None
 
 
-def handle_battel_draw_result():
+def handle_battel_draw_result(l,times, *args):
+    draw_result = {
+        'type': 4,
+        'status': 0,
+        'lists': l,
+        'times': times
+        'args': args
+    }
     while 1:
         try:
             image = get_screenshots()
+
+            if appear_then_click(image.crop((1040, 300, 1130, 330)), (1040, 300, 1130, 330), ['撤退']):
+                time.sleep(2)
+                continue
+            if appear_then_click(image.crop((1110, 640, 1200, 680)), (1110, 640, 1200, 680), ['撤退']):
+                return draw_result
 
             if appear_then_click(image.crop(shili_area), shili_area, [shili], False):
                 operate_adb_tap(click_draw_area[0], click_draw_area[1])
@@ -216,15 +232,10 @@ def handle_battel_draw_result():
             if appear_then_click(image.crop((700, 670, 840, 710)), (700, 670, 840, 710), ['战斗地点']):
                 continue
             if appear_then_click(image.crop((710, 450, 850, 490)), (710, 450, 850, 490), ['确定']):
-                time.sleep(3)
+                time.sleep(2)
                 operate_adb_tap(640, 360)
                 time.sleep(2)
                 continue
-            if appear_then_click(image.crop((1040,300,1130,330)),(1040,300,1130,330),['撤退']):
-                time.sleep(2)
-                continue
-            if appear_then_click(image.crop((1110,640,1200,680)), (1110,640,1200,680), ['撤退']):
-                return
         except Exception as e:
             print('战报平局模块发生了错误', e)
             return None
