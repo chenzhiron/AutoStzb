@@ -3,13 +3,11 @@ import os
 import threading
 
 p = os.getcwd()
-# parent_dir = os.path.dirname(p)
-# sys.path.append(parent_dir)
 sys.path.append(p)
 lib_p = os.path.join(p, 'toolkit', 'Lib', 'site-packages')
 sys.path.append(lib_p)
 
-from gui import run_electron
+
 from device.operate import operate_simulator, disconnect_simulator
 from device.automation import automate
 from config.const import operate_url, operate_port, web_port
@@ -28,11 +26,6 @@ if __name__ == '__main__':
         operate.start()
         main_process_id = os.getpid()
         print(main_process_id)
-        # handle_battel_draw_result()
-        # operate_electron = threading.Thread(target=run_electron,
-        #                                     args=('http://' + operate_url + ':' + str(web_port), main_process_id))
-        # operate_electron.setDaemon(True)
-        # operate_electron.start()
         start_web()
         disconnect_simulator()
     except Exception as e:
