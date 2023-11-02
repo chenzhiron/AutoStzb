@@ -209,7 +209,7 @@ def handle_battel_draw_result(l,times, *args):
         'type': 4,
         'status': 0,
         'lists': l,
-        'times': times
+        'times': times,
         'args': args
     }
     while 1:
