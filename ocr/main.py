@@ -12,4 +12,3 @@ def ocr_default(sources):
     #     res = result[idx]
     #     for line in res:
     #         print(line)
-

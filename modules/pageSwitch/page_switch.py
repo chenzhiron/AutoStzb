@@ -13,7 +13,7 @@ from modules.general.option_verify_area import address_area_start, address_sign_
     address_going_require, click_draw_area, click_draw_detail_area, person_battle_area, person_detail_battle_area, \
     person_status_number_area, enemy_status_number_area, status_area, shili_area, zhengbing_page_verify_area, \
     click_list_x_y, zhengbing_page_area, zhengbing_page_swipe_verify, zhengbing_page_swipe, zhengbing_time_area, \
-    queding_area, tili_area, zhaomu_area, return_area
+    queding_area, tili_area, zhaomu_area, return_area, shili_top_area
 from ocr.main import ocr_default
 
 
@@ -40,12 +40,12 @@ def handle_in_map_conscription(l, *args):
         'lists': l,
         'args': args
     }
-    enhance = args[0]
+    enhance = args[0] if len(args) > 0 else False
     while 1:
         try:
             image = get_screenshots()
             # 点击势力
-            if appear_then_click(image.crop(shili_area), shili_area, [shili]):
+            if appear_then_click(image.crop(zhaomu_area), shili_area, ['招募']):
                 continue
             # 选择部队
             if appear_then_click(image.crop(zhengbing_page_verify_area),
@@ -89,14 +89,16 @@ def handle_in_map_conscription(l, *args):
 
 def appear_then_click(img_source, click_area, check_txt, clicked=True):
     res = ocr_default(np.array(img_source))
-    if not bool(res[0]): return False
+    if not bool(res[0]):
+        return False
 
     result = ''
     for sublist in res:
         for item in sublist:
             result += item[1][0]
-
-    if not (result in check_txt): return False
+    print('result   ', result, '------', 'check_txt    ', check_txt)
+    if not (result in check_txt):
+        return False
 
     if clicked:
         x, y = executeClickArea(click_area)
@@ -115,6 +117,24 @@ def handle_in_lists_action(l, txt=saodang, *args):
     while 1:
         try:
             image = get_screenshots()
+
+            # 识别扫荡并点击
+            result = ocr_default(np.array(image.crop(address_execute_order_area)))
+            if bool(result[0]):
+                status = False
+                for idx in range(len(result)):
+                    res = result[idx]
+                    for line in res:
+                        if line[1][0] == txt:
+                            first_list = line[0]
+                            center_point = [sum(coord) / len(coord) for coord in zip(*first_list)]
+                            operate_adb_tap(820 + center_point[0], 200 + center_point[1])
+                            status = True
+                            break
+                    break
+                if status:
+                    continue
+
             # 扫荡时间跟点击出征
             if appear_then_click(image.crop(address_going_require), address_going_require, [txt], False):
                 time_res = ocr_reg(ocr_default(np.array(image.crop(computed_going_time_area))))
@@ -130,7 +150,7 @@ def handle_in_lists_action(l, txt=saodang, *args):
                 residue_tili = ocr_reg(ocr_default(np.array(image.crop(tili_area))))
                 # 此处需要计算没有体力的情况下，直接返回结果，但是结果要更改任务顺序
 
-                if len(residue_tili) > 0:
+                if len(residue_tili) > 0 and residue_tili[0] is not None:
                     result_action['result'] = calculate_max_timestamp(residue_tili)
                     return result_action
                 # 此处位置需要补充队伍排序问题
@@ -138,19 +158,6 @@ def handle_in_lists_action(l, txt=saodang, *args):
                 operate_adb_tap(x, y)
                 continue
 
-            # 识别扫荡并点击
-            result = ocr_default(np.array(image.crop(address_execute_order_area)))
-            if bool(result[0]):
-                for idx in range(len(result)):
-                    res = result[idx]
-                    for line in res:
-                        if line[1][0] == txt:
-                            first_list = line[0]
-                            center_point = [sum(coord) / len(coord) for coord in zip(*first_list)]
-                            operate_adb_tap(820 + center_point[0], 200 + center_point[1])
-                            break
-                    break
-                continue
             # 点击标记并点击下方土地
             if appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji]):
                 operate_adb_tap(address_sign_land_area[0], address_sign_land_area[1])
@@ -171,7 +178,7 @@ def handle_in_battle_result(l, times, *args):
         try:
             image = get_screenshots()
 
-            if appear_then_click(image.crop(shili_area), shili_area, [shili], False):
+            if appear_then_click(image.crop(zhaomu_area), shili_area, ['招募'], False):
                 operate_adb_tap(click_draw_area[0], click_draw_area[1])
                 continue
             if appear_then_click(image.crop(person_battle_area), person_battle_area, [person_battle], False):
@@ -204,7 +211,7 @@ def handle_in_battle_result(l, times, *args):
             return None
 
 
-def handle_battel_draw_result(l,times, *args):
+def handle_battel_draw_result(l, times, *args):
     draw_result = {
         'type': 4,
         'status': 0,
@@ -221,8 +228,7 @@ def handle_battel_draw_result(l,times, *args):
                 continue
             if appear_then_click(image.crop((1110, 640, 1200, 680)), (1110, 640, 1200, 680), ['撤退']):
                 return draw_result
-
-            if appear_then_click(image.crop(shili_area), shili_area, [shili], False):
+            if appear_then_click(image.crop(zhaomu_area), shili_area, ['招募'], False):
                 operate_adb_tap(click_draw_area[0], click_draw_area[1])
                 continue
             if appear_then_click(image.crop(person_battle_area), person_battle_area, [person_battle], False):

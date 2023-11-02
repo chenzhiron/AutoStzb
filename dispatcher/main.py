@@ -24,6 +24,7 @@ def job_executed(event):
     task_id = object_dict['job_id']
     result = object_dict['retval']
     task_next_fn = get_task_all(task_id)
+    print(task_next_fn)
     if len(task_next_fn) > 0:
         # 1.扫荡 -> 2.查看战报 -> 3.胜利-失败/平局
 
@@ -33,7 +34,8 @@ def job_executed(event):
             seconds = result['times']
             current_date = get_current_date(seconds)
             # 如果没有体力 进行等待 再进行出发
-            next_fn = task_next_fn.pop(0) if result['result'] is not None else handle_in_lists_action
+            next_fn = task_next_fn.pop(0) if (result['result'] is None) else handle_in_lists_action
+            print(next_fn)
             # 等待执行下一步任务
             sc_cron_add_jobs(next_fn, [l, seconds],
                              current_date['year'], current_date['month'], current_date['day'],
@@ -43,9 +45,10 @@ def job_executed(event):
         elif result['type'] == 3:
             l = result['lists']
             seconds = result['times']
-            if result['result']['status'] == '胜利' or result['result']['status'] == '失败':
+            args = result['args']
+            if result['result']['status'] == '胜利' or result['result']['status'] == '战败':
                 current_date = get_current_date(seconds)
-                sc_cron_add_jobs(task_next_fn.pop(0), [l],
+                sc_cron_add_jobs(task_next_fn.pop(0), [l,args],
                                  current_date['year'], current_date['month'], current_date['day'],
                                  current_date['hour'], current_date['minute'], current_date['second'],
                                  task_id)
