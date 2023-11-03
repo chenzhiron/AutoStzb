@@ -160,6 +160,7 @@ def handle_in_lists_action(l, txt=saodang, *args):
 
             # 点击标记并点击下方土地
             if appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji]):
+                time.sleep(0.2)
                 operate_adb_tap(address_sign_land_area[0], address_sign_land_area[1])
                 continue
             # 如果没有点击标记，则点击一次
@@ -187,6 +188,7 @@ def handle_in_battle_result(l, times, *args):
                 continue
             if appear_then_click(image.crop(person_detail_battle_area), person_detail_battle_area, [battle_details],
                                  False):
+                image = get_screenshots()
                 status = ''
                 person_number = ''
                 enemy_number = ''
@@ -211,7 +213,7 @@ def handle_in_battle_result(l, times, *args):
             return None
 
 
-def handle_battel_draw_result(l, times, *args):
+def handle_battle_draw_result(l, times, *args):
     draw_result = {
         'type': 4,
         'status': 0,

@@ -4,7 +4,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 from dispatcher.status import result_queue
 from dispatcher.task_group import get_task_all
-from modules.pageSwitch.page_switch import handle_in_lists_action, handle_battel_draw_result
+from modules.pageSwitch.page_switch import handle_in_lists_action, handle_battle_draw_result
 from modules.utils.main import get_current_date
 
 # 创建调度器
@@ -58,7 +58,7 @@ def job_executed(event):
                 enemy = result['result']['enemy']
                 # 默认平局就撤退
                 current_date = get_current_date(1)
-                sc_cron_add_jobs(handle_battel_draw_result, [l, seconds],
+                sc_cron_add_jobs(handle_battle_draw_result, [l, seconds],
                                  current_date['year'], current_date['month'], current_date['day'],
                                  current_date['hour'], current_date['minute'], current_date['second'],
                                  task_id)
