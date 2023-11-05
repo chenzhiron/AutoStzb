@@ -28,7 +28,7 @@ def calculate_max_timestamp(time_list):
     return max(timestamp_list)
 
 
-def executeClickArea(xy):
+def computedexecuteClickArea(xy):
     x = (xy[0] + xy[2]) / 2
     y = (xy[1] + xy[3]) / 2
     return x, y

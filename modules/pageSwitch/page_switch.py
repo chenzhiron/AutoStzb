@@ -1,11 +1,10 @@
-import datetime
 import time
 
 import numpy as np
 
 from device.automation import get_screenshots
 from device.operate import operate_adb_tap, operate_adb_swipe
-from modules.utils.main import calculate_max_timestamp, executeClickArea
+from modules.utils.main import calculate_max_timestamp, computedexecuteClickArea
 from modules.general.module_options_name import shili, zhengbing, require_zhengbing, zhengbing_satisfy, queding, \
     going_list_txt, person_battle, battle_details, saodang, biaoji
 from modules.general.option_verify_area import address_area_start, address_sign_verify, address_sign_land_area, \
@@ -17,6 +16,7 @@ from modules.general.option_verify_area import address_area_start, address_sign_
 from ocr.main import ocr_default
 
 
+# 回到首页
 def handle_out_map():
     while 1:
         try:
@@ -33,6 +33,7 @@ def handle_out_map():
             return False
 
 
+# 队伍征兵
 def handle_in_map_conscription(l, *args):
     result_conscription = {
         'type': 1,
@@ -75,7 +76,7 @@ def handle_in_map_conscription(l, *args):
                     handle_out_map()
                     return result_conscription
 
-                x, y = executeClickArea(zhengbing_page_swipe_verify)
+                x, y = computedexecuteClickArea(zhengbing_page_swipe_verify)
                 operate_adb_tap(x, y)
                 continue
             # 点击确定
@@ -101,11 +102,12 @@ def appear_then_click(img_source, click_area, check_txt, clicked=True):
         return False
 
     if clicked:
-        x, y = executeClickArea(click_area)
+        x, y = computedexecuteClickArea(click_area)
         operate_adb_tap(x, y)
     return True
 
 
+# 队伍出发
 def handle_in_lists_action(l, txt=saodang, *args):
     result_action = {
         'type': 2,
@@ -114,6 +116,8 @@ def handle_in_lists_action(l, txt=saodang, *args):
         'lists': l,
         'args': args
     }
+    offsety = args[0] if len(args) > 0 else 0
+
     while 1:
         try:
             image = get_screenshots()
@@ -139,7 +143,7 @@ def handle_in_lists_action(l, txt=saodang, *args):
             if appear_then_click(image.crop(address_going_require), address_going_require, [txt], False):
                 time_res = ocr_reg(ocr_default(np.array(image.crop(computed_going_time_area))))
                 times = calculate_max_timestamp(time_res)
-                x, y = executeClickArea(address_going_require)
+                x, y = computedexecuteClickArea(address_going_require)
                 operate_adb_tap(x, y)
                 result_action['times'] = times
                 return result_action
@@ -154,7 +158,7 @@ def handle_in_lists_action(l, txt=saodang, *args):
                     except Exception as e:
                         continue
                     residue_tili = ocr_reg(ocr_default(np.array(image.crop(
-                        (tili_area[current_max][l-1])
+                        (tili_area[current_max][l - 1])
                     ))
                     ))
                     # 此处需要计算没有体力的情况下，直接返回结果，但是结果要更改任务顺序
@@ -170,7 +174,8 @@ def handle_in_lists_action(l, txt=saodang, *args):
             # 点击标记并点击下方土地
             if appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji]):
                 time.sleep(0.2)
-                operate_adb_tap(address_sign_land_area[0], address_sign_land_area[1])
+                x, y = computedexecuteClickArea(address_sign_land_area)
+                operate_adb_tap(x, y + offsety)
                 continue
             # 如果没有点击标记，则点击一次
             if not appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji], False):
@@ -181,6 +186,7 @@ def handle_in_lists_action(l, txt=saodang, *args):
             return None
 
 
+# 战报结果
 def handle_in_battle_result(l, times, *args):
     battle_result = {}
     start_time = time.time()
@@ -223,6 +229,7 @@ def handle_in_battle_result(l, times, *args):
             return None
 
 
+# 战斗平局
 def handle_battle_draw_result(l, times, *args):
     draw_result = {
         'type': 4,
@@ -257,6 +264,52 @@ def handle_battle_draw_result(l, times, *args):
         except Exception as e:
             print('战报平局模块发生了错误', e)
             return None
+
+
+# 基于标记出征土地
+def handle_sign_action(l, *args):
+    area = (885, 225, 1050, 295)
+    count = 0
+    sign_action_result = {
+        'type': 5,
+        'lists': l,
+        'txt': '出证',
+        'offset': 0
+    }
+    while count < 60:
+        image = get_screenshots()
+
+        # 点击标记并点击下方土地
+        if appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji]):
+            time.sleep(0.2)
+            result = ocr_reg(ocr_default(np.array(image.crop(area))))
+            count += 1
+            if len(result) >= 2:
+                sign_action_result['offset'] = 45
+                return sign_action_result
+        # 如果没有点击标记，则点击一次
+        if not appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji], False):
+            operate_adb_tap(address_area_start[0], address_area_start[1])
+            continue
+    return sign_action_result
+
+
+# 取消标记
+def handle_unmark(args):
+    unmark_result = {
+        'type': 6,
+        'args': args
+    }
+    image = get_screenshots()
+    while 1:
+        if appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji]):
+            time.sleep(0.2)
+            operate_adb_tap(1150, 265)
+            return unmark_result
+            # 如果没有点击标记，则点击一次
+        if not appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji], False):
+            operate_adb_tap(address_area_start[0], address_area_start[1])
+            continue
 
 
 def ocr_reg(res):

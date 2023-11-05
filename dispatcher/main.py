@@ -83,6 +83,19 @@ def job_executed(event):
                              current_date['year'], current_date['month'], current_date['day'],
                              current_date['hour'], current_date['minute'], current_date['second'],
                              task_id)
+        elif result['type'] == 5:
+            if result['offset'] == 0:
+                return
+            l = result['lists']
+            txt = result['txt']
+            offset = result['offset']
+            current_date = get_current_date(1)
+            sc_cron_add_jobs(task_next_fn.pop(0), [l, txt, offset],
+                             current_date['year'], current_date['month'], current_date['day'],
+                             current_date['hour'], current_date['minute'], current_date['second'],
+                             task_id)
+        elif result['type'] == 6:
+            pass
     result_queue.put(event)
 
 

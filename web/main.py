@@ -93,13 +93,7 @@ def start():
         task_name = task['name']
         task_fn = task['fn'].pop(0)
         set_task_all(task_name, task['fn'])
-        date = get_current_date()
-        if date['second'] == 59:
-            date['second'] = 0
-            date['minute'] += 1
-        else:
-            date['second'] += 1
-
+        date = get_current_date(1)
         # 目前只需要传入 队列0即可，没有写其他额外选项
         sc_cron_add_jobs(task_fn, task['args'], date['year'], date['month'], date['day'], date['hour'],
                          date['minute'], date['second'], task_name)
