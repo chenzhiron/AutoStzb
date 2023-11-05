@@ -13,7 +13,7 @@ from modules.general.option_verify_area import address_area_start, address_sign_
     address_going_require, click_draw_area, click_draw_detail_area, person_battle_area, person_detail_battle_area, \
     person_status_number_area, enemy_status_number_area, status_area, shili_area, zhengbing_page_verify_area, \
     click_list_x_y, zhengbing_page_area, zhengbing_page_swipe_verify, zhengbing_page_swipe, zhengbing_time_area, \
-    queding_area, tili_area, zhaomu_area, return_area, shili_top_area
+    queding_area, tili_area, zhaomu_area, return_area, shili_top_area, bianduilists
 from ocr.main import ocr_default
 
 
@@ -146,16 +146,25 @@ def handle_in_lists_action(l, txt=saodang, *args):
             # 选择部队页面
             if appear_then_click(image.crop(computed_going_list_area), computed_going_list_area, [going_list_txt],
                                  False):
+                result = ocr_reg(ocr_default(np.array(image.crop(bianduilists))))
+                print('origin', result)
+                if len(result) > 0:
+                    try:
+                        current_max = int(result[0][2]) - 1
+                    except Exception as e:
+                        continue
+                    residue_tili = ocr_reg(ocr_default(np.array(image.crop(
+                        (tili_area[current_max][l-1])
+                    ))
+                    ))
+                    # 此处需要计算没有体力的情况下，直接返回结果，但是结果要更改任务顺序
 
-                residue_tili = ocr_reg(ocr_default(np.array(image.crop(tili_area))))
-                # 此处需要计算没有体力的情况下，直接返回结果，但是结果要更改任务顺序
-
-                if len(residue_tili) > 0 and residue_tili[0] is not None:
-                    result_action['result'] = calculate_max_timestamp(residue_tili)
-                    return result_action
-                # 此处位置需要补充队伍排序问题
-                x, y = address_execute_list
-                operate_adb_tap(x, y)
+                    if len(residue_tili) > 0 and residue_tili[0] is not None:
+                        result_action['result'] = calculate_max_timestamp(residue_tili)
+                        return result_action
+                        # 此处位置需要补充队伍排序问题
+                    x, y = address_execute_list[current_max][l - 1]
+                    operate_adb_tap(x, y)
                 continue
 
             # 点击标记并点击下方土地
@@ -201,11 +210,12 @@ def handle_in_battle_result(l, times, *args):
                 battle_result['person'] = person_number
                 battle_result['enemy'] = enemy_number
                 handle_out_map()
+                nexttimes = times - (int(time.time()) - int(start_time))
                 return {
                     'type': 3,
                     'result': battle_result,
                     'lists': l,
-                    'times': times - (int(time.time()) - int(start_time)),
+                    'times': nexttimes if nexttimes >= 0 else 0,
                     'args': args
                 }
         except Exception as e:
