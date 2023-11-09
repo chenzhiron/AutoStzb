@@ -25,6 +25,7 @@ def job_executed(event):
     result = object_dict['retval']
     task_next_fn = get_task_all(task_id)
     print(task_next_fn)
+
     if len(task_next_fn) > 0:
         # 1.扫荡 -> 2.查看战报 -> 3.胜利-失败/平局
 
@@ -74,10 +75,9 @@ def job_executed(event):
                                  current_date['hour'], current_date['minute'], current_date['second'],
                                  task_id
                                  )
-
         elif result['type'] == 1:
             current_lists = result['lists']
-            next_time = result['times']
+            next_time = result['times'] + 1
             current_date = get_current_date(next_time)
             sc_cron_add_jobs(task_next_fn.pop(0), [current_lists],
                              current_date['year'], current_date['month'], current_date['day'],
