@@ -194,7 +194,7 @@ def handle_in_battle_result(taskid, l, times, *args):
                 operate_adb_tap(click_draw_area[0], click_draw_area[1])
                 continue
             if appear_then_click(image.crop(person_battle_area), person_battle_area, [person_battle], False):
-                time.sleep(0.5)
+                time.sleep(2)
                 operate_adb_tap(click_draw_detail_area[0], click_draw_detail_area[1])
                 continue
             if appear_then_click(image.crop(person_detail_battle_area), person_detail_battle_area, [battle_details],
