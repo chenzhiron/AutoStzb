@@ -1,6 +1,7 @@
 from functools import partial
 import copy
 import pywebio.pin as pin
+from modules.taskConfigStorage.main import init_config_storage_by_key, change_config_storage_by_key
 from pywebio import start_server
 from pywebio.output import put_row, put_column, put_code, put_collapse, put_button, put_text, put_scope, use_scope
 from pywebio import session
@@ -72,17 +73,13 @@ def add_scheduler_job(event):
         repetition_number = pin.pin['repetition_number']
         checkbox_enhance = pin.pin['checkbox_enhance'][0] if bool(pin.pin['checkbox_enhance']) else False
         task_fn = {'name': current_options + str(current_index),
-                   'args': [going_list,
-                            '扫荡' if current_options == '扫荡' else
+                   'args': [going_list, '扫荡' if current_options == '扫荡' else
                             checkbox_enhance],
                    'fn': copy.deepcopy(mopping_up) * repetition_number
                    if current_options == '扫荡'
                    else copy.deepcopy(conscription) * 2
                    }
         task_list.append(task_fn)
-        render_tasked(task_list)
-    else:
-        remove_tasked(current_options + str(current_index))
 
 
 # 调度器启动
@@ -92,13 +89,15 @@ def start():
         task = get_task()
         task_name = task['name']
         task_fn = task['fn'].pop(0)
+        # 初始化存储
+        init_config_storage_by_key(task_name)
+        # 初始化 队伍
+        change_config_storage_by_key(task_name, 'lists', task['args'][0])
+        # 设置队列任务
         set_task_all(task_name, task['fn'])
-        date = get_current_date(1)
-        # 目前只需要传入 队列0即可，没有写其他额外选项
-        sc_cron_add_jobs(task_fn, task['args'], date['year'], date['month'], date['day'], date['hour'],
-                         date['minute'], date['second'], task_name)
+        # 添加执行任务
+        sc_cron_add_jobs(task_fn, [task_name] + task['args'], task_name, 1)
         result = result_queue.get()
-
         print('result', result)
 
 
@@ -157,28 +156,6 @@ def render_button(lists, l):
         onclick = partial(cut, info=info[:l], index=i + 1)
         button_list.append(put_button(info, onclick=onclick))
     return button_list
-
-
-def remove_tasked(info):
-    for i, task in enumerate(task_list):
-        if task['name'] == info:
-            task_list.pop(i)
-            break
-    with use_scope('cancal', clear=True, create_scope=True):
-        put_collapse('任务取消', render_tasked_group(task_list))
-
-
-def render_tasked_group(lists):
-    button_list = []
-    for i, info in enumerate(lists):
-        onclick = partial(remove_tasked, info=info['name'])
-        button_list.append(put_button(info['name'], onclick=onclick))
-    return button_list
-
-
-def render_tasked(lists):
-    with use_scope('cancal', clear=True, create_scope=True):
-        put_collapse('取消任务', render_tasked_group(lists))
 
 
 # 初始化函数

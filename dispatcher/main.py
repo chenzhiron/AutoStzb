@@ -5,6 +5,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from dispatcher.status import result_queue
 from dispatcher.task_group import get_task_all
 from modules.pageSwitch.page_switch import handle_in_lists_action, handle_battle_draw_result
+from modules.taskConfigStorage.main import get_config_storage_by_key
 from modules.utils.main import get_current_date
 
 # 创建调度器
@@ -20,91 +21,63 @@ def start_scheduler():
 # 在此处任务进行校验跟添加任务
 def job_executed(event):
     object_dict = vars(event)
-    print(object_dict)
     task_id = object_dict['job_id']
-    result = object_dict['retval']
     task_next_fn = get_task_all(task_id)
-    print(task_next_fn)
-
+    current_config_storage = get_config_storage_by_key(task_id)
     if len(task_next_fn) > 0:
         # 1.扫荡 -> 2.查看战报 -> 3.胜利-失败/平局
 
         # 出发/扫荡
-        if result['type'] == 2:
-            l = result['lists']
-            seconds = result['times']
-            current_date = get_current_date(seconds)
+        if current_config_storage['type'] == 2:
+            l = current_config_storage['lists']
+            seconds = current_config_storage['times']
             # 如果没有体力 进行等待 再进行出发
-            next_fn = task_next_fn.pop(0) if (result['result'] is None) else handle_in_lists_action
-            print(next_fn)
+            next_fn = task_next_fn.pop(0) if (current_config_storage['result'] is None) else handle_in_lists_action
             # 等待执行下一步任务
-            sc_cron_add_jobs(next_fn, [l, seconds],
-                             current_date['year'], current_date['month'], current_date['day'],
-                             current_date['hour'], current_date['minute'], current_date['second'],
-                             task_id)
+            sc_cron_add_jobs(next_fn, [task_id] + [l, seconds], task_id, seconds)
         # 战报结果
-        elif result['type'] == 3:
-            l = result['lists']
-            seconds = result['times']
-            args = result['args']
-            if result['result']['status'] == '胜利' or result['result']['status'] == '战败':
-                current_date = get_current_date(seconds)
-                sc_cron_add_jobs(task_next_fn.pop(0), [l,args],
-                                 current_date['year'], current_date['month'], current_date['day'],
-                                 current_date['hour'], current_date['minute'], current_date['second'],
-                                 task_id)
-            elif result['result']['status'] == '平局':
+        elif current_config_storage['type'] == 3:
+            l = current_config_storage['lists']
+            seconds = current_config_storage['times']
+            if current_config_storage['result']['status'] == '胜利' or current_config_storage['result']['status'] == '战败':
+                sc_cron_add_jobs(task_next_fn.pop(0), [task_id] + [l], task_id, seconds)
+            elif current_config_storage['result']['status'] == '平局':
                 # 判断平局要求，是否等待，然后触发撤回的函数
-                person = result['result']['person']
-                enemy = result['result']['enemy']
+                person = current_config_storage['result']['person']
+                enemy = current_config_storage['result']['enemy']
                 # 默认平局就撤退
                 current_date = get_current_date(1)
-                sc_cron_add_jobs(handle_battle_draw_result, [l, seconds],
-                                 current_date['year'], current_date['month'], current_date['day'],
-                                 current_date['hour'], current_date['minute'], current_date['second'],
-                                 task_id)
+                sc_cron_add_jobs(handle_battle_draw_result, [task_id] + [l], task_id, 1)
                 # 添加等待任务
 
-        elif result['type'] == 4:
-            if result['status'] == 0:
-                l = result['lists']
-                seconds = result['times']
-                current_date = get_current_date(seconds)
-                sc_cron_add_jobs(task_next_fn.pop(0), [l],
-                                 current_date['year'], current_date['month'], current_date['day'],
-                                 current_date['hour'], current_date['minute'], current_date['second'],
-                                 task_id
-                                 )
-        elif result['type'] == 1:
-            current_lists = result['lists']
-            next_time = result['times'] + 1
-            current_date = get_current_date(next_time)
-            sc_cron_add_jobs(task_next_fn.pop(0), [current_lists],
-                             current_date['year'], current_date['month'], current_date['day'],
-                             current_date['hour'], current_date['minute'], current_date['second'],
-                             task_id)
-        elif result['type'] == 5:
-            if result['offset'] == 0:
+        elif current_config_storage['type'] == 4:
+            if current_config_storage['status'] == 0:
+                l = current_config_storage['lists']
+                seconds = current_config_storage['times']
+                sc_cron_add_jobs(task_next_fn.pop(0), [task_id] + [l], task_id, seconds)
+        elif current_config_storage['type'] == 1:
+            current_lists = current_config_storage['lists']
+            next_time = current_config_storage['times'] + 1
+            sc_cron_add_jobs(task_next_fn.pop(0), [task_id] + [current_lists], task_id, next_time)
+        elif current_config_storage['type'] == 5:
+            if current_config_storage['offset'] == 0:
                 return
-            l = result['lists']
-            txt = result['txt']
-            offset = result['offset']
-            current_date = get_current_date(1)
-            sc_cron_add_jobs(task_next_fn.pop(0), [l, txt, offset],
-                             current_date['year'], current_date['month'], current_date['day'],
-                             current_date['hour'], current_date['minute'], current_date['second'],
-                             task_id)
-        elif result['type'] == 6:
+            l = current_config_storage['lists']
+            txt = current_config_storage['txt']
+            offset = current_config_storage['offset']
+            sc_cron_add_jobs(task_next_fn.pop(0), [task_id] + [l, txt, offset], task_id, 1)
+        elif current_config_storage['type'] == 6:
             pass
     result_queue.put(event)
 
 
-def sc_cron_add_jobs(fn, li, year, month, day, hour, minute, second, info_id):
+def sc_cron_add_jobs(fn, li, task_name, seconds):
+    current_data = get_current_date(seconds)
     scheduler.add_job(fn,
                       'cron',
-                      id=info_id,
-                      year=year, month=month, day=day,
-                      hour=hour, minute=minute, second=second,
+                      id=task_name,
+                      year=current_data['year'], month=current_data['month'], day=current_data['day'],
+                      hour=current_data['hour'], minute=current_data['minute'], second=current_data['second'],
                       args=li,
                       misfire_grace_time=60 * 60
                       )
