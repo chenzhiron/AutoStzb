@@ -276,33 +276,43 @@ def handle_sign_action(taskid, l, *args):
 
         # 点击标记并点击下方土地
         if appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji]):
-            time.sleep(0.2)
+            time.sleep(1)
             result = ocr_reg(ocr_default(np.array(image.crop(area))))
             count += 1
             if len(result) >= 2:
                 change_config_storage_by_key(taskid, 'offset', 45)
                 return None
+
         # 如果没有点击标记，则点击一次
         if not appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji], False):
             operate_adb_tap(address_area_start[0], address_area_start[1])
+            count += 1
             continue
+    change_config_storage_by_key(taskid, 'offset', 0)
     return None
 
 
 # 取消标记
 def handle_unmark(taskid, *args):
+    area = (885, 225, 1050, 295)
     update_config_storage(taskid, {
         'type': 6
     })
-    image = get_screenshots()
     while 1:
+        image = get_screenshots()
         if appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji]):
-            time.sleep(0.2)
+            time.sleep(1)
             operate_adb_tap(1150, 265)
+            result = ocr_reg(ocr_default(np.array(image.crop(area))))
+            if len(result) >= 2:
+                change_config_storage_by_key(taskid, 'offset', 45)
+            else:
+                change_config_storage_by_key(taskid, 'offset', 0)
             return None
             # 如果没有点击标记，则点击一次
         if not appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji], False):
             operate_adb_tap(address_area_start[0], address_area_start[1])
+            time.sleep(1)
             continue
 
 

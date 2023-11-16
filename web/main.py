@@ -9,11 +9,11 @@ from pywebio import session
 from config.const import web_port
 from dispatcher.main import sc_cron_add_jobs, start_scheduler
 from dispatcher.status import result_queue
-from modules.utils.main import get_current_date
-from dispatcher.task_group import conscription, mopping_up, set_task_all
+from dispatcher.task_group import conscription, mopping_up, set_task_all, conquer
 
 zhengbing_list = ['征兵一', '征兵二', '征兵三']
 saodang_list = ['扫荡一', '扫荡二', '扫荡三', '扫荡四', '扫荡五']
+chuzheng_list = ['出征']
 
 options = [
     {
@@ -72,12 +72,17 @@ def add_scheduler_job(event):
         going_list = pin.pin['select_list']
         repetition_number = pin.pin['repetition_number']
         checkbox_enhance = pin.pin['checkbox_enhance'][0] if bool(pin.pin['checkbox_enhance']) else False
+        executefn = None
+        if current_options == '扫荡':
+            executefn = copy.deepcopy(mopping_up) * repetition_number
+        elif current_options == '征兵':
+            executefn = copy.deepcopy(conscription) * 2
+        elif current_options == '出征':
+            executefn = copy.deepcopy(conquer) * 2
         task_fn = {'name': current_options + str(current_index),
                    'args': [going_list, '扫荡' if current_options == '扫荡' else
-                            checkbox_enhance],
-                   'fn': copy.deepcopy(mopping_up) * repetition_number
-                   if current_options == '扫荡'
-                   else copy.deepcopy(conscription) * 2
+                   checkbox_enhance],
+                   'fn': executefn
                    }
         task_list.append(task_fn)
 
@@ -171,6 +176,7 @@ def init():
             put_scope('cancel', None),
             put_collapse('征兵', render_button(zhengbing_list, 2)),
             put_collapse('扫荡', render_button(saodang_list, 2)),
+            put_collapse('出征', render_button(chuzheng_list, 2)),
             None,
         ]).style('display: block;'),
         put_scope('center', put_column([

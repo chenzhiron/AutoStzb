@@ -1,9 +1,11 @@
+import copy
+
 from apscheduler.events import EVENT_JOB_EXECUTED
 from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from dispatcher.status import result_queue
-from dispatcher.task_group import get_task_all
+from dispatcher.task_group import get_task_all, set_task_all
 from modules.pageSwitch.page_switch import handle_in_lists_action, handle_battle_draw_result
 from modules.taskConfigStorage.main import get_config_storage_by_key
 from modules.utils.main import get_current_date
@@ -67,7 +69,14 @@ def job_executed(event):
             offset = current_config_storage['offset']
             sc_cron_add_jobs(task_next_fn.pop(0), [task_id] + [l, txt, offset], task_id, 1)
         elif current_config_storage['type'] == 6:
-            pass
+            offset = current_config_storage['offset']
+            l = current_config_storage['lists']
+            if offset == 0:
+                return None
+            else:
+                set_task_all(task_id, copy.deepcopy(task_next_fn) * 2)
+            task_next_fn = get_task_all(task_id)
+            sc_cron_add_jobs(task_next_fn.pop(0), [task_id] + [l], task_id, 1)
     result_queue.put(event)
 
 
