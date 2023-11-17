@@ -63,3 +63,16 @@ queding_area = (675, 450, 880, 500)
 zhaomu_area = (1140, 670, 1210, 705)
 
 return_area = (1200, 60)
+
+
+# 战报平局模块
+retreat_area = (1040, 300, 1130, 330)
+retreat_click_area = (1040, 300, 1130, 330)
+retreat_append_click = (1110, 640, 1200, 680)
+battle_site = (700, 670, 840, 710)
+retreat_discern_require_area = (710, 450, 850, 490)
+retreat_require_click = (640, 360)
+
+# 从第二个标记 做出征准备
+sigin_action_area = (885, 225, 1050, 295)
+cancel_sign = (1150, 265)

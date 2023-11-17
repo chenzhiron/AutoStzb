@@ -1,6 +1,7 @@
 import time
 
 import numpy as np
+from config.custom import getTimeSleep
 
 from device.automation import get_screenshots
 from device.operate import operate_adb_tap, operate_adb_swipe
@@ -8,13 +9,15 @@ from modules.taskConfigStorage.main import change_config_storage_by_key, update_
     get_config_storage_by_key_value
 from modules.utils.main import calculate_max_timestamp, computedexecuteClickArea
 from modules.general.module_options_name import shili, zhengbing, require_zhengbing, zhengbing_satisfy, queding, \
-    going_list_txt, person_battle, battle_details, saodang, biaoji
+    going_list_txt, person_battle, battle_details, saodang, biaoji, retreat_name, zhaomu, battle_site_name
 from modules.general.option_verify_area import address_area_start, address_sign_verify, address_sign_land_area, \
     address_execute_order_area, address_execute_list, computed_going_time_area, computed_going_list_area, \
     address_going_require, click_draw_area, click_draw_detail_area, person_battle_area, person_detail_battle_area, \
     person_status_number_area, enemy_status_number_area, status_area, shili_area, zhengbing_page_verify_area, \
     click_list_x_y, zhengbing_page_area, zhengbing_page_swipe_verify, zhengbing_page_swipe, zhengbing_time_area, \
-    queding_area, tili_area, zhaomu_area, return_area, shili_top_area, bianduilists
+    queding_area, tili_area, zhaomu_area, return_area, shili_top_area, bianduilists, retreat_area, retreat_click_area, \
+    retreat_append_click, battle_site, retreat_discern_require_area, retreat_require_click, sigin_action_area, \
+    cancel_sign
 from ocr.main import ocr_default
 
 
@@ -40,12 +43,11 @@ def handle_in_map_conscription(taskid, l, *args):
     update_config_storage(taskid, {'type': 1,
                                    'times': 0,
                                    'lists': l})
-    # enhance = args[0] if len(args) > 0 else False
     while 1:
         try:
             image = get_screenshots()
             # 点击势力
-            if appear_then_click(image.crop(zhaomu_area), shili_area, ['招募']):
+            if appear_then_click(image.crop(zhaomu_area), shili_area, [zhaomu]):
                 continue
             # 选择部队
             if appear_then_click(image.crop(zhengbing_page_verify_area),
@@ -96,7 +98,6 @@ def appear_then_click(img_source, click_area, check_txt, clicked=True):
     for sublist in res:
         for item in sublist:
             result += item[1][0]
-    print('result   ', result, '------', 'check_txt    ', check_txt)
     if not (result in check_txt):
         return False
 
@@ -115,7 +116,7 @@ def handle_in_lists_action(taskid, l, txt=saodang, *args):
         'lists': l,
     })
     offset_y = get_config_storage_by_key_value(taskid, 'offset')
-
+    time_sleep = getTimeSleep()
     while 1:
         try:
             image = get_screenshots()
@@ -149,7 +150,6 @@ def handle_in_lists_action(taskid, l, txt=saodang, *args):
             if appear_then_click(image.crop(computed_going_list_area), computed_going_list_area, [going_list_txt],
                                  False):
                 result = ocr_reg(ocr_default(np.array(image.crop(bianduilists))))
-                print('origin', result)
                 if len(result) > 0:
                     try:
                         current_max = int(result[0][2]) - 1
@@ -169,7 +169,7 @@ def handle_in_lists_action(taskid, l, txt=saodang, *args):
 
             # 点击标记并点击下方土地
             if appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji]):
-                time.sleep(0.2)
+                time.sleep(time_sleep)
                 x, y = computedexecuteClickArea(address_sign_land_area)
                 operate_adb_tap(x, y + offset_y)
                 continue
@@ -186,6 +186,7 @@ def handle_in_lists_action(taskid, l, txt=saodang, *args):
 def handle_in_battle_result(taskid, l, times, *args):
     battle_result = {}
     start_time = time.time()
+    time_sleep = getTimeSleep()
     while 1:
         try:
             image = get_screenshots()
@@ -194,7 +195,7 @@ def handle_in_battle_result(taskid, l, times, *args):
                 operate_adb_tap(click_draw_area[0], click_draw_area[1])
                 continue
             if appear_then_click(image.crop(person_battle_area), person_battle_area, [person_battle], False):
-                time.sleep(2)
+                time.sleep(time_sleep)
                 operate_adb_tap(click_draw_detail_area[0], click_draw_detail_area[1])
                 continue
             if appear_then_click(image.crop(person_detail_battle_area), person_detail_battle_area, [battle_details],
@@ -233,28 +234,30 @@ def handle_battle_draw_result(taskid, times, *args):
         'status': 0,
         'times': times,
     })
+    time_sleep = getTimeSleep()
     while 1:
         try:
             image = get_screenshots()
 
-            if appear_then_click(image.crop((1040, 300, 1130, 330)), (1040, 300, 1130, 330), ['撤退']):
-                time.sleep(2)
+            if appear_then_click(image.crop(retreat_area), retreat_click_area, [retreat_name]):
+                time.sleep(time_sleep)
                 continue
-            if appear_then_click(image.crop((1110, 640, 1200, 680)), (1110, 640, 1200, 680), ['撤退']):
+            if appear_then_click(image.crop(retreat_append_click), retreat_append_click, [retreat_name]):
                 return None
-            if appear_then_click(image.crop(zhaomu_area), shili_area, ['招募'], False):
+            if appear_then_click(image.crop(zhaomu_area), shili_area, [zhaomu], False):
                 operate_adb_tap(click_draw_area[0], click_draw_area[1])
                 continue
             if appear_then_click(image.crop(person_battle_area), person_battle_area, [person_battle], False):
-                time.sleep(0.5)
+                time.sleep(time_sleep)
                 operate_adb_tap(click_draw_detail_area[0], click_draw_detail_area[1])
                 continue
-            if appear_then_click(image.crop((700, 670, 840, 710)), (700, 670, 840, 710), ['战斗地点']):
+            if appear_then_click(image.crop(battle_site), battle_site, [battle_site_name]):
                 continue
-            if appear_then_click(image.crop((710, 450, 850, 490)), (710, 450, 850, 490), ['确定']):
-                time.sleep(2)
-                operate_adb_tap(640, 360)
-                time.sleep(2)
+            if appear_then_click(image.crop(retreat_discern_require_area), retreat_discern_require_area, [queding]):
+                time.sleep(time_sleep)
+                x, y = retreat_require_click
+                operate_adb_tap(x, y)
+                time.sleep(time_sleep)
                 continue
         except Exception as e:
             print('战报平局模块发生了错误', e)
@@ -263,7 +266,6 @@ def handle_battle_draw_result(taskid, times, *args):
 
 # 基于标记出征土地
 def handle_sign_action(taskid, l, *args):
-    area = (885, 225, 1050, 295)
     count = 0
     update_config_storage(taskid, {
         'type': 5,
@@ -271,13 +273,14 @@ def handle_sign_action(taskid, l, *args):
         'txt': '出证',
         'offset': 0
     })
+    time_sleep = getTimeSleep()
     while count < 60:
         image = get_screenshots()
 
         # 点击标记并点击下方土地
         if appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji]):
-            time.sleep(1)
-            result = ocr_reg(ocr_default(np.array(image.crop(area))))
+            time.sleep(time_sleep)
+            result = ocr_reg(ocr_default(np.array(image.crop(sigin_action_area))))
             count += 1
             if len(result) >= 2:
                 change_config_storage_by_key(taskid, 'offset', 45)
@@ -294,16 +297,17 @@ def handle_sign_action(taskid, l, *args):
 
 # 取消标记
 def handle_unmark(taskid, *args):
-    area = (885, 225, 1050, 295)
     update_config_storage(taskid, {
         'type': 6
     })
+    time_sleep = getTimeSleep()
     while 1:
         image = get_screenshots()
         if appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji]):
-            time.sleep(1)
-            operate_adb_tap(1150, 265)
-            result = ocr_reg(ocr_default(np.array(image.crop(area))))
+            time.sleep(time_sleep)
+            x, y = cancel_sign
+            operate_adb_tap(x, y)
+            result = ocr_reg(ocr_default(np.array(image.crop(sigin_action_area))))
             if len(result) >= 2:
                 change_config_storage_by_key(taskid, 'offset', 45)
             else:
@@ -312,7 +316,7 @@ def handle_unmark(taskid, *args):
             # 如果没有点击标记，则点击一次
         if not appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji], False):
             operate_adb_tap(address_area_start[0], address_area_start[1])
-            time.sleep(1)
+            time.sleep(time_sleep)
             continue
 
 

@@ -1,5 +1,3 @@
-TIMESLEEP = 1
-
 # 模拟器url 链接
 operate_url = '127.0.0.1'
 

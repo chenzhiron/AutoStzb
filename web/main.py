@@ -1,6 +1,7 @@
 from functools import partial
 import copy
 import pywebio.pin as pin
+from config.custom import setTimeSleep, getTimeSleep
 from modules.taskConfigStorage.main import init_config_storage_by_key, change_config_storage_by_key
 from pywebio import start_server
 from pywebio.output import put_row, put_column, put_code, put_collapse, put_button, put_text, put_scope, use_scope
@@ -154,11 +155,37 @@ def cut(info, index):
         apply(current_options)
 
 
+def render_sleep():
+    start_txt = '操作统计延迟'
+    change_sleep_time = getTimeSleep()
+    put_row([
+        put_column([
+            put_text(start_txt),
+            put_text('请注意，延迟不能小于等于0, 单位 秒')
+        ]),
+        put_column([
+            pin.put_input('change_sleep_time', value=change_sleep_time, type='number')
+        ])
+    ])
+    pin.pin_on_change('change_sleep_time', onchange=setTimeSleep, clear=True)
+
+
+change_list = ['操作延迟']
+
+
+def change_sleep(info, index):
+    global current_index, current_options
+    current_options = info
+    current_index = index
+    with use_scope('center', clear=True, create_scope=True):
+        render_sleep()
+
+
 # 渲染函数
-def render_button(lists, l):
+def render_button(lists, l, cutfn):
     button_list = []
     for i, info in enumerate(lists):
-        onclick = partial(cut, info=info[:l], index=i + 1)
+        onclick = partial(cutfn, info=info[:l], index=i + 1)
         button_list.append(put_button(info, onclick=onclick))
     return button_list
 
@@ -173,10 +200,10 @@ def init():
     put_row([
         put_column([
             put_button('启动', onclick=start),
-            put_scope('cancel', None),
-            put_collapse('征兵', render_button(zhengbing_list, 2)),
-            put_collapse('扫荡', render_button(saodang_list, 2)),
-            put_collapse('出征', render_button(chuzheng_list, 2)),
+            put_collapse('配置', render_button(change_list, 2, change_sleep)),
+            put_collapse('征兵', render_button(zhengbing_list, 2, cut)),
+            put_collapse('扫荡', render_button(saodang_list, 2, cut)),
+            put_collapse('出征', render_button(chuzheng_list, 2, cut)),
             None,
         ]).style('display: block;'),
         put_scope('center', put_column([
@@ -188,9 +215,9 @@ def init():
 
 
 # 启动web
-def start_web():
+def start_web(web_port=web_port):
     start_server(init, port=web_port)
 
 
-if __name__ == '__main__':
-    start_web()
+# if __name__ == '__main__':
+#     start_web()

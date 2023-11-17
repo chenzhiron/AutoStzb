@@ -29,13 +29,6 @@ if __name__ == '__main__':
         time.sleep(2)
         main_process_id = os.getpid()
         print(main_process_id)
-        # start_scheduler()
-        # current_date = get_current_date(2)
-        # set_task_all('conquer', conquer)
-        # sc_cron_add_jobs(get_task_all('conquer').pop(0), [1],
-        #                  current_date['year'], current_date['month'], current_date['day'],
-        #                  current_date['hour'], current_date['minute'], current_date['second'],
-        #                  'conquer')
         start_web()
         disconnect_simulator()
     except Exception as e:
