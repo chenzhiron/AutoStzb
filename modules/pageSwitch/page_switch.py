@@ -39,10 +39,12 @@ def handle_out_map():
 
 
 # 队伍征兵
-def handle_in_map_conscription(taskid, l, *args):
+def handle_in_map_conscription(taskid):
+    l = get_config_storage_by_key_value(taskid, 'lists')
     update_config_storage(taskid, {'type': 1,
-                                   'times': 0,
-                                   'lists': l})
+                                   'times': 0
+                                   }
+                          )
     while 1:
         try:
             image = get_screenshots()
@@ -108,14 +110,13 @@ def appear_then_click(img_source, click_area, check_txt, clicked=True):
 
 
 # 队伍出发
-def handle_in_lists_action(taskid, l, txt=saodang, *args):
+def handle_in_lists_action(taskid):
+    l = get_config_storage_by_key_value(taskid, 'lists')
+    txt = get_config_storage_by_key_value(taskid, 'txt')
+    offset_y = get_config_storage_by_key_value(taskid, 'offset')
     update_config_storage(taskid, {
         'type': 2,
-        'result': None,
-        'times': 0,
-        'lists': l,
     })
-    offset_y = get_config_storage_by_key_value(taskid, 'offset')
     time_sleep = getTimeSleep()
     while 1:
         try:
@@ -183,7 +184,8 @@ def handle_in_lists_action(taskid, l, txt=saodang, *args):
 
 
 # 战报结果
-def handle_in_battle_result(taskid, l, times, *args):
+def handle_in_battle_result(taskid):
+    current_time = get_config_storage_by_key_value(taskid, 'time')
     battle_result = {}
     start_time = time.time()
     time_sleep = getTimeSleep()
@@ -213,12 +215,10 @@ def handle_in_battle_result(taskid, l, times, *args):
                 battle_result['person'] = person_number
                 battle_result['enemy'] = enemy_number
                 handle_out_map()
-                nexttimes = times - (int(time.time()) - int(start_time))
+                battle_result['time_sleep'] = current_time - (int(time.time()) - int(start_time))
                 update_config_storage(taskid, {
                     'type': 3,
-                    'result': battle_result,
-                    'lists': l,
-                    'times': nexttimes if nexttimes >= 0 else 0
+                    'battle_result': battle_result
                 })
                 return None
 
@@ -228,11 +228,10 @@ def handle_in_battle_result(taskid, l, times, *args):
 
 
 # 战斗平局
-def handle_battle_draw_result(taskid, times, *args):
+def handle_battle_draw_result(taskid):
     update_config_storage(taskid, {
         'type': 4,
-        'status': 0,
-        'times': times,
+        'status': 0
     })
     time_sleep = getTimeSleep()
     while 1:
@@ -265,12 +264,10 @@ def handle_battle_draw_result(taskid, times, *args):
 
 
 # 基于标记出征土地
-def handle_sign_action(taskid, l, *args):
+def handle_sign_action(taskid):
     count = 0
     update_config_storage(taskid, {
         'type': 5,
-        'lists': l,
-        'txt': '出证',
         'offset': 0
     })
     time_sleep = getTimeSleep()
@@ -291,12 +288,11 @@ def handle_sign_action(taskid, l, *args):
             operate_adb_tap(address_area_start[0], address_area_start[1])
             count += 1
             continue
-    change_config_storage_by_key(taskid, 'offset', 0)
     return None
 
 
 # 取消标记
-def handle_unmark(taskid, *args):
+def handle_unmark(taskid):
     update_config_storage(taskid, {
         'type': 6
     })

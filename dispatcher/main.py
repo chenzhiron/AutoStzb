@@ -31,52 +31,50 @@ def job_executed(event):
 
         # 出发/扫荡
         if current_config_storage['type'] == 2:
-            l = current_config_storage['lists']
             seconds = current_config_storage['times']
+            next_fn = task_next_fn.pop(0)
             # 如果没有体力 进行等待 再进行出发
-            next_fn = task_next_fn.pop(0) if (current_config_storage['result'] is None) else handle_in_lists_action
+            if current_config_storage['result'] is not None:
+                next_fn = handle_in_lists_action
+                seconds = current_config_storage['result']
             # 等待执行下一步任务
-            sc_cron_add_jobs(next_fn, [task_id] + [l, seconds], task_id, seconds)
+            sc_cron_add_jobs(next_fn, [task_id], task_id, seconds)
         # 战报结果
         elif current_config_storage['type'] == 3:
-            l = current_config_storage['lists']
-            seconds = current_config_storage['times']
             if current_config_storage['result']['status'] == '胜利' or current_config_storage['result']['status'] == '战败':
-                sc_cron_add_jobs(task_next_fn.pop(0), [task_id] + [l], task_id, seconds)
+                seconds = current_config_storage['result']['time_sleep']
+                sc_cron_add_jobs(task_next_fn.pop(0), [task_id], task_id, seconds)
             elif current_config_storage['result']['status'] == '平局':
                 # 判断平局要求，是否等待，然后触发撤回的函数
                 person = current_config_storage['result']['person']
                 enemy = current_config_storage['result']['enemy']
                 # 默认平局就撤退
                 current_date = get_current_date(1)
-                sc_cron_add_jobs(handle_battle_draw_result, [task_id] + [l], task_id, 1)
+                sc_cron_add_jobs(handle_battle_draw_result, [task_id], task_id, 1)
                 # 添加等待任务
-
+        # 平局 撤退步骤
         elif current_config_storage['type'] == 4:
             if current_config_storage['status'] == 0:
-                l = current_config_storage['lists']
                 seconds = current_config_storage['times']
-                sc_cron_add_jobs(task_next_fn.pop(0), [task_id] + [l], task_id, seconds)
+                sc_cron_add_jobs(task_next_fn.pop(0), [task_id], task_id, seconds)
+        #  队伍征兵
         elif current_config_storage['type'] == 1:
-            current_lists = current_config_storage['lists']
             next_time = current_config_storage['times'] + 1
-            sc_cron_add_jobs(task_next_fn.pop(0), [task_id] + [current_lists], task_id, next_time)
+            sc_cron_add_jobs(task_next_fn.pop(0), [task_id], task_id, next_time)
+        #  点击标记选择土地出征
         elif current_config_storage['type'] == 5:
             if current_config_storage['offset'] == 0:
                 return
-            l = current_config_storage['lists']
-            txt = current_config_storage['txt']
-            offset = current_config_storage['offset']
-            sc_cron_add_jobs(task_next_fn.pop(0), [task_id] + [l, txt, offset], task_id, 1)
+            sc_cron_add_jobs(task_next_fn.pop(0), [task_id], task_id, 1)
+        # 取消标记
         elif current_config_storage['type'] == 6:
             offset = current_config_storage['offset']
-            l = current_config_storage['lists']
             if offset == 0:
                 return None
             else:
                 set_task_all(task_id, copy.deepcopy(task_next_fn) * 2)
             task_next_fn = get_task_all(task_id)
-            sc_cron_add_jobs(task_next_fn.pop(0), [task_id] + [l], task_id, 1)
+            sc_cron_add_jobs(task_next_fn.pop(0), [task_id], task_id, 1)
     result_queue.put(event)
 
 

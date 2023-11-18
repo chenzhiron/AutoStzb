@@ -1,13 +1,16 @@
 config_storage = {}
 
-property_list = ['type', 'status', 'result', 'times', 'lists', 'txt', 'offset', 'status', 'person', 'enemy']
+property_list = ['type', 'status', 'result', 'times', 'lists', 'txt', 'offset','battle_result']
 
 
 def create_config_storage():
     storage = {}
     for i in property_list:
-        if i == 'result':
+        if i == 'battle_result':
             storage[i] = {}
+            continue
+        elif i == 'result':
+            storage[i] = None
             continue
         storage[i] = 0
     return storage

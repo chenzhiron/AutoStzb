@@ -97,6 +97,10 @@ def start():
         task_fn = task['fn'].pop(0)
         # 初始化存储
         init_config_storage_by_key(task_name)
+        if '扫荡' in task_name:
+            change_config_storage_by_key(task_name, 'txt', '扫荡')
+        elif '出征' in task_name:
+            change_config_storage_by_key(task_name, 'txt', '出征')
         # 初始化 队伍
         change_config_storage_by_key(task_name, 'lists', task['args'][0])
         # 设置队列任务
