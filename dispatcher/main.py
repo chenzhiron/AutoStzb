@@ -44,13 +44,13 @@ def job_executed(event):
             sc_cron_add_jobs(next_fn, [task_id], task_id, seconds)
         # 战报结果
         elif current_config_storage['type'] == 3:
-            if current_config_storage['result']['status'] == '胜利' or current_config_storage['result']['status'] == '战败':
-                seconds = current_config_storage['result']['time_sleep']
+            if current_config_storage['battle_result']['status'] == '胜利' or current_config_storage['battle_result']['status'] == '战败':
+                seconds = current_config_storage['battle_result']['time_sleep']
                 sc_cron_add_jobs(task_next_fn.pop(0), [task_id], task_id, seconds)
-            elif current_config_storage['result']['status'] == '平局':
+            elif current_config_storage['battle_result']['status'] == '平局':
                 # 判断平局要求，是否等待，然后触发撤回的函数
-                person = current_config_storage['result']['person']
-                enemy = current_config_storage['result']['enemy']
+                person = current_config_storage['battle_result']['person']
+                enemy = current_config_storage['battle_result']['enemy']
                 # 默认平局就撤退
                 current_date = get_current_date(1)
                 sc_cron_add_jobs(handle_battle_draw_result, [task_id], task_id, 1)
