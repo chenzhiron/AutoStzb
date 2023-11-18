@@ -26,6 +26,8 @@ def job_executed(event):
     task_id = object_dict['job_id']
     task_next_fn = get_task_all(task_id)
     current_config_storage = get_config_storage_by_key(task_id)
+    print('job_executed', task_id, task_next_fn)
+    print('current_config_storage', current_config_storage)
     if len(task_next_fn) > 0:
         # 1.扫荡 -> 2.查看战报 -> 3.胜利-失败/平局
 
@@ -37,6 +39,7 @@ def job_executed(event):
             if current_config_storage['result'] is not None:
                 next_fn = handle_in_lists_action
                 seconds = current_config_storage['result']
+            print('next_fn_seconds', seconds)
             # 等待执行下一步任务
             sc_cron_add_jobs(next_fn, [task_id], task_id, seconds)
         # 战报结果

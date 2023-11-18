@@ -185,7 +185,7 @@ def handle_in_lists_action(taskid):
 
 # 战报结果
 def handle_in_battle_result(taskid):
-    current_time = get_config_storage_by_key_value(taskid, 'time')
+    current_time = get_config_storage_by_key_value(taskid, 'times')
     battle_result = {}
     start_time = time.time()
     time_sleep = getTimeSleep()

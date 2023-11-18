@@ -100,13 +100,13 @@ def start():
         if '扫荡' in task_name:
             change_config_storage_by_key(task_name, 'txt', '扫荡')
         elif '出征' in task_name:
-            change_config_storage_by_key(task_name, 'txt', '出征')
+            change_config_storage_by_key(task_name, 'txt', '出证')
         # 初始化 队伍
         change_config_storage_by_key(task_name, 'lists', task['args'][0])
         # 设置队列任务
         set_task_all(task_name, task['fn'])
         # 添加执行任务
-        sc_cron_add_jobs(task_fn, [task_name] + task['args'], task_name, 1)
+        sc_cron_add_jobs(task_fn, [task_name], task_name, 1)
         result = result_queue.get()
         print('result', result)
 
