@@ -113,6 +113,7 @@ def start():
             change_config_storage_by_key(task_name, 'txt', '出证')
         # 初始化 队伍
         change_config_storage_by_key(task_name, 'lists', task['args'][0])
+        change_config_storage_by_key(task_name, 'checkbox_enhance', task['args'][1])
         change_config_storage_by_key(task_name, 'delay_time', task['args'][2])
         if task['args'][3]:
             change_config_storage_by_key(task_name, 'txt', '出证')

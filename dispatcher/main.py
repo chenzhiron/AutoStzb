@@ -43,8 +43,11 @@ def job_executed(event):
             sc_cron_add_jobs(next_fn, [task_id], task_id, seconds)
         # 战报结果
         elif current_config_storage['type'] == 3:
-            if current_config_storage['battle_result']['status'] == '胜利' or current_config_storage['battle_result']['status'] == '战败':
+            if current_config_storage['battle_result']['status'] == '胜利' or current_config_storage['battle_result'][
+                'status'] == '战败':
                 seconds = current_config_storage['battle_result']['time_sleep']
+                if bool(current_config_storage['checkbox_enhance']):
+                    seconds += current_config_storage['delay_time']
                 sc_cron_add_jobs(task_next_fn.pop(0), [task_id], task_id, seconds)
             elif current_config_storage['battle_result']['status'] == '平局':
                 # 判断平局要求，是否等待，然后触发撤回的函数
