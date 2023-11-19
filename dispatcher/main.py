@@ -46,7 +46,7 @@ def job_executed(event):
             if current_config_storage['battle_result']['status'] == '胜利' or current_config_storage['battle_result'][
                 'status'] == '战败':
                 seconds = current_config_storage['battle_result']['time_sleep']
-                if bool(current_config_storage['checkbox_enhance']):
+                if not bool(current_config_storage['checkbox_enhance']):
                     seconds += current_config_storage['delay_time']
                 sc_cron_add_jobs(task_next_fn.pop(0), [task_id], task_id, seconds)
             elif current_config_storage['battle_result']['status'] == '平局':
