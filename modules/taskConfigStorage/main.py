@@ -1,6 +1,6 @@
 config_storage = {}
 
-property_list = ['type', 'status', 'result', 'times', 'lists', 'txt', 'offset','battle_result']
+property_list = ['type', 'status', 'result', 'times', 'lists', 'txt', 'offset', 'battle_result', 'delay_time']
 
 
 def create_config_storage():

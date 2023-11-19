@@ -39,7 +39,6 @@ def job_executed(event):
             if current_config_storage['result'] is not None:
                 next_fn = handle_in_lists_action
                 seconds = current_config_storage['result']
-            print('next_fn_seconds', seconds)
             # 等待执行下一步任务
             sc_cron_add_jobs(next_fn, [task_id], task_id, seconds)
         # 战报结果
@@ -63,6 +62,9 @@ def job_executed(event):
         #  队伍征兵
         elif current_config_storage['type'] == 1:
             next_time = current_config_storage['times'] + 1
+            delay_time = current_config_storage['delay_time']
+            if delay_time > next_time:
+                next_time = delay_time
             sc_cron_add_jobs(task_next_fn.pop(0), [task_id], task_id, next_time)
         #  点击标记选择土地出征
         elif current_config_storage['type'] == 5:

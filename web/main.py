@@ -73,6 +73,8 @@ def add_scheduler_job(event):
         going_list = pin.pin['select_list']
         repetition_number = pin.pin['repetition_number']
         checkbox_enhance = pin.pin['checkbox_enhance'][0] if bool(pin.pin['checkbox_enhance']) else False
+        delay_time = pin.pin['delay_time']
+
         executefn = None
         if current_options == '扫荡':
             executefn = copy.deepcopy(mopping_up) * repetition_number
@@ -80,9 +82,13 @@ def add_scheduler_job(event):
             executefn = copy.deepcopy(conscription) * 2
         elif current_options == '出征':
             executefn = copy.deepcopy(conquer) * 2
+        try:
+            if float(delay_time) < 0:
+                delay_time = 0
+        except:
+            delay_time = 0
         task_fn = {'name': current_options + str(current_index),
-                   'args': [going_list, '扫荡' if current_options == '扫荡' else
-                   checkbox_enhance],
+                   'args': [going_list, '扫荡' if current_options == '扫荡' else checkbox_enhance, float(delay_time)],
                    'fn': executefn
                    }
         task_list.append(task_fn)
@@ -103,6 +109,7 @@ def start():
             change_config_storage_by_key(task_name, 'txt', '出证')
         # 初始化 队伍
         change_config_storage_by_key(task_name, 'lists', task['args'][0])
+        change_config_storage_by_key(task_name, 'delay_time', task['args'][2])
         # 设置队列任务
         set_task_all(task_name, task['fn'])
         # 添加执行任务
@@ -118,11 +125,13 @@ def apply(info):
     going_list = '选择编队'
     going_list_number = '次数'
     checkbox_enhance = '扫荡后默认自动征兵' if info == '扫荡' else '当资源不够一次性征兵时，打开此选项'
+    delay_time_txt = '队伍延迟出发时间,单位 秒, 基于城皮/沃土扫荡时注意耐久度'
 
     inline = False
     select_list = 1
     repetition_number = 1
     checkbox_enhance_inline = True if info == '扫荡' else False
+    delay_time = 0
 
     if len(task_list) > 0:
         for em in task_list:
@@ -131,6 +140,7 @@ def apply(info):
                 select_list = em['args'][0]
                 repetition_number = em['args'][1]
                 checkbox_enhance_inline = em['args'][2]
+                delay_time = em['args'][3]
                 break
 
     put_row([
@@ -139,12 +149,14 @@ def apply(info):
             put_text(going_list),
             put_text(going_list_number) if info == '扫荡' else None,
             put_text(checkbox_enhance),
+            put_text(delay_time_txt)
         ]),
         put_column([
             pin.put_checkbox('checkbox_inline', options=options, value=inline),
             pin.put_select('select_list', options=options_list, value=select_list),
             pin.put_input('repetition_number', value=repetition_number, type='number', ) if info == '扫荡' else None,
             pin.put_checkbox('checkbox_enhance', options=enhance, value=bool(checkbox_enhance_inline)),
+            pin.put_input('delay_time', value=delay_time, type='number')
         ])
     ])
     pin.pin_on_change('checkbox_inline', onchange=add_scheduler_job, clear=True)
@@ -221,7 +233,6 @@ def init():
 # 启动web
 def start_web(web_port=web_port):
     start_server(init, port=web_port)
-
 
 # if __name__ == '__main__':
 #     start_web()
