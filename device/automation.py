@@ -4,6 +4,7 @@ from io import BytesIO
 
 import requests
 from PIL import Image
+from config.custom import getTimeSleep
 
 from config.paths import adb
 from config.const import auto_mation, screenshot_url
@@ -87,7 +88,7 @@ def automate():
 # http 截图方案
 
 def get_screenshots():
-    time.sleep(0.3)
+    time.sleep(getTimeSleep())
     response = requests.get(screenshot_url)
     if response.status_code == 200:
         return Image.open(BytesIO(response.content))
