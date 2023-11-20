@@ -6,7 +6,7 @@ operate_port = 62001
 
 
 # 模拟器点击方案 端口
-operate_change_port = {5081, 5082, 5083, 5084, 5085, 5086, 5087, 5088, 5089, 5090}
+operate_change_port = 60000
 
 # 模拟器截图方案 url 链接模拟器并映射端口
 automation_serial = operate_url + ':' + str(operate_port)

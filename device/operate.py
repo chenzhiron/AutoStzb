@@ -1,11 +1,11 @@
 # 点击方案
 from device.pyminitouch.actions import MNTDevice
 from config.paths import adb
-from config.const import operate_url, operate_port
+from config.const import operate_url, operate_port, operate_change_port
 
 device_id = operate_url + ':' + str(operate_port)
 
-Mntdevice = MNTDevice(device_id, adb)
+Mntdevice = MNTDevice(device_id, adb, operate_change_port)
 
 
 def operate_adb_tap(x, y):

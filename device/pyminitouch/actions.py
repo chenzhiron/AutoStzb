@@ -1,5 +1,5 @@
 import time
-from contextlib import contextmanager
+
 
 from device.pyminitouch.connection import MNTConnection, MNTServer
 from device.pyminitouch import config
@@ -50,9 +50,10 @@ class CommandBuilder(object):
 
 
 class MNTDevice(object):
-    def __init__(self, device_id, adb):
+    def __init__(self, device_id, adb, port):
         self._ADB = adb
         self.device_id = device_id
+        self.port = port
         self.server = None
         self.connection = None
         self.start()
@@ -63,9 +64,9 @@ class MNTDevice(object):
 
     def start(self):
         # prepare for connection
-        self.server = MNTServer(self.device_id, self._ADB)
+        self.server = MNTServer(self.device_id, self._ADB, self.port)
         # real connection
-        self.connection = MNTConnection(self.server.tcp_port)
+        self.connection = MNTConnection(self.server.port)
 
     def stop(self):
         self.connection.disconnect()
@@ -149,17 +150,6 @@ class MNTDevice(object):
                 no_down=no_down,
                 no_up=no_up,
             )
-
-
-@contextmanager
-def safe_device(device_id):
-    """ use MNTDevice safely """
-    _device = MNTDevice(device_id)
-    try:
-        yield _device
-    finally:
-        time.sleep(config.DEFAULT_DELAY)
-        _device.stop()
 
 
 # if __name__ == "__main__":

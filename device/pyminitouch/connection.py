@@ -2,13 +2,31 @@ import subprocess
 import socket
 import time
 import os
-from contextlib import contextmanager
 from loguru import logger
 from device.pyminitouch import config
-from device.pyminitouch.utils import (
-    str2byte,
-    is_device_connected,
-)
+
+
+def str2byte(content):
+    """ compile str to byte """
+    return content.encode(config.DEFAULT_CHARSET)
+
+
+def is_device_connected(device_id):
+    """ return True if device connected, else return False """
+    _ADB = config.ADB_EXECUTOR
+    try:
+        device_name = subprocess.check_output(
+            [_ADB, "-s", device_id, "shell", "getprop", "ro.product.model"]
+        )
+        device_name = (
+            device_name.decode(config.DEFAULT_CHARSET)
+            .replace("\n", "")
+            .replace("\r", "")
+        )
+    except subprocess.CalledProcessError:
+        return False
+    return True
+
 
 _ADB = config.ADB_EXECUTOR
 
@@ -59,16 +77,14 @@ class MNTInstaller(object):
 
 
 class MNTServer(object):
-
     _PORT_SET = config.PORT_SET
 
-    def __init__(self, device_id, adb):
+    def __init__(self, device_id, adb, port):
         assert is_device_connected(device_id)
         self._ADB = adb
         self.device_id = device_id
         logger.info("searching a usable port ...")
-        self.port = 60000
-        self.tcp_port = 59999
+        self.port = port
         logger.info("device {} bind to port {}".format(device_id, self.port))
 
         # check minitouch
@@ -97,7 +113,7 @@ class MNTServer(object):
             "-s",
             self.device_id,
             "forward",
-            "tcp:{}".format(self.tcp_port),
+            "tcp:{}".format(self.port),
             "localabstract:minitouch",
         ]
         logger.debug("forward command: {}".format(" ".join(command_list)))
@@ -116,6 +132,7 @@ class MNTServer(object):
         self.mnt_process = subprocess.Popen(command_list, stdout=subprocess.DEVNULL)
 
     def heartbeat(self):
+        exit_cde = self.mnt_process.poll()
         return self.mnt_process.poll() is None
 
 
