@@ -1,29 +1,11 @@
 import time
 from contextlib import contextmanager
 
-from device.pyminitouch_seo.connection import MNTConnection, MNTServer
-from device.pyminitouch_seo import config
+from device.pyminitouch.connection import MNTConnection, MNTServer
+from device.pyminitouch import config
 
 
 class CommandBuilder(object):
-    """Build command str for minitouch.
-
-    You can use this, to custom actions as you wish::
-
-        with safe_connection(_DEVICE_ID) as connection:
-            builder = CommandBuilder()
-            builder.down(0, 400, 400, 50)
-            builder.commit()
-            builder.move(0, 500, 500, 50)
-            builder.commit()
-            builder.move(0, 800, 400, 50)
-            builder.commit()
-            builder.up(0)
-            builder.commit()
-            builder.publish(connection)
-
-    use `d.connection` to get `connection` from device
-    """
 
     def __init__(self):
         self._content = ""
@@ -68,45 +50,8 @@ class CommandBuilder(object):
 
 
 class MNTDevice(object):
-    """ minitouch device object
-
-    Sample::
-
-        device = MNTDevice(_DEVICE_ID)
-
-        # It's also very important to note that the maximum X and Y coordinates may, but usually do not, match the display size.
-        # so you need to calculate position by yourself, and you can get maximum X and Y by this way:
-        print('max x: ', device.connection.max_x)
-        print('max y: ', device.connection.max_y)
-
-        # single-tap
-        device.tap([(400, 600)])
-        # multi-tap
-        device.tap([(400, 400), (600, 600)])
-        # set the pressure, default == 100
-        device.tap([(400, 600)], pressure=50)
-
-        # long-time-tap
-        # for long-click, you should control time delay by yourself
-        # because minitouch return nothing when actions done
-        # we will never know the time when it finished
-        device.tap([(400, 600)], duration=1000)
-        time.sleep(1)
-
-        # swipe
-        device.swipe([(100, 100), (500, 500)])
-        # of course, with duration and pressure
-        device.swipe([(100, 100), (400, 400), (200, 400)], duration=500, pressure=50)
-
-        # extra functions ( their names start with 'ext_' )
-        device.ext_smooth_swipe([(100, 100), (400, 400), (200, 400)], duration=500, pressure=50, part=20)
-
-        # stop minitouch
-        # when it was stopped, minitouch can do nothing for device, including release.
-        device.stop()
-    """
-
-    def __init__(self, device_id):
+    def __init__(self, device_id, adb):
+        self._ADB = adb
         self.device_id = device_id
         self.server = None
         self.connection = None
@@ -118,24 +63,15 @@ class MNTDevice(object):
 
     def start(self):
         # prepare for connection
-        self.server = MNTServer(self.device_id)
+        self.server = MNTServer(self.device_id, self._ADB)
         # real connection
-        self.connection = MNTConnection(self.server.port)
+        self.connection = MNTConnection(self.server.tcp_port)
 
     def stop(self):
         self.connection.disconnect()
         self.server.stop()
 
     def tap(self, points, pressure=100, duration=None, no_up=None):
-        """
-        tap on screen, with pressure/duration
-
-        :param points: list, looks like [(x1, y1), (x2, y2)]
-        :param pressure: default == 100
-        :param duration:
-        :param no_up: if true, do not append 'up' at the end
-        :return:
-        """
         points = [list(map(int, each_point)) for each_point in points]
 
         _builder = CommandBuilder()
@@ -157,16 +93,6 @@ class MNTDevice(object):
         _builder.publish(self.connection)
 
     def swipe(self, points, pressure=100, duration=None, no_down=None, no_up=None):
-        """
-        swipe between points, one by one
-
-        :param points: [(400, 500), (500, 500)]
-        :param pressure: default == 100
-        :param duration:
-        :param no_down: will not 'down' at the beginning
-        :param no_up: will not 'up' at the end
-        :return:
-        """
         points = [list(map(int, each_point)) for each_point in points]
 
         _builder = CommandBuilder()
@@ -199,27 +125,6 @@ class MNTDevice(object):
     def ext_smooth_swipe(
         self, points, pressure=100, duration=None, part=None, no_down=None, no_up=None
     ):
-        """
-        smoothly swipe between points, one by one
-        it will split distance between points into pieces
-
-        before::
-
-            points == [(100, 100), (500, 500)]
-            part == 8
-
-        after::
-
-            points == [(100, 100), (150, 150), (200, 200), ... , (500, 500)]
-
-        :param points:
-        :param pressure:
-        :param duration:
-        :param part: default to 10
-        :param no_down: will not 'down' at the beginning
-        :param no_up: will not 'up' at the end
-        :return:
-        """
         if not part:
             part = 10
 

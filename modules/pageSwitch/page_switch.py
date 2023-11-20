@@ -1,9 +1,9 @@
 import time
 
 import numpy as np
-from config.custom import getTimeSleep
+from config.custom import customConfig
 
-from device.automation import get_screenshots
+from device.Class.AutoMation import automation
 from device.operate import operate_adb_tap, operate_adb_swipe
 from modules.taskConfigStorage.main import change_config_storage_by_key, update_config_storage, \
     get_config_storage_by_key_value
@@ -25,7 +25,7 @@ from ocr.main import ocr_default
 def handle_out_map():
     while 1:
         try:
-            image = get_screenshots()
+            image = automation.get_screenshots()
             result = ocr_default(np.array(image.crop(zhaomu_area)))
             result = ocr_reg(result)
             if len(result) > 0 and result[0] == '招募':
@@ -47,7 +47,7 @@ def handle_in_map_conscription(taskid):
                           )
     while 1:
         try:
-            image = get_screenshots()
+            image = automation.get_screenshots()
             # 点击势力
             if appear_then_click(image.crop(zhaomu_area), shili_area, [zhaomu]):
                 continue
@@ -70,7 +70,7 @@ def handle_in_map_conscription(taskid):
                     #     operate_adb_swipe(v[0], v[1], int(v[2] * 0.2), v[3])
                     # else:
                     operate_adb_swipe(v[0], v[1], v[2], v[3])
-                image = get_screenshots()
+                image = automation.get_screenshots()
                 time_res = ocr_reg(ocr_default(np.array(image.crop(zhengbing_time_area))))
                 times = calculate_max_timestamp(time_res)
                 change_config_storage_by_key(taskid, 'times', times)
@@ -117,10 +117,10 @@ def handle_in_lists_action(taskid):
     update_config_storage(taskid, {
         'type': 2,
     })
-    time_sleep = getTimeSleep()
+    time_sleep = customConfig.getTimesleep()
     while 1:
         try:
-            image = get_screenshots()
+            image = automation.get_screenshots()
 
             # 识别扫荡并点击
             result = ocr_default(np.array(image.crop(address_execute_order_area)))
@@ -188,10 +188,10 @@ def handle_in_battle_result(taskid):
     current_time = get_config_storage_by_key_value(taskid, 'times')
     battle_result = {}
     start_time = time.time()
-    time_sleep = getTimeSleep()
+    time_sleep = customConfig.getTimesleep()
     while 1:
         try:
-            image = get_screenshots()
+            image = automation.get_screenshots()
 
             if appear_then_click(image.crop(zhaomu_area), shili_area, ['招募'], False):
                 operate_adb_tap(click_draw_area[0], click_draw_area[1])
@@ -202,7 +202,7 @@ def handle_in_battle_result(taskid):
                 continue
             if appear_then_click(image.crop(person_detail_battle_area), person_detail_battle_area, [battle_details],
                                  False):
-                image = get_screenshots()
+                image = automation.get_screenshots()
                 status = ''
                 person_number = ''
                 enemy_number = ''
@@ -233,10 +233,10 @@ def handle_battle_draw_result(taskid):
         'type': 4,
         'status': 0
     })
-    time_sleep = getTimeSleep()
+    time_sleep = customConfig.getTimesleep()
     while 1:
         try:
-            image = get_screenshots()
+            image = automation.get_screenshots()
 
             if appear_then_click(image.crop(retreat_area), retreat_click_area, [retreat_name]):
                 time.sleep(time_sleep)
@@ -270,9 +270,9 @@ def handle_sign_action(taskid):
         'type': 5,
         'offset': 0
     })
-    time_sleep = getTimeSleep()
+    time_sleep = customConfig.getTimesleep()
     while count < 60:
-        image = get_screenshots()
+        image = automation.get_screenshots()
 
         # 点击标记并点击下方土地
         if appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji]):
@@ -296,9 +296,9 @@ def handle_unmark(taskid):
     update_config_storage(taskid, {
         'type': 6
     })
-    time_sleep = getTimeSleep()
+    time_sleep = customConfig.getTimesleep()
     while 1:
-        image = get_screenshots()
+        image = automation.get_screenshots()
         if appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji]):
             time.sleep(time_sleep)
             x, y = cancel_sign

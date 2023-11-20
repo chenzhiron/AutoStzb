@@ -1,25 +1,19 @@
 # 点击方案
-from device.pyminitouch_seo.actions import MNTDevice
+from device.pyminitouch.actions import MNTDevice
+from config.paths import adb
+from config.const import operate_url, operate_port
 
-device = None
+device_id = operate_url + ':' + str(operate_port)
 
-
-def operate_simulator(device_id):
-    global device
-    device = MNTDevice(device_id)
-
-
-def disconnect_simulator():
-    if device:
-        device.stop()
+Mntdevice = MNTDevice(device_id, adb)
 
 
 def operate_adb_tap(x, y):
-    device.tap([(x, y)], pressure=100)
+    Mntdevice.tap([(x, y)])
 
 
 def operate_adb_swipe(x1, y1, x2, y2):
-    device.swipe(
+    Mntdevice.swipe(
         [(x1, y1), (x2, y2)],
         duration=1000,
         pressure=50

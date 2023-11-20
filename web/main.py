@@ -1,7 +1,7 @@
 from functools import partial
 import copy
 import pywebio.pin as pin
-from config.custom import setTimeSleep, getTimeSleep
+from config.custom import customConfig
 from modules.taskConfigStorage.main import init_config_storage_by_key, change_config_storage_by_key
 from pywebio import start_server
 from pywebio.output import put_row, put_column, put_code, put_collapse, put_button, put_text, put_scope, use_scope
@@ -183,7 +183,7 @@ def cut(info, index):
 
 def render_sleep():
     start_txt = '操作统计延迟'
-    change_sleep_time = getTimeSleep()
+    change_sleep_time = customConfig.getTimesleep()()
     put_row([
         put_column([
             put_text(start_txt),
@@ -193,7 +193,7 @@ def render_sleep():
             pin.put_input('change_sleep_time', value=change_sleep_time, type='number')
         ])
     ])
-    pin.pin_on_change('change_sleep_time', onchange=setTimeSleep, clear=True)
+    pin.pin_on_change('change_sleep_time', onchange=customConfig.changeTimesleep, clear=True)
 
 
 change_list = ['操作延迟']

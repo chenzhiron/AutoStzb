@@ -2,14 +2,11 @@ import subprocess
 import socket
 import time
 import os
-import random
 from contextlib import contextmanager
 from loguru import logger
-from device.pyminitouch_seo import config
-from device.pyminitouch_seo.utils import (
+from device.pyminitouch import config
+from device.pyminitouch.utils import (
     str2byte,
-    download_file,
-    is_port_using,
     is_device_connected,
 )
 
@@ -19,7 +16,8 @@ _ADB = config.ADB_EXECUTOR
 class MNTInstaller(object):
     """ install minitouch for android devices """
 
-    def __init__(self, device_id):
+    def __init__(self, device_id, adb):
+        self._ADB = adb
         self.device_id = device_id
         self.abi = self.get_abi()
         if self.is_mnt_existed():
@@ -29,66 +27,52 @@ class MNTInstaller(object):
 
     def get_abi(self):
         abi = subprocess.getoutput(
-            "{} -s {} shell getprop ro.product.cpu.abi".format(_ADB, self.device_id)
+            "{} -s {} shell getprop ro.product.cpu.abi".format(self._ADB, self.device_id)
         )
         logger.info("device {} is {}".format(self.device_id, abi))
         return abi
 
     def download_target_mnt(self):
         abi = self.get_abi()
-        target_url = "{}/{}/bin/minitouch".format(config.MNT_PREBUILT_URL, abi)
-        logger.info("target minitouch url: " + target_url)
-        mnt_path = download_file(target_url)
+        # 获取当前文件的绝对路径
+        current_path = os.path.abspath(__file__)
+        # 获取当前文件的目录
+        dir_path = os.path.dirname(current_path)
+        # 拼接获取 libs 目录下文件的绝对路径
+        file_path = os.path.join(dir_path, 'libs', '{}', 'minitouch')
+        mnt_path = file_path.format(abi)
 
         # push and grant
         subprocess.check_call(
-            [_ADB, "-s", self.device_id, "push", mnt_path, config.MNT_HOME]
+            [self._ADB, "-s", self.device_id, "push", mnt_path, config.MNT_HOME]
         )
         subprocess.check_call(
-            [_ADB, "-s", self.device_id, "shell", "chmod", "777", config.MNT_HOME]
+            [self._ADB, "-s", self.device_id, "shell", "chmod", "777", config.MNT_HOME]
         )
         logger.info("minitouch already installed in {}".format(config.MNT_HOME))
 
-        # remove temp
-        os.remove(mnt_path)
-
     def is_mnt_existed(self):
         file_list = subprocess.check_output(
-            [_ADB, "-s", self.device_id, "shell", "ls", "/data/local/tmp"]
+            [self._ADB, "-s", self.device_id, "shell", "ls", "/data/local/tmp"]
         )
         return "minitouch" in file_list.decode(config.DEFAULT_CHARSET)
 
 
 class MNTServer(object):
-    """
-    manage connection to minitouch.
-    before connection, you should execute minitouch with adb shell.
-
-    command eg::
-
-        adb forward tcp:{some_port} localabstract:minitouch
-        adb shell /data/local/tmp/minitouch
-
-    you would better use it via safe_connection ::
-
-        _DEVICE_ID = '123456F'
-
-        with safe_connection(_DEVICE_ID) as conn:
-            conn.send('d 0 500 500 50\nc\nd 1 500 600 50\nw 5000\nc\nu 0\nu 1\nc\n')
-    """
 
     _PORT_SET = config.PORT_SET
 
-    def __init__(self, device_id):
+    def __init__(self, device_id, adb):
         assert is_device_connected(device_id)
-
+        self._ADB = adb
         self.device_id = device_id
         logger.info("searching a usable port ...")
-        self.port = self._get_port()
+        self.port = 60000
+        self.tcp_port = 59999
         logger.info("device {} bind to port {}".format(device_id, self.port))
 
         # check minitouch
-        self.installer = MNTInstaller(device_id)
+        self.installer = MNTInstaller(device_id, adb)
 
         # keep minitouch alive
         self._forward_port()
@@ -106,22 +90,14 @@ class MNTServer(object):
         self._PORT_SET.add(self.port)
         logger.info("device {} unbind to {}".format(self.device_id, self.port))
 
-    @classmethod
-    def _get_port(cls):
-        """ get a random port from port set """
-        new_port = random.choice(list(cls._PORT_SET))
-        if is_port_using(new_port):
-            return cls._get_port()
-        return new_port
-
     def _forward_port(self):
         """ allow pc access minitouch with port """
         command_list = [
-            _ADB,
+            self._ADB,
             "-s",
             self.device_id,
             "forward",
-            "tcp:{}".format(self.port),
+            "tcp:{}".format(self.tcp_port),
             "localabstract:minitouch",
         ]
         logger.debug("forward command: {}".format(" ".join(command_list)))
@@ -129,9 +105,8 @@ class MNTServer(object):
         logger.debug("output: {}".format(output))
 
     def _start_mnt(self):
-        """ fork a process to start minitouch on android """
         command_list = [
-            _ADB,
+            self._ADB,
             "-s",
             self.device_id,
             "shell",
@@ -141,7 +116,6 @@ class MNTServer(object):
         self.mnt_process = subprocess.Popen(command_list, stdout=subprocess.DEVNULL)
 
     def heartbeat(self):
-        """ check if minitouch process alive """
         return self.mnt_process.poll() is None
 
 
@@ -153,7 +127,6 @@ class MNTConnection(object):
 
     def __init__(self, port):
         self.port = port
-
         # build connection
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client.connect((self._DEFAULT_HOST, self.port))
@@ -198,27 +171,3 @@ class MNTConnection(object):
         byte_content = str2byte(content)
         self.client.sendall(byte_content)
         return self.client.recv(self._DEFAULT_BUFFER_SIZE)
-
-
-@contextmanager
-def safe_connection(device_id):
-    """ safe connection runtime to use """
-
-    # prepare for connection
-    server = MNTServer(device_id)
-    # real connection
-    connection = MNTConnection(server.port)
-    try:
-        yield connection
-    finally:
-        # disconnect
-        connection.disconnect()
-        server.stop()
-
-
-if __name__ == "__main__":
-    _DEVICE_ID = "123456F"
-
-    with safe_connection(_DEVICE_ID) as conn:
-        # conn.send('d 0 150 150 50\nc\nu 0\nc\n')
-        conn.send("d 0 500 500 50\nc\nd 1 500 600 50\nw 5000\nc\nu 0\nu 1\nc\n")
