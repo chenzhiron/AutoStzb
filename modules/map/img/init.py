@@ -1,1 +1,0 @@
-from img_tmp import gray_images
