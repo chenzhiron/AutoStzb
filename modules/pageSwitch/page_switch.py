@@ -4,7 +4,7 @@ import numpy as np
 from config.custom import customConfig
 
 from device.AutoMation import automation
-from device.operate import operate_adb_tap, operate_adb_swipe
+from device.operate import operateTap, operateSwipe
 from modules.taskConfigStorage.main import change_config_storage_by_key, update_config_storage, \
     get_config_storage_by_key_value
 from modules.utils.main import calculate_max_timestamp, computedexecuteClickArea
@@ -18,21 +18,21 @@ from modules.general.option_verify_area import address_area_start, address_sign_
     queding_area, tili_area, zhaomu_area, return_area, bianduilists, retreat_area, retreat_click_area, \
     retreat_append_click, battle_site, retreat_discern_require_area, retreat_require_click, sigin_action_area, \
     cancel_sign
-from ocr.main import ocr_default
+from ocr.main import ocrDefault
 
 
 # 回到首页
 def handle_out_map():
     while 1:
         try:
-            image = automation.get_screenshots()
-            result = ocr_default(np.array(image.crop(zhaomu_area)))
+            image = automation.getScreenshots()
+            result = ocrDefault(np.array(image.crop(zhaomu_area)))
             result = ocr_reg(result)
             if len(result) > 0 and result[0] == '招募':
                 return True
             else:
                 x, y = return_area
-                operate_adb_tap(x, y)
+                operateTap(x, y)
         except Exception as e:
             print('返回主页面发生了错误', e)
             return False
@@ -47,7 +47,7 @@ def handle_in_map_conscription(taskid):
                           )
     while 1:
         try:
-            image = automation.get_screenshots()
+            image = automation.getScreenshots()
             # 点击势力
             if appear_then_click(image.crop(zhaomu_area), shili_area, [zhaomu]):
                 continue
@@ -56,7 +56,7 @@ def handle_in_map_conscription(taskid):
                                  zhengbing_page_verify_area,
                                  [shili], False):
                 x, y = click_list_x_y
-                operate_adb_tap(x * l, y)
+                operateTap(x * l, y)
                 continue
             # 点击征兵按钮
             if appear_then_click(image.crop(zhengbing_page_area), zhengbing_page_area, zhengbing):
@@ -69,9 +69,9 @@ def handle_in_map_conscription(taskid):
                     # if enhance:
                     #     operate_adb_swipe(v[0], v[1], int(v[2] * 0.2), v[3])
                     # else:
-                    operate_adb_swipe(v[0], v[1], v[2], v[3])
-                image = automation.get_screenshots()
-                time_res = ocr_reg(ocr_default(np.array(image.crop(zhengbing_time_area))))
+                    operateSwipe(v[0], v[1], v[2], v[3])
+                image = automation.getScreenshots()
+                time_res = ocr_reg(ocrDefault(np.array(image.crop(zhengbing_time_area))))
                 times = calculate_max_timestamp(time_res)
                 change_config_storage_by_key(taskid, 'times', times)
                 # 如果是满兵，则不需要征兵
@@ -80,7 +80,7 @@ def handle_in_map_conscription(taskid):
                     return None
 
                 x, y = computedexecuteClickArea(zhengbing_page_swipe_verify)
-                operate_adb_tap(x, y)
+                operateTap(x, y)
                 continue
             # 点击确定
             if appear_then_click(image.crop(queding_area), queding_area, queding):
@@ -92,7 +92,7 @@ def handle_in_map_conscription(taskid):
 
 
 def appear_then_click(img_source, click_area, check_txt, clicked=True):
-    res = ocr_default(np.array(img_source))
+    res = ocrDefault(np.array(img_source))
     if not bool(res[0]):
         return False
 
@@ -105,7 +105,7 @@ def appear_then_click(img_source, click_area, check_txt, clicked=True):
 
     if clicked:
         x, y = computedexecuteClickArea(click_area)
-        operate_adb_tap(x, y)
+        operateTap(x, y)
     return True
 
 
@@ -120,10 +120,10 @@ def handle_in_lists_action(taskid):
     time_sleep = customConfig.getTimesleep()
     while 1:
         try:
-            image = automation.get_screenshots()
+            image = automation.getScreenshots()
 
             # 识别扫荡并点击
-            result = ocr_default(np.array(image.crop(address_execute_order_area)))
+            result = ocrDefault(np.array(image.crop(address_execute_order_area)))
             if bool(result[0]):
                 status = False
                 for idx in range(len(result)):
@@ -132,7 +132,7 @@ def handle_in_lists_action(taskid):
                         if line[1][0] == txt:
                             first_list = line[0]
                             center_point = [sum(coord) / len(coord) for coord in zip(*first_list)]
-                            operate_adb_tap(820 + center_point[0], 200 + center_point[1])
+                            operateTap(820 + center_point[0], 200 + center_point[1])
                             status = True
                             break
                     break
@@ -141,22 +141,22 @@ def handle_in_lists_action(taskid):
 
             # 扫荡时间跟点击出征
             if appear_then_click(image.crop(address_going_require), address_going_require, [txt], False):
-                time_res = ocr_reg(ocr_default(np.array(image.crop(computed_going_time_area))))
+                time_res = ocr_reg(ocrDefault(np.array(image.crop(computed_going_time_area))))
                 times = calculate_max_timestamp(time_res)
                 x, y = computedexecuteClickArea(address_going_require)
-                operate_adb_tap(x, y)
+                operateTap(x, y)
                 change_config_storage_by_key(taskid, 'times', times)
                 return None
             # 选择部队页面
             if appear_then_click(image.crop(computed_going_list_area), computed_going_list_area, [going_list_txt],
                                  False):
-                result = ocr_reg(ocr_default(np.array(image.crop(bianduilists))))
+                result = ocr_reg(ocrDefault(np.array(image.crop(bianduilists))))
                 if len(result) > 0:
                     try:
                         current_max = int(result[0][2]) - 1
                     except Exception as e:
                         continue
-                    residue_tili = ocr_reg(ocr_default(np.array(image.crop(
+                    residue_tili = ocr_reg(ocrDefault(np.array(image.crop(
                         (tili_area[current_max][l - 1])
                     ))
                     ))
@@ -165,18 +165,18 @@ def handle_in_lists_action(taskid):
                         change_config_storage_by_key(taskid, 'result', calculate_max_timestamp(residue_tili))
                         return None
                     x, y = address_execute_list[current_max][l - 1]
-                    operate_adb_tap(x, y)
+                    operateTap(x, y)
                 continue
 
             # 点击标记并点击下方土地
             if appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji]):
                 time.sleep(time_sleep)
                 x, y = computedexecuteClickArea(address_sign_land_area)
-                operate_adb_tap(x, y + offset_y)
+                operateTap(x, y + offset_y)
                 continue
             # 如果没有点击标记，则点击一次
             if not appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji], False):
-                operate_adb_tap(address_area_start[0], address_area_start[1])
+                operateTap(address_area_start[0], address_area_start[1])
                 continue
         except Exception as e:
             print('扫荡/出征发生了错误', e)
@@ -191,25 +191,25 @@ def handle_in_battle_result(taskid):
     time_sleep = customConfig.getTimesleep()
     while 1:
         try:
-            image = automation.get_screenshots()
+            image = automation.getScreenshots()
 
             if appear_then_click(image.crop(zhaomu_area), shili_area, ['招募'], False):
-                operate_adb_tap(click_draw_area[0], click_draw_area[1])
+                operateTap(click_draw_area[0], click_draw_area[1])
                 continue
             if appear_then_click(image.crop(person_battle_area), person_battle_area, [person_battle], False):
                 time.sleep(time_sleep)
-                operate_adb_tap(click_draw_detail_area[0], click_draw_detail_area[1])
+                operateTap(click_draw_detail_area[0], click_draw_detail_area[1])
                 continue
             if appear_then_click(image.crop(person_detail_battle_area), person_detail_battle_area, [battle_details],
                                  False):
-                image = automation.get_screenshots()
+                image = automation.getScreenshots()
                 status = ''
                 person_number = ''
                 enemy_number = ''
                 while not bool(status) and not bool(person_number) and not bool(enemy_number):
-                    status = ocr_reg(ocr_default(np.array(image.crop(status_area))))[0]
-                    person_number = ocr_reg(ocr_default(np.array(image.crop(person_status_number_area))))[0]
-                    enemy_number = ocr_reg(ocr_default(np.array(image.crop(enemy_status_number_area))))[0]
+                    status = ocr_reg(ocrDefault(np.array(image.crop(status_area))))[0]
+                    person_number = ocr_reg(ocrDefault(np.array(image.crop(person_status_number_area))))[0]
+                    enemy_number = ocr_reg(ocrDefault(np.array(image.crop(enemy_status_number_area))))[0]
 
                 battle_result['status'] = status
                 battle_result['person'] = person_number
@@ -236,7 +236,7 @@ def handle_battle_draw_result(taskid):
     time_sleep = customConfig.getTimesleep()
     while 1:
         try:
-            image = automation.get_screenshots()
+            image = automation.getScreenshots()
 
             if appear_then_click(image.crop(retreat_area), retreat_click_area, [retreat_name]):
                 time.sleep(time_sleep)
@@ -244,18 +244,18 @@ def handle_battle_draw_result(taskid):
             if appear_then_click(image.crop(retreat_append_click), retreat_append_click, [retreat_name]):
                 return None
             if appear_then_click(image.crop(zhaomu_area), shili_area, [zhaomu], False):
-                operate_adb_tap(click_draw_area[0], click_draw_area[1])
+                operateTap(click_draw_area[0], click_draw_area[1])
                 continue
             if appear_then_click(image.crop(person_battle_area), person_battle_area, [person_battle], False):
                 time.sleep(time_sleep)
-                operate_adb_tap(click_draw_detail_area[0], click_draw_detail_area[1])
+                operateTap(click_draw_detail_area[0], click_draw_detail_area[1])
                 continue
             if appear_then_click(image.crop(battle_site), battle_site, [battle_site_name]):
                 continue
             if appear_then_click(image.crop(retreat_discern_require_area), retreat_discern_require_area, [queding]):
                 time.sleep(time_sleep)
                 x, y = retreat_require_click
-                operate_adb_tap(x, y)
+                operateTap(x, y)
                 time.sleep(time_sleep)
                 continue
         except Exception as e:
@@ -272,12 +272,12 @@ def handle_sign_action(taskid):
     })
     time_sleep = customConfig.getTimesleep()
     while count < 60:
-        image = automation.get_screenshots()
+        image = automation.getScreenshots()
 
         # 点击标记并点击下方土地
         if appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji]):
             time.sleep(time_sleep)
-            result = ocr_reg(ocr_default(np.array(image.crop(sigin_action_area))))
+            result = ocr_reg(ocrDefault(np.array(image.crop(sigin_action_area))))
             count += 1
             if len(result) >= 2:
                 change_config_storage_by_key(taskid, 'offset', 45)
@@ -285,7 +285,7 @@ def handle_sign_action(taskid):
 
         # 如果没有点击标记，则点击一次
         if not appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji], False):
-            operate_adb_tap(address_area_start[0], address_area_start[1])
+            operateTap(address_area_start[0], address_area_start[1])
             count += 1
             continue
     return None
@@ -298,12 +298,12 @@ def handle_unmark(taskid):
     })
     time_sleep = customConfig.getTimesleep()
     while 1:
-        image = automation.get_screenshots()
+        image = automation.getScreenshots()
         if appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji]):
             time.sleep(time_sleep)
             x, y = cancel_sign
-            operate_adb_tap(x, y)
-            result = ocr_reg(ocr_default(np.array(image.crop(sigin_action_area))))
+            operateTap(x, y)
+            result = ocr_reg(ocrDefault(np.array(image.crop(sigin_action_area))))
             if len(result) >= 2:
                 change_config_storage_by_key(taskid, 'offset', 45)
             else:
@@ -311,7 +311,7 @@ def handle_unmark(taskid):
             return None
             # 如果没有点击标记，则点击一次
         if not appear_then_click(image.crop(address_sign_verify), address_sign_verify, [biaoji], False):
-            operate_adb_tap(address_area_start[0], address_area_start[1])
+            operateTap(address_area_start[0], address_area_start[1])
             time.sleep(time_sleep)
             continue
 

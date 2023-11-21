@@ -2,7 +2,7 @@ start_name = '开始游戏'
 
 saodang = '扫荡'
 
-chuzheng = '出征'
+chuzheng = '出证'
 
 biaoji = '标记'
 

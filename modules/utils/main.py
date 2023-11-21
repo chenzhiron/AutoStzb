@@ -25,10 +25,17 @@ def calculate_max_timestamp(time_list):
             timestamp_list.append(timestamp)
         except Exception as e:
             timestamp_list.append(0)
-    return max(timestamp_list)
+    return 0 if len(timestamp_list) == 0 else max(timestamp_list)
 
 
 def computedexecuteClickArea(xy):
     x = (xy[0] + xy[2]) / 2
     y = (xy[1] + xy[3]) / 2
     return x, y
+
+
+def ocr_reg(res):
+    if bool(res[0]):
+        return [item[1][0] for sublist in res for item in sublist]
+    else:
+        return []

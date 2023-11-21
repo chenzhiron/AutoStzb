@@ -15,7 +15,7 @@ ocr = PaddleOCR(lang="ch",
                 )
 
 
-def ocr_default(sources):
+def ocrDefault(sources):
     result = ocr.ocr(sources, cls=False)
     print(result)
     return result

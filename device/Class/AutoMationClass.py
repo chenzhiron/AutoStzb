@@ -78,7 +78,7 @@ class Automation:
         except Exception as e:
             print('截图方案出错了', e)
 
-    def get_screenshots(self):
+    def getScreenshots(self):
         time.sleep(self.sleep)
         response = requests.get(self.screenshot_url)
         if response.status_code == 200:

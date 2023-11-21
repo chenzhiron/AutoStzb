@@ -16,11 +16,11 @@ def init(device_id=device_id, adb=adb, operate_change_port=operate_change_port):
 init()
 
 
-def operate_adb_tap(x, y):
+def operateTap(x, y):
     Mntdevice.tap([(x, y)])
 
 
-def operate_adb_swipe(x1, y1, x2, y2):
+def operateSwipe(x1, y1, x2, y2):
     Mntdevice.swipe(
         [(x1, y1), (x2, y2)],
         duration=1000,
