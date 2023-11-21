@@ -8,7 +8,7 @@ lib_p = os.path.join(p, 'toolkit', 'Lib', 'site-packages')
 sys.path.append(lib_p)
 
 
-from device.Class.AutoMation import automation
+from device.AutoMation import automation
 from device.operate import Mntdevice
 from web.main import start_web
 

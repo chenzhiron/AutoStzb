@@ -9,7 +9,7 @@ class CustomConfig:
             self.time_sleep = float(time_sleep)
         except:
             self.time_sleep = float(time_sleep)
-        from device.Class.AutoMation import change_automation_timeSleep
+        from device.AutoMation import change_automation_timeSleep
         change_automation_timeSleep(self.time_sleep)
 
     def getTimesleep(self):

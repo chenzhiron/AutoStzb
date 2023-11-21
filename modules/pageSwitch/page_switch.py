@@ -3,19 +3,19 @@ import time
 import numpy as np
 from config.custom import customConfig
 
-from device.Class.AutoMation import automation
+from device.AutoMation import automation
 from device.operate import operate_adb_tap, operate_adb_swipe
 from modules.taskConfigStorage.main import change_config_storage_by_key, update_config_storage, \
     get_config_storage_by_key_value
 from modules.utils.main import calculate_max_timestamp, computedexecuteClickArea
 from modules.general.module_options_name import shili, zhengbing, require_zhengbing, zhengbing_satisfy, queding, \
-    going_list_txt, person_battle, battle_details, saodang, biaoji, retreat_name, zhaomu, battle_site_name
+    going_list_txt, person_battle, battle_details, biaoji, retreat_name, zhaomu, battle_site_name
 from modules.general.option_verify_area import address_area_start, address_sign_verify, address_sign_land_area, \
     address_execute_order_area, address_execute_list, computed_going_time_area, computed_going_list_area, \
     address_going_require, click_draw_area, click_draw_detail_area, person_battle_area, person_detail_battle_area, \
     person_status_number_area, enemy_status_number_area, status_area, shili_area, zhengbing_page_verify_area, \
     click_list_x_y, zhengbing_page_area, zhengbing_page_swipe_verify, zhengbing_page_swipe, zhengbing_time_area, \
-    queding_area, tili_area, zhaomu_area, return_area, shili_top_area, bianduilists, retreat_area, retreat_click_area, \
+    queding_area, tili_area, zhaomu_area, return_area, bianduilists, retreat_area, retreat_click_area, \
     retreat_append_click, battle_site, retreat_discern_require_area, retreat_require_click, sigin_action_area, \
     cancel_sign
 from ocr.main import ocr_default

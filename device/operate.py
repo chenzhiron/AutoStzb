@@ -5,7 +5,15 @@ from config.const import operate_url, operate_port, operate_change_port
 
 device_id = operate_url + ':' + str(operate_port)
 
-Mntdevice = MNTDevice(device_id, adb, operate_change_port)
+Mntdevice = None
+
+
+def init(device_id=device_id, adb=adb, operate_change_port=operate_change_port):
+    global Mntdevice
+    Mntdevice = MNTDevice(device_id, adb, operate_change_port)
+
+
+init()
 
 
 def operate_adb_tap(x, y):
