@@ -3,13 +3,13 @@ import numpy as np
 from device.AutoMation import automation
 from device.operate import operateTap
 from modules.general.option_verify_area import tili_area, address_execute_list, status_area, person_status_number_area, \
-    enemy_status_number_area, computed_going_list_area
+    enemy_status_number_area, computed_going_list_area, bianduilists
 from modules.utils.main import ocr_reg, calculate_max_timestamp
 from ocr.main import ocrDefault
 
 
 # 选择对应的部队出征
-def select_active_lists(l, area=computed_going_list_area):
+def select_active_lists(l, area=bianduilists):
     image = automation.getScreenshots()
     content = ocrDefault(np.array(image.crop(area)))
     result = ocr_reg(content)

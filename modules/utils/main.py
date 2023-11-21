@@ -25,7 +25,7 @@ def calculate_max_timestamp(time_list):
             timestamp_list.append(timestamp)
         except Exception as e:
             timestamp_list.append(0)
-    return 0 if len(timestamp_list) == 0 else max(timestamp_list)
+    return None if len(timestamp_list) == 0 else max(timestamp_list)
 
 
 def computedexecuteClickArea(xy):

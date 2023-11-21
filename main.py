@@ -1,16 +1,19 @@
 import sys
 import os
 import threading
+import time
+
+
 
 p = os.getcwd()
 sys.path.append(p)
 lib_p = os.path.join(p, 'toolkit', 'Lib', 'site-packages')
 sys.path.append(lib_p)
 
-
+from modules.taskGroup.taskGroup import handle_in_lists_action, handle_in_battle_result, handle_in_draw_battle
 from device.AutoMation import automation
 from device.operate import Mntdevice
-from web.main import start_web
+# from web.main import start_web
 
 if __name__ == '__main__':
     try:
@@ -18,12 +21,11 @@ if __name__ == '__main__':
         operate2 = threading.Thread(target=automation.automate)
         operate2.setDaemon(True)
         operate2.start()
-
-        main_process_id = os.getpid()
-        print(main_process_id)
-        start_web()
+        print(22)
+        # start_web()
+        handle_in_draw_battle()
     except Exception as e:
-        automation.disconnect()
+        # automation.disconnect()
         Mntdevice.stop()
         print('主线程发生了错误', e)
         # disconnect_simulator()

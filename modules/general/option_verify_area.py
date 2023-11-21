@@ -61,8 +61,8 @@ zhengbing_require_click = (1080, 655)
 zhengbing_next_click = (780, 470)
 return_page_area = (1130, 80)
 return_page_next_area = (1150, 40)
-# queding_area = (675, 450, 880, 500)
-queding_area = (750, 480)
+queding_area = (675, 450, 880, 500)
+queding_area_xy = (750, 480)
 # ——--------------------------------------------
 
 zhaomu_area = (1140, 670, 1210, 705)

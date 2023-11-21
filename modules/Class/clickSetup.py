@@ -6,8 +6,7 @@ from modules.general.option_verify_area import zhaomu_area, shili_click, zhengbi
     address_sign_verify, address_sign_area, address_sign_land_area, click_draw_area, click_draw_detail_area, \
     person_battle_area, battle_site, retreat_discern_require_area, \
     retreat_discern_require_area_xy, retreat_require_click, retreat_append_click, retreat_append_click_xy, cancel_sign, \
-    address_area_start
-
+    address_area_start, queding_area_xy
 
 # 点击势力
 click_shili = ClickOperatorSteps(zhaomu_area, [zhaomu], shili_click[0], shili_click[1])
@@ -19,7 +18,7 @@ click_zhengbing = ClickOperatorSteps(zhengbing_page_area, [zhengbing], zhengbing
 # 点击确认征兵，在此处是同一个页面 不需要校验
 click_zhengbing_sure = ClickOperatorSteps(0, None, zhengbing_page_swipe_sure[0], zhengbing_page_swipe_sure[1])
 # 征兵确认
-click_zhengbing_require = ClickOperatorSteps(queding_area, [queding], queding_area[0], queding_area[1])
+click_zhengbing_require = ClickOperatorSteps(queding_area, [queding], queding_area_xy[0], queding_area_xy[1])
 
 # 回到主页模块
 # click_out_map = ClickOperatorSteps(0, None, 0, 0)
@@ -44,7 +43,7 @@ click_battle_main = ClickOperatorSteps(person_battle_area, [person_battle], clic
                                        click_draw_detail_area[1])
 
 # 战报内部点击战斗地点
-click_battle_retreat = ClickOperatorSteps(battle_site, [battle_site_name], battle_site[0], battle_site[1])
+click_battle_retreat = ClickOperatorSteps(0, None, battle_site[0], 688)
 
 # 重复确认
 click_battle_require = ClickOperatorSteps(retreat_discern_require_area, [queding], retreat_discern_require_area_xy[0],
