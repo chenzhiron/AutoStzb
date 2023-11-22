@@ -8,8 +8,8 @@ click_options_options = OriginalOperatorSteps(address_execute_order_area, saodan
 
 
 # 识别时间
-def ocr_max_time(zhengbing_time_area):
-    obj = OperatorSteps(zhengbing_time_area, None)
+def ocr_max_time(area):
+    obj = OperatorSteps(area, None)
     result = obj.getImgOcr()
     max_time = calculate_max_timestamp(ocr_reg(result))
     return max_time
@@ -22,7 +22,4 @@ def zhengbing_max_time():
 
 # 出征时间
 def chuzheng_max_time():
-    obj = OperatorSteps(computed_going_time_area, None)
-    result = obj.getImgOcr()
-    max_time = calculate_max_timestamp(ocr_reg(result))
-    return max_time
+    return ocr_max_time(computed_going_time_area)

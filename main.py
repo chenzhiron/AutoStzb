@@ -1,8 +1,6 @@
 import sys
 import os
 import threading
-import time
-
 
 
 p = os.getcwd()
@@ -21,7 +19,6 @@ if __name__ == '__main__':
         operate2 = threading.Thread(target=automation.automate)
         operate2.setDaemon(True)
         operate2.start()
-        print(22)
         # start_web()
         handle_in_draw_battle()
     except Exception as e:

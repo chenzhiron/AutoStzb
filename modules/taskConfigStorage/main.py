@@ -52,9 +52,23 @@ def clear_config_storage():
     config_storage = {}
     return config_storage
 
-# if __name__ == '__main__':
-#     init_config_storage_by_key('task111')
-#     update_config_storage('task111', {
-#         'type': 99
-#     })
-#     change_config_storage_by_key('task111', 'type', 199)
+
+class ConfigStorage:
+    def __init__(self):
+        self.type = None
+        self.status = None
+        self.result = None
+        self.times = None
+        self.lists = None
+        self.txt = None
+        self.offset = None
+        self.battle_result = None
+        self.delay_time = None
+        self.checkbox_enhance = None
+
+    def change_config_storage_by_key(self, key, value):
+        setattr(self, key, value)
+        return getattr(self, key)
+
+    def get_config_storage_by_key(self, key):
+        return getattr(self, key)

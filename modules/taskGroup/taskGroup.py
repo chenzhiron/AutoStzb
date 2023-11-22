@@ -63,7 +63,7 @@ def handle_in_battle_result():
 
 def handle_in_draw_battle():
     while 1:
-        if click_battle_retreat.applyClick(status=False):
+        if click_battle_retreat.applyClick(status=True):
             continue
         if click_battle_require.applyClick():
             continue
@@ -83,3 +83,4 @@ def handle_in_unmark():
             return
         if click_sign_options.applyClick(status=True):
             continue
+

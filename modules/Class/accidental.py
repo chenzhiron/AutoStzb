@@ -2,8 +2,9 @@ import numpy as np
 
 from device.AutoMation import automation
 from device.operate import operateTap
+from modules.Class.OperatorSteps import OperatorSteps
 from modules.general.option_verify_area import tili_area, address_execute_list, status_area, person_status_number_area, \
-    enemy_status_number_area, computed_going_list_area, bianduilists
+    enemy_status_number_area, computed_going_list_area, bianduilists, return_area, zhaomu_area
 from modules.utils.main import ocr_reg, calculate_max_timestamp
 from ocr.main import ocrDefault
 
@@ -36,3 +37,23 @@ def battle_info():
                      'person_number': ocr_reg(ocrDefault(np.array(image.crop(person_status_number_area))))[0],
                      'enemy_number': ocr_reg(ocrDefault(np.array(image.crop(enemy_status_number_area))))[0]}
     return battle_result
+
+
+# 返回主页
+class ReturnHome(OperatorSteps):
+    def __init__(self, area, txt, x=0, y=0):
+        super().__init__(area, txt, x, y)
+
+    def verifyOcr(self):
+        result = ocr_reg(self.getImgOcr())
+        if len(result) > 0 and result[0] == self.verify_txt:
+            return False
+        else:
+            return True
+
+    def applyClick(self):
+        operateTap(self.x, self.y)
+        return True
+
+
+handle_out_map = ReturnHome(zhaomu_area, '招募', return_area[0], return_area[1])
