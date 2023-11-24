@@ -9,7 +9,7 @@ from modules.Class.originalSetup import chuzheng_max_time, zhengbing_max_time, c
 from modules.Class.swipeSetup import swipe_zhengbing
 
 
-def handle_in_map_conscription():
+def handle_in_map_conscription(instance):
     # 需要捕获征兵队伍
     while 1:
         if click_shili.applyClick():
@@ -24,12 +24,12 @@ def handle_in_map_conscription():
                 pass
         if click_zhengbing_require.applyClick():
             # 此处还有退出函数代码
-            break
+            return instance
         if click_zhengbing_sure.applyClick():
             continue
 
 
-def handle_in_lists_action():
+def handle_in_lists_action(instance):
     txt = '扫荡'
     if click_options_options.verify_txt != txt:
         click_options_options.verify_txt = txt
@@ -39,11 +39,11 @@ def handle_in_lists_action():
             continue
         result = select_active_lists(1)
         if type(result) == int:
-            return result
+            return instance
         times = chuzheng_max_time()
         if not (times is None):
             click_chuzheng_or_saodang.applyClick(status=True)
-            return
+            return instance
         if click_sign.applyClick():
             click_sign_options.applyClick(status=True)
             continue
@@ -51,17 +51,17 @@ def handle_in_lists_action():
             continue
 
 
-def handle_in_battle_result():
+def handle_in_battle_result(instance):
     while 1:
         if click_battle.applyClick():
             continue
         if click_battle_main.applyClick():
             continue
         result = battle_info()
-        return None
+        return instance
 
 
-def handle_in_draw_battle():
+def handle_in_draw_battle(instance):
     while 1:
         if click_battle_retreat.applyClick(status=True):
             continue
@@ -70,7 +70,7 @@ def handle_in_draw_battle():
         if click_battle_retreat_append.applyClick():
             continue
         if click_battle_require.applyClick():
-            return
+            return instance
         if click_battle_lists.applyClick(status=True):
             continue
 
@@ -80,7 +80,6 @@ def handle_in_unmark():
         if click_sign.applyClick():
             time.sleep(1)
             click_unmark.applyClikk()
-            return
+            return None
         if click_sign_options.applyClick(status=True):
             continue
-

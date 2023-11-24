@@ -8,7 +8,7 @@ sys.path.append(p)
 lib_p = os.path.join(p, 'toolkit', 'Lib', 'site-packages')
 sys.path.append(lib_p)
 
-from modules.taskGroup.taskGroup import handle_in_lists_action, handle_in_battle_result, handle_in_draw_battle
+from modules.taskGroup import handle_in_draw_battle
 from device.AutoMation import automation
 from device.operate import Mntdevice
 # from web.main import start_web
