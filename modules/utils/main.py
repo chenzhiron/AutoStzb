@@ -1,10 +1,11 @@
 import datetime
+import math
 
 
 def get_current_date(add_seconds=1):
-        now = datetime.datetime.now()
-        future_time = now + datetime.timedelta(seconds=add_seconds)
-        return future_time
+    now = datetime.datetime.now()
+    future_time = now + datetime.timedelta(seconds=add_seconds)
+    return future_time
 
 
 def calculate_max_timestamp(time_list):

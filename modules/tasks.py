@@ -1,3 +1,5 @@
+import time
+
 from dispatcher.Dispatcher import task_dispatcher
 
 
@@ -5,88 +7,70 @@ from dispatcher.Dispatcher import task_dispatcher
 #     handle_in_unmark
 
 def a(self):
-    print(self, 'a')
+    print('a', self.__dict__, '\n')
     return self
 
 
 def b(self):
-    print(self, 'b')
+    print('b', '\n')
     return self
 
 
 def c(self):
-    print(self, 'c')
+    print('c', '\n')
     return self
 
 
 def d(self):
-    print(self, 'd')
+    print('d', '\n')
     return self
 
 
 class Task:
     dispatcher = task_dispatcher
 
-    def zhengBing(self):
-        # return handle_in_map_conscription
-        return a
-
-    def listsActive(self):
-        # return handle_in_lists_action
-        return b
-
-    def battleResult(self):
-        # return handle_in_battle_result
-        return c
-
-    def unmark(self):
-        # return handle_in_unmark
-        return d
-
-    def __init__(self, taskid, t, circulation):
+    def __init__(self, t, circulation):
         if t == 1:
-            self.task_group = [self.zhengBing()]
+            self.task_group = [a]
         elif t == 2:
-            self.task_group = [self.listsActive(), self.battleResult(), self.zhengBing()]
+            self.task_group = [b, c, a]
         else:
             self.task_group = []
         self.circulation = circulation
-        self.taskid = taskid
         self.setup = 0
         self.delay_time = 1
-        self.type = None
-        self.status = None
+        self.offset = 0
+        self.status = True
         self.result = None
         self.times = None
         self.lists = None
         self.txt = None
-        self.offset = None
         self.battle_result = None
-        self.checkbox_enhance = None
 
     def change_config_storage_by_key(self, key, value):
         setattr(self, key, value)
         return getattr(self, key)
 
     def next_start(self):
-        if self.circulation > 0:
-            self.change_config_storage_by_key('setup', 0)
-            print('setup', self.setup)
-            self.dispatcher.sc_cron_add_jobs(self.task_group[self.setup], [self], self.taskid, self.delay_time)
-            self.change_config_storage_by_key('setup', 1)
+        if self.circulation > 0 and self.status:
+            self.dispatcher.sc_cron_add_jobs(self.task_group[self.setup], [self], self.delay_time)
+            self.change_config_storage_by_key('setup', self.setup + 1)
+            self.change_config_storage_by_key('circulation', self.circulation - 1)
 
     def next_task(self):
-        if len(self.task_group) > self.setup:
-            print('setup', self.setup)
-            self.dispatcher.sc_cron_add_jobs(self.task_group[self.setup], [self], self.taskid, self.delay_time)
+        if len(self.task_group) > self.setup and self.status:
+            self.dispatcher.sc_cron_add_jobs(self.task_group[self.setup], [self], self.delay_time)
             self.change_config_storage_by_key('setup', self.setup + 1)
         else:
-            self.change_config_storage_by_key('circulation', self.circulation - 1)
+            self.change_config_storage_by_key('setup', 0)
             self.next_start()
 
 
 if __name__ == '__main__':
-    task1 = Task('abd', 2, 2)
+    task1 = Task(2, 2)
     task1.next_start()
+
+    task2 = Task(1, 1)
+    task2.next_start()
     while 1:
         pass
