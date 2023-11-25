@@ -50,7 +50,8 @@ class CommandBuilder(object):
 
 
 class MNTDevice(object):
-    def __init__(self, device_id, adb, port):
+    def __init__(self, device_id, adb, port, client_host):
+        self.host = client_host
         self._ADB = adb
         self.device_id = device_id
         self.port = port
@@ -66,7 +67,7 @@ class MNTDevice(object):
         # prepare for connection
         self.server = MNTServer(self.device_id, self._ADB, self.port)
         # real connection
-        self.connection = MNTConnection(self.server.port)
+        self.connection = MNTConnection(self.server.port, self.host)
 
     def stop(self):
         self.connection.disconnect()

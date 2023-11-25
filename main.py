@@ -8,7 +8,7 @@ sys.path.append(p)
 lib_p = os.path.join(p, 'toolkit', 'Lib', 'site-packages')
 sys.path.append(lib_p)
 
-from modules.taskGroup import handle_in_draw_battle
+# from modules.taskGroup import handle_in_draw_battle
 from device.AutoMation import automation
 from device.operate import Mntdevice
 # from web.main import start_web
@@ -19,8 +19,11 @@ if __name__ == '__main__':
         operate2 = threading.Thread(target=automation.automate)
         operate2.setDaemon(True)
         operate2.start()
+
+        while 1:
+            pass
         # start_web()
-        handle_in_draw_battle()
+        # handle_in_draw_battle()
     except Exception as e:
         # automation.disconnect()
         Mntdevice.stop()

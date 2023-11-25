@@ -1,7 +1,7 @@
 # 点击方案
 from device.pyminitouch.actions import MNTDevice
 from config.paths import adb
-from config.const import operate_url, operate_port, operate_change_port
+from config.const import operate_url, operate_port, operate_change_port, operate_url
 
 device_id = operate_url + ':' + str(operate_port)
 
@@ -10,7 +10,7 @@ Mntdevice = None
 
 def init(device_id=device_id, adb=adb, operate_change_port=operate_change_port):
     global Mntdevice
-    Mntdevice = MNTDevice(device_id, adb, operate_change_port)
+    Mntdevice = MNTDevice(device_id, adb, operate_change_port, operate_url)
 
 
 init()

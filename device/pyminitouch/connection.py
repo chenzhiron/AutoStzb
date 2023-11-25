@@ -11,12 +11,11 @@ def str2byte(content):
     return content.encode(config.DEFAULT_CHARSET)
 
 
-def is_device_connected(device_id):
+def is_device_connected(device_id, adb):
     """ return True if device connected, else return False """
-    _ADB = config.ADB_EXECUTOR
     try:
         device_name = subprocess.check_output(
-            [_ADB, "-s", device_id, "shell", "getprop", "ro.product.model"]
+            [adb, "-s", device_id, "shell", "getprop", "ro.product.model"]
         )
         device_name = (
             device_name.decode(config.DEFAULT_CHARSET)
@@ -27,8 +26,6 @@ def is_device_connected(device_id):
         return False
     return True
 
-
-_ADB = config.ADB_EXECUTOR
 
 
 class MNTInstaller(object):
@@ -51,14 +48,13 @@ class MNTInstaller(object):
         return abi
 
     def download_target_mnt(self):
-        abi = self.get_abi()
         # 获取当前文件的绝对路径
         current_path = os.path.abspath(__file__)
         # 获取当前文件的目录
         dir_path = os.path.dirname(current_path)
         # 拼接获取 libs 目录下文件的绝对路径
         file_path = os.path.join(dir_path, 'libs', '{}', 'minitouch')
-        mnt_path = file_path.format(abi)
+        mnt_path = file_path.format(self.abi)
 
         # push and grant
         subprocess.check_call(
@@ -77,10 +73,9 @@ class MNTInstaller(object):
 
 
 class MNTServer(object):
-    _PORT_SET = config.PORT_SET
 
     def __init__(self, device_id, adb, port):
-        assert is_device_connected(device_id)
+        assert is_device_connected(device_id, adb)
         self._ADB = adb
         self.device_id = device_id
         logger.info("searching a usable port ...")
@@ -103,7 +98,6 @@ class MNTServer(object):
 
     def stop(self):
         self.mnt_process and self.mnt_process.kill()
-        self._PORT_SET.add(self.port)
         logger.info("device {} unbind to {}".format(self.device_id, self.port))
 
     def _forward_port(self):
@@ -132,17 +126,15 @@ class MNTServer(object):
         self.mnt_process = subprocess.Popen(command_list, stdout=subprocess.DEVNULL)
 
     def heartbeat(self):
-        exit_cde = self.mnt_process.poll()
         return self.mnt_process.poll() is None
 
 
 class MNTConnection(object):
     """ manage socket connection between pc and android """
-
-    _DEFAULT_HOST = config.DEFAULT_HOST
     _DEFAULT_BUFFER_SIZE = config.DEFAULT_BUFFER_SIZE
 
-    def __init__(self, port):
+    def __init__(self, port, default_host):
+        self._DEFAULT_HOST = default_host
         self.port = port
         # build connection
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

@@ -9,8 +9,6 @@ from pywebio import session
 
 from config.const import web_port
 from dispatcher.main import sc_cron_add_jobs, start_scheduler
-from dispatcher.status import result_queue
-from dispatcher.task_group import conscription, mopping_up, set_task_all, conquer, mopping_up_fast
 
 zhengbing_list = ['征兵一', '征兵二', '征兵三']
 saodang_list = ['扫荡一', '扫荡二', '扫荡三', '扫荡四', '扫荡五']
@@ -121,8 +119,6 @@ def start():
         set_task_all(task_name, task['fn'])
         # 添加执行任务
         sc_cron_add_jobs(task_fn, [task_name], task_name, 1)
-        result = result_queue.get()
-        print('result', result)
 
 
 # 不同页面展示不同选项
