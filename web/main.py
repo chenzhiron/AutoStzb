@@ -72,7 +72,8 @@ def add_scheduler_job(event):
         repetition_number = pin.pin['repetition_number']
         checkbox_enhance = pin.pin['checkbox_enhance'][0] if bool(pin.pin['checkbox_enhance']) else False
         delay_time = pin.pin['delay_time']
-        checkbox_enhance_city_inline = pin.pin['checkbox_enhance_city_inline'][0] if bool(pin.pin['checkbox_enhance_city_inline']) else False
+        checkbox_enhance_city_inline = pin.pin['checkbox_enhance_city_inline'][0] if bool(
+            pin.pin['checkbox_enhance_city_inline']) else False
 
         executefn = None
         if current_options == '扫荡':
@@ -162,7 +163,8 @@ def apply(info):
             pin.put_input('repetition_number', value=repetition_number, type='number', ) if info == '扫荡' else None,
             pin.put_checkbox('checkbox_enhance', options=enhance, value=bool(checkbox_enhance_inline)),
             pin.put_input('delay_time', value=delay_time, type='number'),
-            pin.put_checkbox('checkbox_enhance_city_inline', options=enhance, value=bool(checkbox_enhance_city_inline)) if info == '扫荡' else None
+            pin.put_checkbox('checkbox_enhance_city_inline', options=enhance,
+                             value=bool(checkbox_enhance_city_inline)) if info == '扫荡' else None
         ])
     ])
     pin.pin_on_change('checkbox_inline', onchange=add_scheduler_job, clear=True)
@@ -240,5 +242,6 @@ def init():
 def start_web(web_port=web_port):
     start_server(init, port=web_port)
 
+
 # if __name__ == '__main__':
-#     start_web()
+#     start_web(18878)
