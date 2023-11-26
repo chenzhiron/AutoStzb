@@ -13,9 +13,6 @@ def init(device_id=device_id, adb=adb, operate_change_port=operate_change_port):
     Mntdevice = MNTDevice(device_id, adb, operate_change_port, operate_url)
 
 
-init()
-
-
 def operateTap(x, y):
     Mntdevice.tap([(x, y)])
 

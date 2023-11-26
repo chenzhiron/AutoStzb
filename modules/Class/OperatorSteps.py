@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 
 from device.AutoMation import automation
@@ -43,6 +45,8 @@ class ClickOperatorSteps(OperatorSteps):
 
     def applyClick(self, current_lists=1, offset_y=0, status=False):
         if self.verifyOcr() or status:
+            if status:
+                time.sleep(1)
             operateTap(self.x * current_lists, self.y + offset_y)
             return True
         return False

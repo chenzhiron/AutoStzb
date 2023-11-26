@@ -33,10 +33,18 @@ def select_active_lists(l, area=bianduilists):
 # 战报详情数据
 def battle_info():
     image = automation.getScreenshots()
-    battle_result = {'status': ocr_reg(ocrDefault(np.array(image.crop(status_area))))[0],
-                     'person_number': ocr_reg(ocrDefault(np.array(image.crop(person_status_number_area))))[0],
-                     'enemy_number': ocr_reg(ocrDefault(np.array(image.crop(enemy_status_number_area))))[0]}
-    return battle_result
+    battle_info = {}
+    status = None
+    person_number = None
+    enemy_number = None
+    while status is None or person_number is None or enemy_number is None:
+        status = ocr_reg(ocrDefault(np.array(image.crop(status_area))))[0]
+        person_number = ocr_reg(ocrDefault(np.array(image.crop(person_status_number_area))))[0]
+        enemy_number = ocr_reg(ocrDefault(np.array(image.crop(enemy_status_number_area))))[0]
+    battle_info['status'] = status
+    battle_info['person_number'] = person_number
+    battle_info['enemy_number'] = enemy_number
+    return battle_info
 
 
 # 返回主页
