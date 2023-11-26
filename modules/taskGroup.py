@@ -9,6 +9,8 @@ from modules.Class.originalSetup import chuzheng_max_time, zhengbing_max_time, c
 from modules.Class.swipeSetup import swipe_zhengbing
 
 
+# 对一张图，切换页面和页面点击都会有延迟，对一张截图进行 区域识别 并点击
+
 def handle_in_map_conscription(instance):
     times = 0
     # 需要捕获征兵队伍

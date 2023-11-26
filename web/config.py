@@ -22,3 +22,11 @@ listGroup = [
         'value': 5
     }
 ]
+
+explain = '编队'
+
+def render_Options(o, e, instance):
+    optionss = pin.put_select('optionss', options=o, label='')
+    pin.pin_on_change('optionss', onchange=executeoptions)
+    return optionss
+
