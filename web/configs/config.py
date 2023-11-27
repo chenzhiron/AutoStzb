@@ -44,9 +44,7 @@ def render_config(config, instance):
 
 def make_handler(config, instance, group):
     def handler():
-        if group['taskType'] == saodangType:
-            render_config(config, instance)
-
+        render_config(config, instance)
     return handler
 
 
