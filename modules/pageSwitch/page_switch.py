@@ -7,7 +7,7 @@ from device.AutoMation import automation
 from device.operate import operateTap, operateSwipe
 from modules.taskConfigStorage.main import change_config_storage_by_key, update_config_storage, \
     get_config_storage_by_key_value
-from modules.utils.main import calculate_max_timestamp, computedexecuteClickArea
+from modules.utils import calculate_max_timestamp, computedexecuteClickArea
 from modules.general.module_options_name import shili, zhengbing, require_zhengbing, zhengbing_satisfy, queding, \
     going_list_txt, person_battle, battle_details, biaoji, retreat_name, zhaomu, battle_site_name
 from modules.general.option_verify_area import address_area_start, address_sign_verify, address_sign_land_area, \

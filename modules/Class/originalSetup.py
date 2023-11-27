@@ -1,7 +1,7 @@
 from modules.Class.OperatorSteps import OriginalOperatorSteps, OperatorSteps
-from modules.general.module_options_name import saodang, chuzheng
+from modules.general.module_options_name import saodang
 from modules.general.option_verify_area import address_execute_order_area, zhengbing_time_area, computed_going_time_area
-from modules.utils.main import calculate_max_timestamp, ocr_reg
+from modules.utils import calculate_max_timestamp, ocr_reg
 
 # 点击扫荡 / 点击出征
 click_options_options = OriginalOperatorSteps(address_execute_order_area, saodang, 820, 200)

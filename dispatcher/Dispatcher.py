@@ -1,7 +1,7 @@
 from apscheduler.events import EVENT_JOB_EXECUTED
 from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.schedulers.background import BackgroundScheduler
-from modules.utils.main import get_current_date
+from modules.utils import get_current_date
 
 
 class Dispatcher:

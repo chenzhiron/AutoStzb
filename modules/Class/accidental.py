@@ -4,8 +4,8 @@ from device.AutoMation import automation
 from device.operate import operateTap
 from modules.Class.OperatorSteps import OperatorSteps
 from modules.general.option_verify_area import tili_area, address_execute_list, status_area, person_status_number_area, \
-    enemy_status_number_area, computed_going_list_area, bianduilists, return_area, zhaomu_area
-from modules.utils.main import ocr_reg, calculate_max_timestamp
+    enemy_status_number_area, bianduilists, return_area, zhaomu_area
+from modules.utils import ocr_reg, calculate_max_timestamp
 from ocr.main import ocrDefault
 
 

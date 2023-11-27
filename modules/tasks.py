@@ -22,6 +22,9 @@ class Task:
         self.txt = None
         self.battle_result = None
 
+    def add_attribute(self, key, value):
+        setattr(self, key, value)
+
     def change_config_storage_by_key(self, key, value):
         setattr(self, key, value)
         return getattr(self, key)
