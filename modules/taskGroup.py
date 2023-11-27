@@ -55,6 +55,7 @@ def handle_in_lists_action(instance):
         if not (times is None):
             click_chuzheng_or_saodang.applyClick(status=True)
             instance.change_config_storage_by_key('next_times', times)
+            print('next_times', times)
             return instance
         if click_sign.applyClick():
             click_sign_options.applyClick(status=True, offset_y=instance.offset)

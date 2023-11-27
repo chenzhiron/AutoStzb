@@ -5,7 +5,7 @@ from modules.taskGroup import handle_in_map_conscription, handle_in_lists_action
 class Task:
     dispatcher = task_dispatcher
 
-    def __init__(self, t, circulation=0):
+    def __init__(self, t, circulation=1):
         if t == 1:
             self.task_group = [handle_in_map_conscription]
         elif t == 2:
@@ -18,7 +18,7 @@ class Task:
         self.offset = 0
         self.next_times = 0
         self.status = False
-        self.lists = None
+        self.lists = 1
         self.txt = None
         self.battle_result = None
 
@@ -30,23 +30,25 @@ class Task:
         return getattr(self, key)
 
     def next_start(self):
+        # if self.circulation == 0 and self.status:
+        #     self.dispatcher.sc_cron_add_jobs(self.task_group[self.setup], [self], self.next_times)
+        #     self.change_config_storage_by_key('setup', self.setup + 1)
+
         if self.circulation > 0 and self.status:
+            self.change_config_storage_by_key('setup', 0)
             next_time = self.next_times
             if self.delay_time > self.next_times:
                 next_time = self.delay_time
             self.dispatcher.sc_cron_add_jobs(self.task_group[self.setup], [self], next_time)
             self.change_config_storage_by_key('setup', self.setup + 1)
             self.change_config_storage_by_key('circulation', self.circulation - 1)
-        if self.circulation == 0 and self.status:
-            self.dispatcher.sc_cron_add_jobs(self.task_group[self.setup], [self], self.next_times)
-            self.change_config_storage_by_key('setup', self.setup + 1)
+
 
     def next_task(self):
         if len(self.task_group) > self.setup and self.status:
             self.dispatcher.sc_cron_add_jobs(self.task_group[self.setup], [self], self.next_times)
             self.change_config_storage_by_key('setup', self.setup + 1)
         else:
-            self.change_config_storage_by_key('setup', 0)
             self.next_start()
 
 #
