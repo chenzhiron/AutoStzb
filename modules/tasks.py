@@ -1,16 +1,11 @@
-import time
-
 from dispatcher.Dispatcher import task_dispatcher
 from modules.taskGroup import handle_in_map_conscription, handle_in_lists_action, handle_in_battle_result
 
 
-# from modules.taskGroup.taskGroup import handle_in_map_conscription, handle_in_lists_action, handle_in_battle_result, \
-#     handle_in_unmark
-
 class Task:
     dispatcher = task_dispatcher
 
-    def __init__(self, t, circulation):
+    def __init__(self, t, circulation=0):
         if t == 1:
             self.task_group = [handle_in_map_conscription]
         elif t == 2:
@@ -22,8 +17,7 @@ class Task:
         self.delay_time = 0
         self.offset = 0
         self.next_times = 0
-        self.status = True
-        self.result = None
+        self.status = False
         self.lists = None
         self.txt = None
         self.battle_result = None
