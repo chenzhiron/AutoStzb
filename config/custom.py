@@ -5,12 +5,13 @@ class CustomConfig:
     def changeTimesleep(self, time_sleep):
         try:
             if float(time_sleep) <= 0:
-                v = 1
+                time_sleep = 1
             self.time_sleep = float(time_sleep)
         except:
             self.time_sleep = float(time_sleep)
         from device.AutoMation import change_automation_timeSleep
         change_automation_timeSleep(self.time_sleep)
+        print(self.time_sleep)
 
     def getTimesleep(self):
         return self.time_sleep

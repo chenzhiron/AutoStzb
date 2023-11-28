@@ -1,5 +1,6 @@
 import time
 
+from config.task_or_web_common import saodangType
 from modules.Class.accidental import select_active_lists, battle_info, handle_out_map
 from modules.Class.clickSetup import click_shili, click_budui, click_zhengbing, click_zhengbing_sure, \
     click_zhengbing_require, click_chuzheng_or_saodang, click_sign_options, click_sign, click_sign_init, click_battle, \
@@ -11,6 +12,7 @@ from modules.Class.swipeSetup import swipe_zhengbing
 
 # 对一张图，切换页面和页面点击都会有延迟，对一张截图进行 区域识别 并点击
 
+# 征兵
 def handle_in_map_conscription(instance):
     times = 0
     # 需要捕获征兵队伍
@@ -35,13 +37,11 @@ def handle_in_map_conscription(instance):
             continue
 
 
+# 出征/扫荡
 def handle_in_lists_action(instance):
     if click_options_options.verify_txt != instance.txt:
         click_options_options.verify_txt = instance.txt
-        task_group = instance.task_group[:]
-        if task_group[-1].__name__ != 'handle_in_unmark':
-            task_group.append(handle_in_unmark)
-            instance.change_config_storage_by_key('task_group', task_group)
+
     # 出征部队
     while 1:
         if click_options_options.applyOriginalClick():
@@ -55,7 +55,6 @@ def handle_in_lists_action(instance):
         if not (times is None):
             click_chuzheng_or_saodang.applyClick(status=True)
             instance.change_config_storage_by_key('next_times', times)
-            print('next_times', times)
             return instance
         if click_sign.applyClick():
             click_sign_options.applyClick(status=True, offset_y=instance.offset)
@@ -71,10 +70,19 @@ def handle_in_battle_result(instance):
         if click_battle.applyClick():
             continue
         if click_battle_main.applyClick():
-            instance.change_config_storage_by_key('battle_result', battle_info())
-            end_time = time.time()
-            instance.change_config_storage_by_key('next_times', instance.next_times - (end_time - start_time)
-            if instance.next_times - (end_time - start_time) > 0 else 0)
+            battle_result = battle_info()
+            instance.change_config_storage_by_key('battle_result', battle_result)
+            instance.change_config_storage_by_key('next_times',
+                                                  max(instance.next_times - (time.time() - start_time), 0))
+            # 平局点击撤退 和  胜利/战败跳过平局点击撤退任务
+            if battle_result['status'] == '平局':
+                instance.change_config_storage_by_key('next_times', 1)
+            else:
+                instance.change_config_storage_by_key('setup', instance.setup + 1)
+
+            # 跳过征兵
+            if hasattr(instance, 'skip_conscription') and instance.type == saodangType and instance.skip_conscription:
+                instance.change_config_storage_by_key('setup', 0)
             handle_out_home()
             return instance
 

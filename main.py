@@ -1,7 +1,6 @@
 import sys
 import os
 import threading
-import time
 
 p = os.getcwd()
 sys.path.append(p)

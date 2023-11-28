@@ -1,6 +1,5 @@
 from pywebio.pin import put_input, put_select, put_checkbox, pin_on_change
 from pywebio.output import put_collapse, put_button, use_scope, put_row, put_text
-from web.configs.common import saodangType
 
 
 def make_execute_handler(fn, instance):
@@ -42,7 +41,7 @@ def render_config(config, instance):
     return render
 
 
-def make_handler(config, instance, group):
+def make_handler(config, instance):
     def handler():
         render_config(config, instance)
     return handler
@@ -53,7 +52,7 @@ def render_options_config(options_all):
     for group in options_all:
         buttons = []
         for option in group['options']:
-            handler = make_handler(option['config'], option['instance'], group)
+            handler = make_handler(option['config'], option['instance'])
             button = put_button(option['name'], onclick=handler)
             buttons.append(button)
         render.append(put_collapse(group['groupName'], buttons))

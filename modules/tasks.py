@@ -1,17 +1,31 @@
 from dispatcher.Dispatcher import task_dispatcher
-from modules.taskGroup import handle_in_map_conscription, handle_in_lists_action, handle_in_battle_result
+from modules.taskGroup import handle_in_map_conscription, handle_in_lists_action, handle_in_battle_result, \
+    handle_in_unmark, handle_in_draw_battle
+from config.task_or_web_common import saodangType, chuzhengType, zhengbingType, wotuType, chengpiType
 
 
 class Task:
     dispatcher = task_dispatcher
 
-    def __init__(self, t, circulation=1):
-        if t == 1:
-            self.task_group = [handle_in_map_conscription]
-        elif t == 2:
-            self.task_group = [handle_in_lists_action, handle_in_battle_result, handle_in_map_conscription]
+    @classmethod
+    def set_task_group(cls, t):
+        if t == zhengbingType:
+            return [handle_in_map_conscription]
+        elif t == saodangType:
+            return [handle_in_lists_action, handle_in_battle_result, handle_in_draw_battle,
+                    handle_in_map_conscription]
+        elif t == chuzhengType:
+            return [handle_in_lists_action, handle_in_battle_result, handle_in_draw_battle,
+                    handle_in_map_conscription, handle_in_unmark]
+        elif t == wotuType or t == chengpiType:
+            return [handle_in_lists_action, handle_in_battle_result, handle_in_draw_battle,
+                    handle_in_map_conscription]
         else:
-            self.task_group = []
+            return []
+
+    def __init__(self, t, circulation=1):
+        self.task_group = self.set_task_group(t)
+        self.type = t
         self.circulation = circulation
         self.setup = 0
         self.delay_time = 0
@@ -30,25 +44,21 @@ class Task:
         return getattr(self, key)
 
     def next_start(self):
-        # if self.circulation == 0 and self.status:
-        #     self.dispatcher.sc_cron_add_jobs(self.task_group[self.setup], [self], self.next_times)
-        #     self.change_config_storage_by_key('setup', self.setup + 1)
-
-        if self.circulation > 0 and self.status:
+        if self.status:
             self.change_config_storage_by_key('setup', 0)
-            next_time = self.next_times
-            if self.delay_time > self.next_times:
-                next_time = self.delay_time
+            next_time = max(self.delay_time, self.next_times)
             self.dispatcher.sc_cron_add_jobs(self.task_group[self.setup], [self], next_time)
             self.change_config_storage_by_key('setup', self.setup + 1)
-            self.change_config_storage_by_key('circulation', self.circulation - 1)
-
+            if self.circulation > 0:  # 当 circulation 大于 0 时，才减少 circulation
+                self.change_config_storage_by_key('circulation', self.circulation - 1)
 
     def next_task(self):
         if len(self.task_group) > self.setup and self.status:
             self.dispatcher.sc_cron_add_jobs(self.task_group[self.setup], [self], self.next_times)
             self.change_config_storage_by_key('setup', self.setup + 1)
-        else:
+            if self.circulation != 0 and self.setup == len(self.task_group):  # 当 circulation 不为 0 并且所有任务都已完成时才调用 next_start
+                self.next_start()
+        elif self.circulation == 0:  # 当 circulation 为 0 时，循环执行任务
             self.next_start()
 
 #
