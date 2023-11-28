@@ -13,6 +13,7 @@ class Dispatcher:
     def event_executed(self, event):
         object_dict = vars(event)
         instance = object_dict['retval']
+        print(instance.__dict__, 'instance.__dict__')
         instance.next_task()
 
     def start(self):
@@ -21,8 +22,9 @@ class Dispatcher:
     def stop(self):
         self.scheduler.shutdown()
 
-    def sc_cron_add_jobs(self, fn, arg,seconds):
+    def sc_cron_add_jobs(self, fn, arg, seconds):
         current_data = get_current_date(seconds)
+        print(current_data, 'current_data')
         self.scheduler.add_job(fn,
                                'date',
                                args=arg,
