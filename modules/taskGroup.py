@@ -89,27 +89,15 @@ def handle_in_battle_result(instance):
 
 # 点击撤退函数
 def handle_in_draw_battle(instance):
-    status1 = True
-    status2 = True
-    status3 = True
-    status4 = True
     while 1:
-        if status2:
-            if click_battle_require.applyClick():
-                status2 = False
-                continue
-        if status1:
-            if click_battle_retreat.applyClick(status=True):
-                status1 = False
-                continue
-        if status3:
-            if click_battle_lists.applyClick(status=True):
-                status3 = False
-                continue
-        if status4:
-            if click_battle_active.applyClick():
-                status4 = False
-                continue
+        if click_battle_require.applyClick():
+            continue
+        if click_battle_retreat.applyClick():
+            continue
+        if click_battle_lists.applyClick():
+            continue
+        if click_battle_active.applyClick():
+            continue
         if click_battle_retreat_append.applyClick():
             return instance
 

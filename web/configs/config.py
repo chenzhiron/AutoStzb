@@ -37,7 +37,6 @@ def render_config(config, instance):
             )
             pin_on_change(item['name'], onchange=make_execute_handler(item['fn'], instance), clear=True)
 
-    render.reverse()
     return render
 
 

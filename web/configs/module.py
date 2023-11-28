@@ -45,7 +45,7 @@ def task_start_chuzheng(v, instance):
     if len(v) > 0:
         instance.change_config_storage_by_key('txt', '出证')
         instance.change_config_storage_by_key('status', True)
-        instance.change_config_storage_by_key('offset', 180)
+        instance.change_config_storage_by_key('offset', 40)
         instance.next_start()
     else:
         instance.change_config_storage_by_key('status', False)
@@ -147,6 +147,46 @@ def create_chuzheng_options(name, task_type):
     return create_option(name, task_type, configs)
 
 
+def task_start_chengpi(v, instance):
+    if len(v) > 0:
+        instance.change_config_storage_by_key('txt', '出证')
+        instance.change_config_storage_by_key('status', True)
+        instance.change_config_storage_by_key('offset', 60)
+        instance.next_start()
+    else:
+        instance.change_config_storage_by_key('status', False)
+
+
+def task_start_wotu(v, instance):
+    if len(v) > 0:
+        instance.change_config_storage_by_key('txt', '出证')
+        instance.change_config_storage_by_key('status', True)
+        instance.change_config_storage_by_key('offset', 120)
+        instance.next_start()
+    else:
+        instance.change_config_storage_by_key('status', False)
+
+
+def create_wotu_options(name, task_type):
+    configs = [
+        create_config('status', '启动', 'checkbox', task_start_wotu, False, checkboxGroup),
+        create_config('lists', '选择编队', 'select', change_lists, 1, listGroup),
+        create_config('delay_time', '延迟时间', 'input', change_delay_time, 2),
+    ]
+
+    return create_option(name, task_type, configs)
+
+
+def create_chengpi_options(name, task_type):
+    configs = [
+        create_config('status', '启动', 'checkbox', task_start_chengpi, False, checkboxGroup),
+        create_config('lists', '选择编队', 'select', change_lists, 1, listGroup),
+        create_config('delay_time', '延迟时间', 'input', change_delay_time, 2),
+    ]
+
+    return create_option(name, task_type, configs)
+
+
 def create_config_options(name, task_type):
     configs = [
         create_config('time_sleep', '截图延迟时间，单位 秒', 'input', change_time_sleep, 1),
@@ -197,7 +237,7 @@ options_config = [
         'groupName': '出征',
         'taskType': chuzhengType,
         'options': [create_chuzheng_options(f'编队{1}', chengpiType),
-                    create_chuzheng_options('城皮', chengpiType),
-                    create_chuzheng_options('沃土', wotuType)]
+                    create_chengpi_options('城皮', chengpiType),
+                    create_wotu_options('沃土', wotuType)]
     }
 ]

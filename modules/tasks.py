@@ -44,24 +44,24 @@ class Task:
         return getattr(self, key)
 
     def next_start(self):
-        from web.configs.update import update_web
-        if self.status:
+        # from web.configs.update import update_web
+        if self.circulation > 0 and self.status:  # 当 circulation 大于 0 时，才减少 circulation
             self.change_config_storage_by_key('setup', 0)
             next_time = max(self.delay_time, self.next_times)
             self.dispatcher.sc_cron_add_jobs(self.task_group[self.setup], [self], next_time)
             self.change_config_storage_by_key('setup', self.setup + 1)
-            if self.circulation > 0:  # 当 circulation 大于 0 时，才减少 circulation
-                self.change_config_storage_by_key('circulation', self.circulation - 1)
-            elif self.circulation == 0:
-                self.status = False
-        update_web()
+            self.change_config_storage_by_key('circulation', self.circulation - 1)
+        elif self.circulation == 0:
+            self.status = False
+
+    # update_web()
 
     def next_task(self):
         if len(self.task_group) > self.setup and self.status:
             self.dispatcher.sc_cron_add_jobs(self.task_group[self.setup], [self], self.next_times)
             self.change_config_storage_by_key('setup', self.setup + 1)
         else:
-            if self.circulation > 0 and self.setup == len(self.task_group):
+            if self.circulation > 0:
                 self.next_start()
 
 #

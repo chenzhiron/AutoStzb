@@ -6,20 +6,21 @@ from modules.utils import calculate_max_timestamp, ocr_reg
 # 点击扫荡 / 点击出征
 click_options_options = OriginalOperatorSteps(address_execute_order_area, saodang, 820, 200)
 
-
-# 识别时间
-def ocr_max_time(area):
-    obj = OperatorSteps(area, None)
-    result = obj.getImgOcr()
-    max_time = calculate_max_timestamp(ocr_reg(result))
-    return max_time
+# 识别征兵时间
+zhengbing_ocr_max = OperatorSteps(zhengbing_time_area, None)
+# 识别出征时间
+chuzheng_ocr_max = OperatorSteps(computed_going_time_area, None)
 
 
 # 征兵时间
 def zhengbing_max_time():
-    return ocr_max_time(zhengbing_time_area)
+    result = zhengbing_ocr_max.getImgOcr()
+    max_time = calculate_max_timestamp(ocr_reg(result))
+    return max_time
 
 
 # 出征时间
 def chuzheng_max_time():
-    return ocr_max_time(computed_going_time_area)
+    result = chuzheng_ocr_max.getImgOcr()
+    max_time = calculate_max_timestamp(ocr_reg(result))
+    return max_time
