@@ -1,6 +1,8 @@
 from config.custom import customConfig
+from dispatcher.Dispatcher import task_dispatcher
 from modules.tasks import Task
-from config.task_or_web_common import configType, saodangType, chuzhengType, zhengbingType, chengpiType, wotuType
+from config.task_or_web_common import configType, saodangType, chuzhengType, zhengbingType, chengpiType, wotuType, \
+    schedulerType
 
 listGroup = [
     {
@@ -68,6 +70,13 @@ def change_skip_conscription(v, instance):
         instance.change_config_storage_by_key('skip_conscription', False)
 
 
+def task_start_scheduler(v, instance):
+    if len(v) > 0:
+        instance.start()
+    else:
+        instance.stop()
+
+
 def change_time_sleep(v, instance):
     instance.changeTimesleep(v)
 
@@ -87,6 +96,8 @@ def create_config(name, explain, ctype, fn, value, options=None):
 
 
 def create_instance(task_type):
+    if task_type == schedulerType:
+        return task_dispatcher
     # 截图配置时间延迟
     if task_type == configType:
         return customConfig
@@ -101,7 +112,7 @@ def create_instance(task_type):
         task.change_config_storage_by_key('change_delay_time', 3600)
 
     if task_type == saodangType:
-        task.change_config_storage_by_key('skip_conscription', False)
+        task.add_attribute('skip_conscription', False)
     return task
 
 
@@ -119,7 +130,8 @@ def create_saodang_option(name, task_type):
         create_config('lists', '选择编队', 'select', change_lists, 1, listGroup),
         create_config('circulation', '循环次数', 'input', change_circulation, 1),
         create_config('delay_time', '延迟时间', 'input', change_delay_time, 0),
-        create_config('skip_conscription', '跳过征兵继续扫荡', 'checkbox', change_skip_conscription, False, checkboxGroup),
+        create_config('skip_conscription', '跳过征兵继续扫荡', 'checkbox', change_skip_conscription, False,
+                      checkboxGroup),
     ]
 
     return create_option(name, task_type, configs)
@@ -151,7 +163,21 @@ def create_zhengbing_options(name, task_type):
     return create_option(name, task_type, configs)
 
 
+def create_scheduler_options(name, task_type):
+    configs = [
+        create_config('status', '状态', 'checkbox', task_start_scheduler, False, checkboxGroup),
+    ]
+
+    return create_option(name, task_type, configs)
+
+
 options_config = [
+    {
+        'groupName': '调度器',
+        'taskType': schedulerType,
+        'options': [create_scheduler_options('调度器', schedulerType)]
+
+    },
     {
         'groupName': '配置',
         'taskType': configType,
