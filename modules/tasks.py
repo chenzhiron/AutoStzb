@@ -44,6 +44,7 @@ class Task:
         return getattr(self, key)
 
     def next_start(self):
+        from web.configs.update import update_web
         if self.status:
             self.change_config_storage_by_key('setup', 0)
             next_time = max(self.delay_time, self.next_times)
@@ -51,15 +52,17 @@ class Task:
             self.change_config_storage_by_key('setup', self.setup + 1)
             if self.circulation > 0:  # 当 circulation 大于 0 时，才减少 circulation
                 self.change_config_storage_by_key('circulation', self.circulation - 1)
+            elif self.circulation == 0:
+                self.status = False
+        update_web()
 
     def next_task(self):
         if len(self.task_group) > self.setup and self.status:
             self.dispatcher.sc_cron_add_jobs(self.task_group[self.setup], [self], self.next_times)
             self.change_config_storage_by_key('setup', self.setup + 1)
-            if self.circulation != 0 and self.setup == len(self.task_group):  # 当 circulation 不为 0 并且所有任务都已完成时才调用 next_start
+        else:
+            if self.circulation > 0 and self.setup == len(self.task_group):
                 self.next_start()
-        elif self.circulation == 0:  # 当 circulation 为 0 时，循环执行任务
-            self.next_start()
 
 #
 # if __name__ == '__main__':
