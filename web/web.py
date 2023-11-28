@@ -1,5 +1,5 @@
 from pywebio import start_server
-from pywebio.output import put_row, put_column, put_scope, put_button, style
+from pywebio.output import put_row, put_column, put_scope, put_button, clear, use_scope
 from pywebio import session
 
 from web.configs.config import render_options_config
@@ -21,7 +21,7 @@ def init():
             put_scope('center')
         ]),
         put_column([
-            put_scope('info').style('height: 400px;overflow:auto')
+            put_scope('info')
         ])
     ], size='20% 50% 30%')
 
