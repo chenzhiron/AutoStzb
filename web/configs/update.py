@@ -6,7 +6,7 @@ from web.configs.module import options_config
 def update_web():
     clear(scope='config')
     with use_scope('config', clear=True):
-        render_options_config(options_config)
-
+        result = render_options_config(options_config)
+        result.reverse()
 # def update_web_info(value):
 #     put_text(value)

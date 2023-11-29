@@ -53,6 +53,6 @@ def render_options_config(options_all):
             handler = make_handler(option['config'], option['instance'])
             button = put_button(option['name'], onclick=handler)
             buttons.append(button)
-        render.insert(0,put_collapse(group['groupName'], buttons))
+        render.append(put_collapse(group['groupName'], buttons))
 
     return render

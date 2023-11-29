@@ -3,6 +3,7 @@ from dispatcher.Dispatcher import task_dispatcher
 from modules.tasks import Task
 from config.task_or_web_common import configType, saodangType, chuzhengType, zhengbingType, chengpiType, wotuType, \
     schedulerType
+from pywebio.output import put_loading, put_text, use_scope, put_markdown
 
 listGroup = [
     {
@@ -30,6 +31,19 @@ checkboxGroup = [{
     'label': '',
     'value': True
 }]
+
+
+def render_status(t):
+    with use_scope('status', clear=True):
+        # 出错
+        if t == 2:
+            put_loading(shape='grow', color='warning').style('height: 50px'), put_text('调度器出错了')
+            # 正常
+        if t == 1:
+            put_loading(shape='border', color='primary').style('height: 50px'), put_text('调度器运行中')
+            # 未启动
+        if t == 0:
+            put_text('调度器未启动')
 
 
 def task_start_saodang(v, instance):
@@ -73,7 +87,9 @@ def change_skip_conscription(v, instance):
 def task_start_scheduler(v, instance):
     if len(v) > 0:
         instance.start()
+        render_status(1)
     else:
+        render_status(0)
         instance.stop()
 
 
@@ -96,6 +112,7 @@ def create_config(name, explain, ctype, fn, value, options=None):
 
 
 def create_instance(task_type):
+    # 调度器
     if task_type == schedulerType:
         return task_dispatcher
     # 截图配置时间延迟
