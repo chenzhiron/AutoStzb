@@ -1,8 +1,7 @@
 from config.custom import customConfig
 from dispatcher.Dispatcher import task_dispatcher
 from modules.tasks import Task
-from config.task_or_web_common import configType, saodangType, chuzhengType, zhengbingType, chengpiType, wotuType, \
-    schedulerType
+from config.task_or_web_common import *
 from web.configs.event import *
 
 listGroup = [
