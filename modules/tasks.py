@@ -57,15 +57,12 @@ class Task:
             self.change_config_storage_by_key('circulation', self.circulation - 1)
         elif self.circulation == 0:
             self.status = False
-
+        return None
     # update_web()
 
     def next_task(self):
         if len(self.task_group) > self.setup and self.status:
             next_time = self.next_times
-            print(self.battle_time, '=============')
-            print(self.next_times, '=============')
-            print(self.setup, '=============')
             # 平局倒计时 5分钟
             if self.battle_time != 0:
                 next_time = self.battle_time

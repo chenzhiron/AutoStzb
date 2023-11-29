@@ -69,7 +69,6 @@ def handle_in_battle_result(instance):
         if click_battle_main.applyClick():
             battle_result = battle_info()
             instance.change_config_storage_by_key('battle_result', battle_result)
-            instance.change_config_storage_by_key('setup', instance.setup + 1)
             # 平局点击撤退 和  胜利/战败跳过平局点击撤退任务
             if battle_result['status'] == '平局':
                 # 平局处理
@@ -80,10 +79,11 @@ def handle_in_battle_result(instance):
                 if person_result and enemy_result:
                     print('999')
                     instance.change_config_storage_by_key('battle_time',  max(300 - (int(time.time() - start_time)), 1))
-                    instance.change_config_storage_by_key('setup', instance.setup - 2)
+                    instance.change_config_storage_by_key('setup', instance.setup - 1)
                 else:
                     instance.change_config_storage_by_key('next_times', 1)
             else:
+                instance.change_config_storage_by_key('setup', instance.setup + 1)
                 instance.change_config_storage_by_key('battle_time', 0)
                 instance.change_config_storage_by_key('next_times',
                                                       max(instance.next_times - (time.time() - start_time), 0))
@@ -120,6 +120,8 @@ def handle_in_unmark(instance=None):
                 instance.change_config_storage_by_key('status', False)
             instance.change_config_storage_by_key('next_times', 1)
             handle_out_home()
+            instance.change_config_storage_by_key('circulation', 1)
+            instance.change_config_storage_by_key('setup', 0)
             return instance
         if click_sign_init.applyClick(status=True):
             continue

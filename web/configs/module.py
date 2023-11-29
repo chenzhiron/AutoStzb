@@ -191,7 +191,7 @@ options_config = [
     {
         'groupName': '出征',
         'taskType': chuzhengType,
-        'options': [create_chuzheng_options(f'编队{1}', chengpiType),
+        'options': [create_chuzheng_options(f'编队{1}', chuzhengType),
                     create_chengpi_options('城皮', chengpiType),
                     create_wotu_options('沃土', wotuType)]
     }

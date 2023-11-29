@@ -14,8 +14,11 @@ class Dispatcher:
     def event_executed(self, event):
         from config.task_or_web_common import update_queue
         object_dict = vars(event)
-        instance = object_dict['retval']
-        instance.next_task()
+        try:
+            instance = object_dict['retval']
+            instance.next_task()
+        except:
+            pass
         update_queue.put('update')
 
     def start(self):

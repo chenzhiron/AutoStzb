@@ -27,7 +27,7 @@ def task_start_chuzheng(v, instance):
     if len(v) > 0:
         instance.change_config_storage_by_key('txt', '出证')
         instance.change_config_storage_by_key('status', True)
-        instance.change_config_storage_by_key('offset', 40)
+        instance.change_config_storage_by_key('offset', 205)
         instance.next_start()
     else:
         instance.change_config_storage_by_key('status', False)
