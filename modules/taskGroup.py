@@ -2,10 +2,7 @@ import time
 
 from config.task_or_web_common import saodangType
 from modules.Class.accidental import select_active_lists, battle_info, handle_out_map
-from modules.Class.clickSetup import click_shili, click_budui, click_zhengbing, click_zhengbing_sure, \
-    click_zhengbing_require, click_chuzheng_or_saodang, click_sign_options, click_sign, click_sign_init, click_battle, \
-    click_battle_main, click_battle_retreat, click_battle_require, click_battle_lists, click_battle_retreat_append, \
-    click_unmark, click_battle_active, click_next_sign
+from modules.Class.clickSetup import *
 from modules.Class.originalSetup import chuzheng_max_time, zhengbing_max_time, click_options_options
 from modules.Class.swipeSetup import swipe_zhengbing
 
@@ -72,14 +69,26 @@ def handle_in_battle_result(instance):
         if click_battle_main.applyClick():
             battle_result = battle_info()
             instance.change_config_storage_by_key('battle_result', battle_result)
-            instance.change_config_storage_by_key('next_times',
-                                                  max(instance.next_times - (time.time() - start_time), 0))
             # 平局点击撤退 和  胜利/战败跳过平局点击撤退任务
             if battle_result['status'] == '平局':
-                instance.change_config_storage_by_key('next_times', 1)
-            else:
-                instance.change_config_storage_by_key('setup', instance.setup + 1)
+                # 平局处理
+                person = battle_result['person_number'].split('/')
+                enemy = battle_result['enemy_number'].split('/')
+                person_result = person[0] >= int(person[1] / instance.residue_person_ratio)
+                enemy_result = enemy[0] <= int(enemy[1] / instance.residue_enemy_ratio)
+                if person_result and enemy_result:
+                    instance.change_config_storage_by_key('battle_time', 300 - (int(time.time() - start_time)))
+                    instance.change_config_storage_by_key('setup', instance.setup - 1)
+                else:
+                    instance.change_config_storage_by_key('next_times', 1)
 
+                # print(instance.residue_person_ratio, '--------residue_person_ration')
+                # print(instance.residue_enemy_ratio, '--------residue_enemy_ratio')
+            else:
+                instance.change_config_storage_by_key('battle_time', 0)
+                instance.change_config_storage_by_key('setup', instance.setup + 1)
+                instance.change_config_storage_by_key('next_times',
+                                                      max(instance.next_times - (time.time() - start_time), 0))
             # 跳过征兵
             if hasattr(instance, 'skip_conscription') and instance.type == saodangType and instance.skip_conscription:
                 instance.change_config_storage_by_key('setup', 0)

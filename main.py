@@ -1,7 +1,6 @@
 import sys
 import os
 import threading
-
 p = os.getcwd()
 sys.path.append(p)
 lib_p = os.path.join(p, 'toolkit', 'Lib', 'site-packages')

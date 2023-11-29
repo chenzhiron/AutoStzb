@@ -35,6 +35,9 @@ class Task:
         self.lists = 1
         self.txt = None
         self.battle_result = None
+        self.residue_person_ratio = 0.8
+        self.residue_enemy_ratio = 0.8
+        self.battle_time = 0
 
     def add_attribute(self, key, value):
         setattr(self, key, value)
@@ -48,6 +51,10 @@ class Task:
         if self.circulation > 0 and self.status:  # 当 circulation 大于 0 时，才减少 circulation
             self.change_config_storage_by_key('setup', 0)
             next_time = max(self.delay_time, self.next_times)
+            # 平局倒计时 5分钟
+            if self.battle_time != 0:
+                next_time = self.battle_time
+
             self.dispatcher.sc_cron_add_jobs(self.task_group[self.setup], [self], next_time)
             self.change_config_storage_by_key('setup', self.setup + 1)
             self.change_config_storage_by_key('circulation', self.circulation - 1)

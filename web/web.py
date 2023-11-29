@@ -15,7 +15,10 @@ def init():
     document.title = 'stzb';
     """
     session.run_js(js_code)
-    put_row([put_scope('status', render_status(0))]),
+    put_row(
+        [put_text('注意！所有功能的一切前提是以主城为中心出发，在野外要塞或其他不属于主城的地方出征/扫荡可能会出现错误')])
+
+    put_row([put_scope('status', render_status(0))])
     put_row([
         put_column([
             put_row([put_scope('config', render_options_config(options_config))])
@@ -26,7 +29,7 @@ def init():
         put_column([
             put_scope('info')
         ])
-    ], size='20% 50% 30%')
+    ], size='20% 80% 0%')
     while True:
         msg = update_queue.get()  # 阻塞直到队列中有消息
         if msg == 'update':

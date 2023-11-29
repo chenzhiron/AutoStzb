@@ -36,6 +36,8 @@ def render_config(config, instance):
                                       value=item['value'] if item['value'] == value else value)])
             )
             pin_on_change(item['name'], onchange=make_execute_handler(item['fn'], instance), clear=True)
+        else:
+            render.insert(0, put_text(item['explain']))
     return render
 
 
