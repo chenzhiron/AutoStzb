@@ -1,12 +1,10 @@
 from device.operate import operateTap
 from modules.Class.OperatorSteps import ClickOperatorSteps
-from modules.general.module_options_name import zhaomu, shili, zhengbing, queding, biaoji, person_battle, retreat_name, \
-    battle_site_name
+from modules.general.module_options_name import zhaomu, shili, zhengbing, queding, biaoji, person_battle, retreat_name
 from modules.general.option_verify_area import zhaomu_area, shili_click, zhengbing_page_verify_area, click_list_x_y, \
     zhengbing_click_xy, zhengbing_page_swipe_sure_xy, queding_area, zhengbing_page_area, address_going_require, \
     address_sign_verify, address_sign_area, address_sign_land_area, click_draw_area, click_draw_detail_area, \
-    person_battle_area, battle_site, retreat_discern_require_area, \
-    retreat_discern_require_area_xy, retreat_require_click, retreat_append_click, retreat_append_click_xy, cancel_sign, \
+    person_battle_area, battle_site, retreat_require_click, retreat_append_click, retreat_append_click_xy, cancel_sign, \
     address_area_start, queding_area_xy, retreat_click_area, retreat_click_area_xy, retreat_area_require, chuzheng_area
 from modules.utils import ocr_reg
 

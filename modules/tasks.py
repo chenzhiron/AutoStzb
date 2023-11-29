@@ -63,7 +63,8 @@ class Task:
         else:
             if self.circulation > 0:
                 self.next_start()
-
+            else:
+                self.status = False
 #
 # if __name__ == '__main__':
 #     task1 = Task(2, 2)

@@ -15,14 +15,14 @@ def render_config(config, instance):
     for item in config:
         if item['type'] == 'input':
             value = getattr(instance, item['name'])
-            render.append(
+            render.insert(0,
                 put_row([put_text(item['explain']),
                          put_input(name=item['name'], value=item['value'] if item['value'] == value else value)])
             )
             pin_on_change(item['name'], onchange=make_execute_handler(item['fn'], instance), clear=True)
         elif item['type'] == 'select':
             value = getattr(instance, item['name'])
-            render.append(
+            render.insert(0,
                 put_row([put_text(item['explain']),
                          put_select(name=item['name'], options=item['options'],
                                     value=item['value'] if item['value'] == value else value)])
@@ -30,13 +30,12 @@ def render_config(config, instance):
             pin_on_change(item['name'], onchange=make_execute_handler(item['fn'], instance), clear=True)
         elif item['type'] == 'checkbox':
             value = getattr(instance, item['name'])
-            render.append(
+            render.insert(0,
                 put_row([put_text(item['explain']),
                          put_checkbox(name=item['name'], options=item['options'],
                                       value=item['value'] if item['value'] == value else value)])
             )
             pin_on_change(item['name'], onchange=make_execute_handler(item['fn'], instance), clear=True)
-
     return render
 
 
@@ -54,6 +53,6 @@ def render_options_config(options_all):
             handler = make_handler(option['config'], option['instance'])
             button = put_button(option['name'], onclick=handler)
             buttons.append(button)
-        render.append(put_collapse(group['groupName'], buttons))
+        render.insert(0,put_collapse(group['groupName'], buttons))
 
     return render

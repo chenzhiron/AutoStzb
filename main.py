@@ -1,7 +1,6 @@
 import sys
 import os
 import threading
-import time
 
 p = os.getcwd()
 sys.path.append(p)
@@ -23,14 +22,8 @@ if __name__ == '__main__':
         operate = threading.Thread(target=init)
         operate.setDaemon(True)
         operate.start()
+
         start_web(web_port)
-        # time.sleep(3)
-        # task1 = Task(2, 1)
-        # task1.change_config_storage_by_key('status', True)
-        # task1.change_config_storage_by_key('txt', '扫荡')
-        # task1.next_start()
-        # while 1:
-        #     pass
 
     except Exception as e:
         print('主线程发生了错误', e)

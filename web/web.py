@@ -1,9 +1,11 @@
+from config.task_or_web_common import update_queue
 from pywebio import start_server
-from pywebio.output import put_row, put_column, put_scope, put_button, clear, use_scope
+from pywebio.output import put_row, put_column, put_scope
 from pywebio import session
-
 from web.configs.config import render_options_config
 from web.configs.module import options_config
+from web.configs.update import update_web
+
 
 # 初始化函数
 def init():
@@ -24,6 +26,10 @@ def init():
             put_scope('info')
         ])
     ], size='20% 50% 30%')
+    while True:
+        msg = update_queue.get()  # 阻塞直到队列中有消息
+        if msg == 'update':
+            update_web()
 
 
 # 启动web
