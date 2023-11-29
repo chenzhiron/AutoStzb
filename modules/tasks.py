@@ -51,9 +51,6 @@ class Task:
         if self.circulation > 0 and self.status:  # 当 circulation 大于 0 时，才减少 circulation
             self.change_config_storage_by_key('setup', 0)
             next_time = max(self.delay_time, self.next_times)
-            # 平局倒计时 5分钟
-            if self.battle_time != 0:
-                next_time = self.battle_time
 
             self.dispatcher.sc_cron_add_jobs(self.task_group[self.setup], [self], next_time)
             self.change_config_storage_by_key('setup', self.setup + 1)
@@ -65,7 +62,14 @@ class Task:
 
     def next_task(self):
         if len(self.task_group) > self.setup and self.status:
-            self.dispatcher.sc_cron_add_jobs(self.task_group[self.setup], [self], self.next_times)
+            next_time = self.next_times
+            print(self.battle_time, '=============')
+            print(self.next_times, '=============')
+            print(self.setup, '=============')
+            # 平局倒计时 5分钟
+            if self.battle_time != 0:
+                next_time = self.battle_time
+            self.dispatcher.sc_cron_add_jobs(self.task_group[self.setup], [self], next_time)
             self.change_config_storage_by_key('setup', self.setup + 1)
         else:
             if self.circulation > 0:

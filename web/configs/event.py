@@ -53,13 +53,13 @@ def change_skip_conscription(v, instance):
 
 
 def change_residue_person_ratio(v, instance):
-    if float(v) < 0 or v > 1:
+    if float(v) < 0 or float(v) > 1:
         v = 0
     instance.change_config_storage_by_key('residue_person_ratio', float(v))
 
 
 def change_residue_enemy_ratio(v, instance):
-    if float(v) < 0 or v > 1:
+    if float(v) < 0 or float(v) > 1:
         v = 1
     instance.change_config_storage_by_key('residue_enemy_ratio', float(v))
 

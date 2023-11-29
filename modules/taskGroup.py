@@ -69,24 +69,22 @@ def handle_in_battle_result(instance):
         if click_battle_main.applyClick():
             battle_result = battle_info()
             instance.change_config_storage_by_key('battle_result', battle_result)
+            instance.change_config_storage_by_key('setup', instance.setup + 1)
             # 平局点击撤退 和  胜利/战败跳过平局点击撤退任务
             if battle_result['status'] == '平局':
                 # 平局处理
                 person = battle_result['person_number'].split('/')
                 enemy = battle_result['enemy_number'].split('/')
-                person_result = person[0] >= int(person[1] / instance.residue_person_ratio)
-                enemy_result = enemy[0] <= int(enemy[1] / instance.residue_enemy_ratio)
+                person_result = int(person[0]) >= int(int(person[1]) * instance.residue_person_ratio)
+                enemy_result = int(enemy[0]) <= int(int(enemy[1]) * instance.residue_enemy_ratio)
                 if person_result and enemy_result:
-                    instance.change_config_storage_by_key('battle_time', 300 - (int(time.time() - start_time)))
-                    instance.change_config_storage_by_key('setup', instance.setup - 1)
+                    print('999')
+                    instance.change_config_storage_by_key('battle_time',  max(300 - (int(time.time() - start_time)), 1))
+                    instance.change_config_storage_by_key('setup', instance.setup - 2)
                 else:
                     instance.change_config_storage_by_key('next_times', 1)
-
-                # print(instance.residue_person_ratio, '--------residue_person_ration')
-                # print(instance.residue_enemy_ratio, '--------residue_enemy_ratio')
             else:
                 instance.change_config_storage_by_key('battle_time', 0)
-                instance.change_config_storage_by_key('setup', instance.setup + 1)
                 instance.change_config_storage_by_key('next_times',
                                                       max(instance.next_times - (time.time() - start_time), 0))
             # 跳过征兵
