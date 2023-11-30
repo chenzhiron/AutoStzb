@@ -45,6 +45,7 @@ def handle_in_lists_action(instance):
             continue
         result = select_active_lists(instance.lists)
         if type(result) == int:
+            clik_empty.applyClick(status=True)
             instance.change_config_storage_by_key('next_times', result)
             instance.change_config_storage_by_key('setup', instance.setup - 1)
             return instance

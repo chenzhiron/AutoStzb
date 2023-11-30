@@ -3,6 +3,8 @@ from modules.Class.OperatorSteps import ClickOperatorSteps
 from modules.general.module_options_name import *
 from modules.general.option_verify_area import *
 from modules.utils import ocr_reg
+# 点击空白回到静态页
+clik_empty = ClickOperatorSteps(0, None, address_empty[0], address_empty[1])
 
 # 点击势力
 click_shili = ClickOperatorSteps(zhaomu_area, [zhaomu], shili_click[0], shili_click[1])
