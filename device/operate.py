@@ -1,7 +1,7 @@
 # 点击方案
-from device.pyminitouch.actions import MNTDevice
+from config.const import operate_port, operate_change_port, operate_url
 from config.paths import adb
-from config.const import operate_url, operate_port, operate_change_port, operate_url
+from device.pyminitouch.actions import MNTDevice
 
 device_id = operate_url + ':' + str(operate_port)
 
