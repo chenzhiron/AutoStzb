@@ -51,6 +51,7 @@ class ClickOperatorSteps(OperatorSteps):
             return True
         return False
 
+
 class SwipeOperatorSteps(OperatorSteps):
     def __init__(self, area, txt, swipe_lists):
         super().__init__(area, txt)
