@@ -1,3 +1,4 @@
+import os
 import subprocess
 import time
 import requests
@@ -33,9 +34,16 @@ class Automation:
     def locate_apk_path(self):
         (rc, out, _) = self.run_adb(["shell", "pm", "path", "com.rayworks.droidcast"])
         if rc or out == "":
-            raise RuntimeError(
-                "Locating apk failure, have you installed the app successfully?")
-
+            current_dir = os.path.dirname(os.path.abspath(__file__))  # get the directory of current script
+            apk_path = os.path.join(current_dir, 'DroidCast.apk')
+            (install_rc, _, _) = self.run_adb(["install", apk_path])
+            if install_rc:
+                raise RuntimeError("Failed to install the apk, please check the apk file.")
+            else:
+                print("Apk installed successfully.")
+                (rc, out, _) = self.run_adb(["shell", "pm", "path", "com.rayworks.droidcast"])
+                if rc or out == "":
+                    raise RuntimeError("Still cannot locate the apk after installation, please check the device.")
         prefix = "package:"
         postfix = ".apk"
         beg = out.index(prefix, 0)
