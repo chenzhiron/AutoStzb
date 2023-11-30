@@ -36,13 +36,13 @@ click_battle_main = ClickOperatorSteps(person_battle_area, [person_battle, battl
                                        click_draw_detail_area[1])
 
 # 战报内部点击战斗地点
-click_battle_retreat = ClickOperatorSteps((690, 670, 840, 708), ['战斗地点'], battle_site[0], battle_site[1])
+click_battle_retreat = ClickOperatorSteps((690, 670, 840, 708), [battle_site_name], battle_site[0], battle_site[1])
 
 # 重复确认
 click_battle_require = ClickOperatorSteps(queding_area, [queding], queding_area_xy[0],
                                           queding_area_xy[1])
 # 点击平局队伍, 验证方法重写
-click_battle_lists = ClickOperatorSteps(retreat_area_require, ['扫荡', '出证'], retreat_require_click[0],
+click_battle_lists = ClickOperatorSteps(retreat_area_require, [saodang, chuzheng], retreat_require_click[0],
                                         retreat_require_click[1])
 
 
@@ -58,7 +58,7 @@ def applyChangeClick(self):
 click_battle_lists.applyClick = applyChangeClick.__get__(click_battle_lists)
 
 # 点击撤退
-click_battle_active = ClickOperatorSteps(retreat_click_area, ['撤退'], retreat_click_area_xy[0],
+click_battle_active = ClickOperatorSteps(retreat_click_area, [retreat_name], retreat_click_area_xy[0],
                                          retreat_click_area_xy[1])
 # 二次确定点击撤退按钮
 click_battle_retreat_append = ClickOperatorSteps(retreat_append_click, [retreat_name], retreat_append_click_xy[0],
