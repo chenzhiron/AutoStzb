@@ -93,11 +93,12 @@ class Task:
         self.status = False
         self.lists = 1
         self.txt = None
-        self.battle_result = {
-            'status': '平局',
-            'person_number': '4001/8000',
-            'enemy_number': '3999/8000',
-        }
+        # self.battle_result = {
+        #     'status': '平局',
+        #     'person_number': '4001/8000',
+        #     'enemy_number': '3999/8000',
+        # }
+        self.battle_result = {}
         self.residue_person_ratio = 0.5
         self.residue_enemy_ratio = 0.5
         self.battle_time = 0
@@ -110,8 +111,7 @@ class Task:
         return getattr(self, key)
 
     def next_start(self):
-        # from web.configs.update import update_web
-        if self.circulation > 0 and self.status:  # 当 circulation 大于 0 时，才减少 circulation
+        if self.circulation > 0 and self.status:
             self.change_config_storage_by_key('setup', 0)
             next_time = max(self.delay_time, self.next_times)
 
@@ -121,8 +121,6 @@ class Task:
         elif self.circulation == 0:
             self.status = False
         return None
-
-    # update_web()
 
     def next_task(self):
         if len(self.task_group) > self.setup and self.status:
