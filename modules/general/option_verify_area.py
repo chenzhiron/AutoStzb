@@ -100,7 +100,7 @@ retreat_area_require = (800, 200, 1060, 400)
 # 战报平局模块
 retreat_area = (1040, 300, 1130, 330)
 # 点击部队撤退区域
-retreat_click_area = (1040, 290, 1130, 330)
+retreat_click_area = (1040, 290, 1280, 330)
 # 点击部队撤退基准坐标
 retreat_click_area_xy = (1080, 315)
 # 确认 点击部队撤退基准区域
