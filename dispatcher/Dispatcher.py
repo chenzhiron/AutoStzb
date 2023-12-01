@@ -6,6 +6,7 @@ from modules.utils import get_current_date
 
 class Dispatcher:
     def __init__(self):
+        self.paused = False
         self.status = False
         self.scheduler = BackgroundScheduler(executors={'default': ThreadPoolExecutor(1)})
         self.scheduler.add_listener(self.event_executed, EVENT_JOB_EXECUTED)
@@ -23,11 +24,21 @@ class Dispatcher:
 
     def start(self):
         self.status = True
-        self.scheduler.start()
+        if not self.scheduler.running:
+            self.scheduler.start()
+            self.paused = False
+            print('启动调度器成功')
+        elif self.paused:
+            self.scheduler.resume()
+            self.paused = False
+            print('恢复调度器成功')
 
     def stop(self):
         self.status = False
-        self.scheduler.shutdown()
+        if self.scheduler.running:
+            self.scheduler.pause()
+            self.paused = True
+            print('调度器暂停')
 
     def sc_cron_add_jobs(self, fn, arg, seconds):
         current_data = get_current_date(seconds)
