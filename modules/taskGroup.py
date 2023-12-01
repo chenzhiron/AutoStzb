@@ -79,7 +79,7 @@ def handle_in_battle_result(instance):
                 enemy_result = int(enemy[0]) <= int(int(enemy[1]) * instance.residue_enemy_ratio)
                 if person_result and enemy_result:
                     # 平局等待
-                    instance.change_config_storage_by_key('battle_time',  max(300 - (int(time.time() - start_time)), 1))
+                    instance.change_config_storage_by_key('battle_time', max(300 - (int(time.time() - start_time)), 1))
                     instance.change_config_storage_by_key('setup', instance.setup - 1)
                 else:
                     # 平局点击撤退
@@ -99,17 +99,21 @@ def handle_in_battle_result(instance):
 # 点击撤退函数
 def handle_in_draw_battle(instance):
     while 1:
-        if click_battle_retreat_append.applyClick():
+        if click_battle.applyClick():
+            continue
+        if click_battle_main.applyClick():
+            while 1:
+                if click_battle_retreat_append.applyClick():
+                    break
+                if click_battle_active.applyClick():
+                    continue
+                if click_battle_lists.applyClick():
+                    continue
+                if click_battle_retreat.applyClick():
+                    continue
+                if click_battle_require.applyClick():
+                    continue
             return instance
-        if click_battle_active.applyClick():
-            continue
-        if click_battle_lists.applyClick():
-            continue
-        if click_battle_retreat.applyClick():
-            continue
-        if click_battle_require.applyClick():
-            continue
-
 
 # 取消标记
 def handle_in_unmark(instance=None):
