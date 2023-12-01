@@ -91,7 +91,7 @@ def handle_in_battle_result(instance):
                                                       max(instance.next_times - (time.time() - start_time), 1))
             # 跳过征兵
             if hasattr(instance, 'skip_conscription') and instance.type == saodangType and instance.skip_conscription:
-                instance.change_config_storage_by_key('setup', 0)
+                instance.change_config_storage_by_key('setup', instance.setup + 1)
             handle_out_home()
             return instance
 
