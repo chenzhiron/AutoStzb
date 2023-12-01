@@ -33,7 +33,7 @@ def select_active_lists(l, area=bianduilists):
 
 # 战报详情数据
 def battle_info():
-    battle_info = {}
+    battle_infoObj = {}
     status = None
     person_number = None
     enemy_number = None
@@ -44,12 +44,13 @@ def battle_info():
             person_number = ocr_reg(ocrDefault(np.array(image.crop(person_status_number_area))))[0]
             enemy_number = ocr_reg(ocrDefault(np.array(image.crop(enemy_status_number_area))))[0]
         except:
+            print('战报截图识别错误了')
             pass
 
-    battle_info['status'] = status
-    battle_info['person_number'] = person_number
-    battle_info['enemy_number'] = enemy_number
-    return battle_info
+    battle_infoObj['status'] = status
+    battle_infoObj['person_number'] = person_number
+    battle_infoObj['enemy_number'] = enemy_number
+    return battle_infoObj
 
 
 # 返回主页

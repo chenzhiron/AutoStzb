@@ -18,7 +18,7 @@ queding = '确定'
 
 person_battle = '个人战报'
 battle_bf2 = '人战报'
-battle_info = '战报'
+battle_info_txt = '战报'
 
 battle_details = '战报详情'
 

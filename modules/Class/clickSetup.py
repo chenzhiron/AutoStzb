@@ -34,7 +34,7 @@ click_sign_options = ClickOperatorSteps(0, None, address_sign_land_area[0], addr
 click_battle = ClickOperatorSteps(zhaomu_area, [zhaomu], click_draw_area[0], click_draw_area[1])
 
 # 查看个人详情
-click_battle_main = ClickOperatorSteps(person_battle_area, [person_battle, battle_bf2, battle_info], click_draw_detail_area[0],
+click_battle_main = ClickOperatorSteps(person_battle_area, [person_battle, battle_bf2, battle_info_txt], click_draw_detail_area[0],
                                        click_draw_detail_area[1])
 
 # 战报内部点击战斗地点
