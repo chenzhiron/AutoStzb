@@ -64,13 +64,13 @@ def handle_in_lists_action(instance):
 # 点击查看战报
 def handle_in_battle_result(instance):
     start_time = time.time()
+    instance.change_config_storage_by_key('battle_time', 0)
     while 1:
         if click_battle.applyClick():
             continue
         if click_battle_main.applyClick():
             battle_result = battle_info()
             instance.change_config_storage_by_key('battle_result', battle_result)
-            # 平局点击撤退 和  胜利/战败跳过平局点击撤退任务
             if battle_result['status'] == '平局':
                 # 平局处理
                 person = battle_result['person_number'].split('/')
@@ -78,16 +78,17 @@ def handle_in_battle_result(instance):
                 person_result = int(person[0]) >= int(int(person[1]) * instance.residue_person_ratio)
                 enemy_result = int(enemy[0]) <= int(int(enemy[1]) * instance.residue_enemy_ratio)
                 if person_result and enemy_result:
-                    print('999')
+                    # 平局等待
                     instance.change_config_storage_by_key('battle_time',  max(300 - (int(time.time() - start_time)), 1))
                     instance.change_config_storage_by_key('setup', instance.setup - 1)
                 else:
+                    # 平局点击撤退
                     instance.change_config_storage_by_key('next_times', 1)
             else:
+                # 胜利 /战败跳过撤退任务
                 instance.change_config_storage_by_key('setup', instance.setup + 1)
-                instance.change_config_storage_by_key('battle_time', 0)
                 instance.change_config_storage_by_key('next_times',
-                                                      max(instance.next_times - (time.time() - start_time), 0))
+                                                      max(instance.next_times - (time.time() - start_time), 1))
             # 跳过征兵
             if hasattr(instance, 'skip_conscription') and instance.type == saodangType and instance.skip_conscription:
                 instance.change_config_storage_by_key('setup', 0)

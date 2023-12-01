@@ -4,6 +4,54 @@ from modules.taskGroup import handle_in_map_conscription, handle_in_lists_action
 from config.task_or_web_common import saodangType, chuzhengType, zhengbingType, wotuType, chengpiType
 
 
+# def a(instance):
+#     print(instance.setup)
+#     print('征兵')
+#     return instance
+#
+#
+# def b(instance):
+#     print(instance.setup)
+#     print('扫荡')
+#     return instance
+#
+#
+# def c(instance):
+#     print(instance.setup)
+#     print('出征')
+#     return instance
+
+
+# def e(instance):
+#     print(instance.setup)
+#     person_num = instance.battle_result['person_number'].split('/')
+#     enemy_num = instance.battle_result['enemy_number'].split('/')
+#     person_result = int(person_num[0]) > int(person_num[1]) * instance.residue_person_ratio
+#     enemy_result = int(enemy_num[0]) < int(enemy_num[1]) * instance.residue_enemy_ratio
+#     print(person_result, 'person_result')
+#     print(enemy_result, 'enemy_result')
+#     if person_result and enemy_result:
+#         instance.setup = instance.setup - 1
+#         instance.battle_time = 15
+#         print('等待')
+#     else:
+#         print('不变化')
+#     print('统计')
+#     return instance
+
+
+# def f(instance):
+#     print(instance.setup)
+#     print('撤退')
+#     return instance
+#
+#
+# def g(instance):
+#     print(instance.setup)
+#     print('取消标记')
+#     return instance
+
+
 class Task:
     dispatcher = task_dispatcher
 
@@ -22,6 +70,17 @@ class Task:
                     handle_in_map_conscription]
         else:
             return []
+        #
+        # if t == zhengbingType:
+        #     return [a]
+        # elif t == saodangType:
+        #     return [b, e, f]
+        # elif t == chuzhengType:
+        #     return [c, e, f, g]
+        # elif t == wotuType or t == chengpiType:
+        #     return [c, e, f]
+        # else:
+        #     return []
 
     def __init__(self, t, circulation=1):
         self.task_group = self.set_task_group(t)
@@ -34,9 +93,13 @@ class Task:
         self.status = False
         self.lists = 1
         self.txt = None
-        self.battle_result = None
-        self.residue_person_ratio = 0.8
-        self.residue_enemy_ratio = 0.8
+        self.battle_result = {
+            'status': '平局',
+            'person_number': '4001/8000',
+            'enemy_number': '3999/8000',
+        }
+        self.residue_person_ratio = 0.5
+        self.residue_enemy_ratio = 0.5
         self.battle_time = 0
 
     def add_attribute(self, key, value):
@@ -58,6 +121,7 @@ class Task:
         elif self.circulation == 0:
             self.status = False
         return None
+
     # update_web()
 
     def next_task(self):
