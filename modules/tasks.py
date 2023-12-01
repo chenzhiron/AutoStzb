@@ -89,6 +89,7 @@ class Task:
         self.setup = 0
         self.delay_time = 0
         self.offset = 0
+        self.speed_time = 0
         self.next_times = 0
         self.status = False
         self.lists = 1
@@ -131,10 +132,7 @@ class Task:
             self.dispatcher.sc_cron_add_jobs(self.task_group[self.setup], [self], next_time)
             self.change_config_storage_by_key('setup', self.setup + 1)
         else:
-            if self.circulation > 0:
-                self.next_start()
-            else:
-                self.status = False
+            self.next_start()
 #
 # if __name__ == '__main__':
 #     task1 = Task(2, 2)

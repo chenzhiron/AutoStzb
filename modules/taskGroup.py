@@ -53,6 +53,7 @@ def handle_in_lists_action(instance):
         if not (times is None):
             click_chuzheng_or_saodang.applyClick(status=True)
             instance.change_config_storage_by_key('next_times', times)
+            instance.change_config_storage_by_key('speed_time', times)
             return instance
         if click_sign.applyClick():
             click_sign_options.applyClick(status=True, offset_y=instance.offset)
@@ -87,8 +88,7 @@ def handle_in_battle_result(instance):
             else:
                 # 胜利 /战败跳过撤退任务
                 instance.change_config_storage_by_key('setup', instance.setup + 1)
-                instance.change_config_storage_by_key('next_times',
-                                                      max(instance.next_times - (time.time() - start_time), 1))
+                instance.change_config_storage_by_key('next_times', instance.speed_time)
             # 跳过征兵
             if hasattr(instance, 'skip_conscription') and instance.type == saodangType and instance.skip_conscription:
                 instance.change_config_storage_by_key('setup', instance.setup + 1)
@@ -104,6 +104,7 @@ def handle_in_draw_battle(instance):
         if click_battle_main.applyClick():
             while 1:
                 if click_battle_retreat_append.applyClick():
+                    instance.change_config_storage_by_key('next_times', instance.speed_time)
                     break
                 if click_battle_active.applyClick():
                     continue
@@ -114,6 +115,7 @@ def handle_in_draw_battle(instance):
                 if click_battle_require.applyClick():
                     continue
             return instance
+
 
 # 取消标记
 def handle_in_unmark(instance=None):
@@ -127,7 +129,6 @@ def handle_in_unmark(instance=None):
             instance.change_config_storage_by_key('next_times', 1)
             handle_out_home()
             instance.change_config_storage_by_key('circulation', 1)
-            instance.change_config_storage_by_key('setup', 0)
             return instance
         if click_sign_init.applyClick(status=True):
             continue
