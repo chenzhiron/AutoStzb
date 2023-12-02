@@ -1,12 +1,14 @@
 @echo off
 
-
 chcp 65001
 
-.\toolkit\python.exe .\toolkit\get-pip.py
+set SCRIPT_PATH=%~dp0
+set PATH=%PATH%;%SCRIPT_PATH%toolkit\Scripts
 
-.\toolkit\python.exe .\toolkit\Scripts\pip.exe install -r .\requirements.txt
+%SCRIPT_PATH%toolkit\python.exe %SCRIPT_PATH%get_pip.py
 
-.\toolkit\python.exe .\main.py
+%SCRIPT_PATH%toolkit\python.exe %SCRIPT_PATH%toolkit\Scripts\pip.exe install --no-warn-script-location -r %SCRIPT_PATH%requirements.txt
+
+%SCRIPT_PATH%toolkit\python.exe %SCRIPT_PATH%main.py
 
 pause
