@@ -8,4 +8,5 @@ schedulerType = 2 ** 7
 
 # 调度器与web更新队列
 import queue
+
 update_queue = queue.Queue()
