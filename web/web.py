@@ -38,7 +38,7 @@ def init():
 
 # 启动web
 def start_web(web_port):
-    start_server(init, port=web_port)
+    start_server(init, port=web_port, auto_open_webbrowser=True)
 
 # if __name__ == '__main__':
 #     start_web(18878)
