@@ -1,4 +1,4 @@
-/toolkit/Lib/
+/toolkit
 .DS_Store
 dist/electron/*
 npm-debug.log
