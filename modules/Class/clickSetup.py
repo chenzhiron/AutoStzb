@@ -50,11 +50,13 @@ click_battle_lists = ClickOperatorSteps(retreat_area_require, [saodang, chuzheng
 
 def applyChangeClick(self):
     result = ocr_reg(self.getImgOcr())
-    if any(item in result for item in self.verify_txt):
-        operateTap(self.x, self.y)
-        return True
-    else:
-        return False
+    count = 0
+    while count < 6:
+        if any(item in result for item in self.verify_txt):
+            operateTap(self.x, self.y)
+            return True
+        count += 1
+    return False
 
 
 click_battle_lists.applyClick = applyChangeClick.__get__(click_battle_lists)
