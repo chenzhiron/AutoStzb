@@ -44,14 +44,11 @@ class ClickOperatorSteps(OperatorSteps):
         self.y = y
 
     def applyClick(self, current_lists=1, offset_y=0, status=False):
-        count = 0
-        while count < 6:
-            if self.verifyOcr() or status:
+        if self.verifyOcr() or status:
                 if status:
                     time.sleep(1)
                 operateTap(self.x * current_lists, self.y + offset_y)
                 return True
-            count += 1
         return False
 
 
