@@ -83,26 +83,42 @@ class Task:
         #     return []
 
     def __init__(self, t, circulation=1):
+        # 执行时间耗时
         self.elapsed_time = 0
+        # 任务执行组
         self.task_group = self.set_task_group(t)
+        # 类型 暂无用处
         self.type = t
+        # 循环次数
         self.circulation = circulation
+        # 任务索引
         self.setup = 0
+        # （运行下一轮任务组等待时间 || 下一次运行时间）比较拿最大值
         self.delay_time = 0
+        # 点击位置偏移
         self.offset = 0
+        # 队伍出征/扫荡时间
         self.speed_time = 0
+        # 运行下一个任务时间
         self.next_times = 0
+        # 状态
         self.status = False
+        # 编队
         self.lists = 1
+        # 扫荡 / 出征文本
         self.txt = None
         # self.battle_result = {
         #     'status': '平局',
         #     'person_number': '4001/8000',
         #     'enemy_number': '3999/8000',
         # }
+        # 战报结果对象
         self.battle_result = {}
+        # 我方剩余比例
         self.residue_person_ratio = 0.5
+        # 敌人剩余比例
         self.residue_enemy_ratio = 0.5
+        # 战报时间
         self.battle_time = 0
 
     def add_attribute(self, key, value):
