@@ -21,13 +21,13 @@ def handle_in_map_conscription(instance):
 
         if click_zhengbing_require.applyClick():
             instance.change_config_storage_by_key('next_times', times)
-            handle_out_home()
+            handle_out_home(instance)
             return instance
         if swipe_zhengbing.applySwipe():
             times = zhengbing_max_time()
             if times == 0:
                 instance.change_config_storage_by_key('next_times', times)
-                handle_out_home()
+                handle_out_home(instance)
                 return instance
         if click_zhengbing.applyClick():
             continue
