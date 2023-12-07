@@ -1,4 +1,5 @@
 from config.task_or_web_common import update_queue
+from dispatcher.Dispatcher import task_dispatcher
 from pywebio import start_server
 from pywebio.output import put_row, put_column, put_scope, put_text
 from pywebio import session
@@ -18,7 +19,7 @@ def init():
     put_row(
         [put_text('注意！所有功能的一切前提是以主城为中心出发，在野外要塞或其他不属于主城的地方出征/扫荡可能会出现错误')])
 
-    put_row([put_scope('status', render_status(0))])
+    put_row([put_scope('status', render_status(task_dispatcher.get_status()))])
     put_row([
         put_column([
             put_row([put_scope('config', render_options_config(options_config))])

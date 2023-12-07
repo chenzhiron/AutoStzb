@@ -1,5 +1,4 @@
 import datetime
-import math
 
 
 def get_current_date(add_seconds=1):

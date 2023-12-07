@@ -49,6 +49,11 @@ class Dispatcher:
                                misfire_grace_time=60 * 60 * 24
                                )
 
+    def get_status(self):
+        if self.scheduler.running:
+            return 1
+        return 0
+
 
 task_dispatcher = Dispatcher()
 # if task_dispatcher.scheduler.running:
