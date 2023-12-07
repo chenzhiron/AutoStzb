@@ -5,6 +5,8 @@ from modules.Class.accidental import select_active_lists, battle_info, handle_ou
 from modules.Class.clickSetup import *
 from modules.Class.originalSetup import chuzheng_max_time, zhengbing_max_time, click_options_options
 from modules.Class.swipeSetup import swipe_zhengbing
+from modules.general.module_error_txt import zhengbing_error, chuzheng_error, zhanbao_error, chetui_error, sign_error, \
+    returnmain_error
 
 
 # 对一张图，切换页面和页面点击都会有延迟，对一张截图进行 区域识别 并点击
@@ -14,6 +16,9 @@ def handle_in_map_conscription(instance):
     times = 0
     # 需要捕获征兵队伍
     while 1:
+        if int(time.time()) - instance.elapsed_time > 120:
+            raise Exception(zhengbing_error)
+
         if click_zhengbing_require.applyClick():
             instance.change_config_storage_by_key('next_times', times)
             handle_out_home()
@@ -38,9 +43,10 @@ def handle_in_map_conscription(instance):
 def handle_in_lists_action(instance):
     if click_options_options.verify_txt != instance.txt:
         click_options_options.verify_txt = instance.txt
-
     # 出征部队
     while 1:
+        if int(time.time()) - instance.elapsed_time > 120:
+            raise Exception(chuzheng_error)
         if click_options_options.applyOriginalClick():
             continue
         result = select_active_lists(instance.lists)
@@ -67,6 +73,8 @@ def handle_in_battle_result(instance):
     start_time = time.time()
     instance.change_config_storage_by_key('battle_time', 0)
     while 1:
+        if int(time.time()) - instance.elapsed_time > 120:
+            raise Exception(zhanbao_error)
         if click_battle.applyClick():
             continue
         if click_battle_main.applyClick():
@@ -103,6 +111,8 @@ def handle_in_draw_battle(instance):
             continue
         if click_battle_main.applyClick():
             while 1:
+                if int(time.time()) - instance.elapsed_time > 120:
+                    raise Exception(chetui_error)
                 if click_battle_retreat_append.applyClick():
                     instance.change_config_storage_by_key('next_times', instance.speed_time)
                     break
@@ -120,6 +130,8 @@ def handle_in_draw_battle(instance):
 # 取消标记
 def handle_in_unmark(instance=None):
     while 1:
+        if int(time.time()) - instance.elapsed_time > 120:
+            raise Exception(sign_error)
         if click_sign.applyClick():
             time.sleep(1)
             click_unmark.applyClick()
@@ -127,7 +139,7 @@ def handle_in_unmark(instance=None):
             if res[0] is None:
                 instance.change_config_storage_by_key('status', False)
             instance.change_config_storage_by_key('next_times', 1)
-            handle_out_home()
+            handle_out_home(instance)
             instance.change_config_storage_by_key('circulation', 1)
             return instance
         if click_sign_init.applyClick(status=True):
@@ -137,8 +149,10 @@ def handle_in_unmark(instance=None):
 
 
 # 返回首页
-def handle_out_home():
+def handle_out_home(instance):
     while 1:
+        if int(time.time()) - instance.elapsed_time > 120:
+            raise Exception(returnmain_error)
         if handle_out_map.verifyOcr():
             handle_out_map.applyClick()
         else:

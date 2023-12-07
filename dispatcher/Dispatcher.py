@@ -1,4 +1,6 @@
-from apscheduler.events import EVENT_JOB_EXECUTED
+import time
+
+from apscheduler.events import EVENT_JOB_EXECUTED, EVENT_JOB_ERROR
 from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.schedulers.background import BackgroundScheduler
 from modules.utils import get_current_date
@@ -10,16 +12,20 @@ class Dispatcher:
         self.status = False
         self.scheduler = BackgroundScheduler(executors={'default': ThreadPoolExecutor(1)})
         self.scheduler.add_listener(self.event_executed, EVENT_JOB_EXECUTED)
+        self.scheduler.add_listener(self.event_error, EVENT_JOB_ERROR)
+
+    def event_error(self, event):
+        print('error', event.exception)
+        self.stop()
 
     # 任务执行完毕调用下一个任务
     def event_executed(self, event):
         from config.task_or_web_common import update_queue
         object_dict = vars(event)
-        try:
-            instance = object_dict['retval']
+        instance = object_dict['retval']
+        if instance is not None:
+            instance.change_config_storage_by_key('elapsed_time', int(time.time()))
             instance.next_task()
-        except:
-            pass
         update_queue.put('update')
 
     def start(self):

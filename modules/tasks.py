@@ -83,6 +83,7 @@ class Task:
         #     return []
 
     def __init__(self, t, circulation=1):
+        self.elapsed_time = 0
         self.task_group = self.set_task_group(t)
         self.type = t
         self.circulation = circulation
