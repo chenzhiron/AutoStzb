@@ -57,6 +57,7 @@ def create_instance(task_type):
 def create_zhengbing_options(name, task_type):
     configs = [
         create_config('status', '启动', 'checkbox', task_start_saodang, False, checkboxGroup),
+        create_config('explain', '选中的队伍会自动点击征兵，直到满兵为止'),
         create_config('lists', '选择编队', 'select', change_lists, 1, listGroup),
     ]
     return create_option(name, task_type, configs)

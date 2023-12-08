@@ -7,6 +7,7 @@ def update_web():
     clear(scope='config')
     with use_scope('config', clear=True):
         result = render_options_config(options_config)
-        result.show()
+        for v in result:
+            v.show()
 # def update_web_info(value):
 #     put_text(value)

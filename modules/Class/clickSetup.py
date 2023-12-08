@@ -17,7 +17,8 @@ click_zhengbing = ClickOperatorSteps(zhengbing_page_area, [zhengbing], zhengbing
 click_zhengbing_sure = ClickOperatorSteps(0, None, zhengbing_page_swipe_sure_xy[0], zhengbing_page_swipe_sure_xy[1])
 # 征兵确认
 click_zhengbing_require = ClickOperatorSteps(queding_area, [queding], queding_area_xy[0], queding_area_xy[1])
-
+# 征兵已满
+click_satify = ClickOperatorSteps(zhengbing_page_swipe_verify, [zhengbing_satisfy], zhengbing_page_swipe_sure_xy[0], zhengbing_page_swipe_sure_xy[1])
 # 点击出征/ 扫荡  在此处是同一个页面 不需要校验
 click_chuzheng_or_saodang = ClickOperatorSteps(0, None, address_going_require[0], address_going_require[1])
 

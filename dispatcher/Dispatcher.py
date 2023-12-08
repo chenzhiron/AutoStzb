@@ -1,3 +1,4 @@
+import datetime
 import time
 
 from apscheduler.events import EVENT_JOB_EXECUTED, EVENT_JOB_ERROR
@@ -48,6 +49,7 @@ class Dispatcher:
 
     def sc_cron_add_jobs(self, fn, arg, seconds):
         current_data = get_current_date(seconds)
+        arg[0].change_config_storage_by_key('elapsed_time', int(datetime.datetime.timestamp(current_data)))
         self.scheduler.add_job(fn,
                                'date',
                                args=arg,
