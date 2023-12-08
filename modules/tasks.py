@@ -103,6 +103,8 @@ class Task:
         self.next_times = 0
         # 状态
         self.status = False
+        # 跳过征兵选项
+        self.skip_conscription = False
         # 编队
         self.lists = 1
         # 扫荡 / 出征文本

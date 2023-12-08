@@ -32,6 +32,8 @@ def handle_in_map_conscription(instance):
             return instance
         if swipe_zhengbing.applySwipe():
             times = zhengbing_max_time()
+            if instance.type == zhengbingType:
+                times = times + 300
         if click_zhengbing.applyClick():
             continue
         if click_budui.applyClick(instance.lists):
@@ -101,9 +103,9 @@ def handle_in_battle_result(instance):
                 instance.change_config_storage_by_key('setup', instance.setup + 1)
                 instance.change_config_storage_by_key('next_times', instance.speed_time)
             # 跳过征兵
-            if hasattr(instance, 'skip_conscription') and instance.type == saodangType and instance.skip_conscription:
+            if hasattr(instance, 'skip_conscription') and instance.skip_conscription:
                 instance.change_config_storage_by_key('setup', instance.setup + 1)
-            handle_out_home()
+            handle_out_home(instance)
             return instance
 
 

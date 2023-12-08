@@ -49,8 +49,6 @@ def create_instance(task_type):
     if task_type == wotuType:
         task.change_config_storage_by_key('change_delay_time', 3600)
 
-    if task_type == saodangType:
-        task.add_attribute('skip_conscription', False)
     return task
 
 
@@ -83,7 +81,7 @@ def create_saodang_option(name, task_type):
         create_config('lists', '选择编队', 'select', change_lists, 1, listGroup),
         create_config('circulation', '循环次数', 'input', change_circulation, 1),
         create_config('delay_time', '延迟时间', 'input', change_delay_time, 0),
-        create_config('skip_conscription', '跳过征兵继续扫荡', 'checkbox', change_skip_conscription, False,
+        create_config('skip_conscription', '跳过征兵', 'checkbox', change_skip_conscription, False,
                       checkboxGroup),
         create_config('explain', '以下2个条件必须都符合才会进入平局等待，否则会执行撤退函数!!!'),
         create_config('explain', '当我方剩余兵力低于该比例时，会执行撤退函数，否则等待 5分钟后下一封战报'),
@@ -103,6 +101,8 @@ def create_chuzheng_options(name, task_type):
                       False, checkboxGroup),
         create_config('lists', '选择编队', 'select', change_lists, 1, listGroup),
         create_config('delay_time', '延迟时间', 'input', change_delay_time, 2),
+        create_config('skip_conscription', '跳过征兵', 'checkbox', change_skip_conscription, False,
+                      checkboxGroup),
         create_config('explain', '以下2个条件必须都符合才会进入平局等待，否则会执行撤退函数!!!'),
         create_config('explain', '当我方剩余兵力低于该比例时，会执行撤退函数，否则等待 5分钟后下一封战报'),
         create_config('residue_person_ratio', '我方剩余兵力比例, 范围填 0 - 1', 'input', change_residue_person_ratio,
@@ -118,6 +118,8 @@ def create_chuzheng_options(name, task_type):
 def create_wotu_options(name, task_type):
     configs = [
         create_config('status', '启动--------说明：标记为第三个标记', 'checkbox', task_start_wotu, False, checkboxGroup),
+        create_config('skip_conscription', '跳过征兵', 'checkbox', change_skip_conscription, False,
+                      checkboxGroup),
         create_config('lists', '选择编队', 'select', change_lists, 1, listGroup),
         create_config('delay_time', '延迟时间', 'input', change_delay_time, 2),
     ]
@@ -131,6 +133,8 @@ def create_chengpi_options(name, task_type):
                       checkboxGroup),
         create_config('lists', '选择编队', 'select', change_lists, 1, listGroup),
         create_config('delay_time', '延迟时间', 'input', change_delay_time, 2),
+        create_config('skip_conscription', '跳过征兵', 'checkbox', change_skip_conscription, False,
+                      checkboxGroup),
         create_config('explain', '以下2个条件必须都符合才会进入平局等待，否则会执行撤退函数!!!'),
         create_config('explain', '当我方剩余兵力低于该比例时，会执行撤退函数，否则等待 5分钟后下一封战报'),
         create_config('residue_person_ratio', '我方剩余兵力比例, 范围填 0 - 1', 'input', change_residue_person_ratio,
