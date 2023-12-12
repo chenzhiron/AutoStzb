@@ -83,6 +83,7 @@ class Task:
         #     return []
 
     def __init__(self, t, circulation=1):
+        self.list_names = []
         # 执行时间耗时
         self.elapsed_time = 0
         # 任务执行组

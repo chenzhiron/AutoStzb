@@ -1,5 +1,7 @@
 import datetime
 
+from scipy.stats import truncnorm
+
 
 def get_current_date(add_seconds=1):
     now = datetime.datetime.now()
@@ -30,3 +32,16 @@ def ocr_reg(res):
         return [item[1][0] for sublist in res for item in sublist]
     else:
         return []
+
+
+def generate_normal_distribution(ranges, sd=25):
+    result = []
+    for low, high in ranges:
+        mean = (low + high) / 2.0
+        data = truncnorm(
+            (low - mean) / sd,  # 下截断点
+            (high - mean) / sd,  # 上截断点
+            loc=mean,
+            scale=sd).rvs()
+        result.append(int(data))
+    return result
