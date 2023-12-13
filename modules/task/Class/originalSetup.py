@@ -1,4 +1,4 @@
-from modules.Class.OperatorSteps import OriginalOperatorSteps, OperatorSteps
+from modules.task.Class.OperatorSteps import OriginalOperatorSteps, OperatorSteps
 from modules.general.module_options_name import saodang
 from modules.general.option_verify_area import address_execute_order_area, zhengbing_time_area, computed_going_time_area
 from modules.utils import calculate_max_timestamp, ocr_reg

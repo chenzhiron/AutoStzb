@@ -27,7 +27,7 @@ class Dispatcher:
         if instance is not None:
             instance.change_config_storage_by_key('elapsed_time', int(time.time()))
             instance.next_task()
-        update_queue.put('update')
+        update_queue.put(['update'])
 
     def start(self):
         self.status = True

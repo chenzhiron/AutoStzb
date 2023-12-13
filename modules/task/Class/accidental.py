@@ -2,12 +2,12 @@ import numpy as np
 
 from device.AutoMation import automation
 from device.operate import operateTap
-from modules.Class.OperatorSteps import OperatorSteps
+from modules.task.Class.OperatorSteps import OperatorSteps
 from modules.general.module_options_name import zhaomu
 from modules.general.option_verify_area import tili_area, address_execute_list, status_area, person_status_number_area, \
     enemy_status_number_area, bianduilists, return_area, zhaomu_area
 from modules.utils import ocr_reg, calculate_max_timestamp
-from ocr.main import ocrDefault
+from modules.ocr.main import ocrDefault
 
 
 # 选择对应的部队出征

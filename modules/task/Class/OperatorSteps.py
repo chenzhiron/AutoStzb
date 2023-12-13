@@ -3,7 +3,7 @@ import time
 import numpy as np
 
 from device.AutoMation import automation
-from ocr.main import ocrDefault
+from modules.ocr.main import ocrDefault
 from device.operate import operateTap, operateSwipe
 
 

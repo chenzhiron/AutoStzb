@@ -1,5 +1,5 @@
 from device.operate import operateTap
-from modules.Class.OperatorSteps import ClickOperatorSteps
+from modules.task.Class.OperatorSteps import ClickOperatorSteps
 from modules.general.module_options_name import *
 from modules.general.option_verify_area import *
 from modules.utils import ocr_reg
