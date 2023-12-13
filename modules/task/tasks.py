@@ -1,7 +1,6 @@
-from dispatcher.Dispatcher import task_dispatcher
-from modules.taskGroup import handle_in_map_conscription, handle_in_lists_action, handle_in_battle_result, \
-    handle_in_unmark, handle_in_draw_battle
-from config.task_or_web_common import saodangType, chuzhengType, zhengbingType, wotuType, chengpiType
+from config.task_or_web_common import saodangType, chuzhengType, wotuType, chengpiType
+from modules.dispatcher.Dispatcher import task_dispatcher
+from modules.task.taskGroup import *
 
 
 # def a(instance):
