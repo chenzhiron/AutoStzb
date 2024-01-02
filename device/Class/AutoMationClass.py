@@ -7,29 +7,29 @@ from io import BytesIO
 
 
 class Automation:
-    def __init__(self, adb, device_serial, port, screenshot_url, sleep):
-        self.adb = adb
+    def __init__(self, adb_path, device_serial, port, screenshot_url, time_sleep):
+        self.adb_path = adb_path
         self.device_serial = device_serial
         self.port = port
         self.screenshot_url = screenshot_url
-        self.sleep = sleep
-        
-    def changeTimeSleep(self, key, v):
-        setattr(self, key, v)
-        
-    def run_adb(self, args, pipeOutput=True):
-        if self.device_serial:
-            args = [self.adb] + ['-s' + self.device_serial] + args
-            print('exec cmd : %s' % self.device_serial)
-        else:
-            args = [self.adb] + args
+        self.time_sleep = time_sleep
 
-        out = None
-        if (pipeOutput):
-            out = subprocess.PIPE
-        p = subprocess.Popen([str(arg) for arg in args], stdout=out, encoding='utf-8')
-        stdout, stderr = p.communicate()
-        return p.returncode, stdout, stderr
+    def changeTimeSleep(self, time_sleep):
+        self.time_sleep = time_sleep
+
+    def run_adb(self, cmd, return_output=False):
+        adb_cmd = [self.adb_path]
+        if self.device_serial:
+            adb_cmd.extend(['-s', self.device_serial])
+        adb_cmd.extend(cmd)
+
+        proc = subprocess.Popen(adb_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = proc.communicate()
+
+        if return_output:
+            return stdout.decode('utf-8').strip(), stderr.decode('utf-8').strip()
+        else:
+            return proc.returncode == 0
 
     def locate_apk_path(self):
         (rc, out, _) = self.run_adb(["shell", "pm", "path", "com.rayworks.droidcast"])
@@ -67,27 +67,15 @@ class Automation:
                     "Please specify the serial number of target device you want to use ('-s serial_number').")
 
     def automate(self):
-        try:
-            self.identify_device()
-            class_path = self.locate_apk_path()
-            (code, _, err) = self.run_adb(
-                ["forward", "tcp:%d" % self.port, "tcp:%d" % self.port])
-            print(">>> adb forward tcp:%d " % self.port, code)
-
-            args = ["shell",
-                    class_path,
-                    "app_process",
-                    "/",
-                    "com.rayworks.droidcast.Main",
-                    "--port=%d" % self.port]
-
-            self.run_adb(args, pipeOutput=False)
-
-        except Exception as e:
-            print('截图方案出错了', e)
+        # Example of how to use run_adb with the updated device_serial handling
+        self.identify_device()
+        self.locate_apk_path()
+        self.run_adb(['forward', f'tcp:{self.port}', f'tcp:{self.port}'])
+        self.run_adb(
+            ['shell', 'CLASSPATH=/data/local/tmp/scrcpy-server', 'app_process', '/', 'com.genymobile.scrcpy.Server'])
 
     def getScreenshots(self):
-        time.sleep(self.sleep)
+        time.sleep(self.time_sleep)
         response = requests.get(self.screenshot_url)
         if response.status_code == 200:
             return Image.open(BytesIO(response.content))
@@ -95,12 +83,12 @@ class Automation:
             print('截图失败')
             return None
 
-    def disconnect(self, device_serial=None):
-        if device_serial is None:
-            device_serial = self.device_serial
+    def disconnect(self):
+        # Example of how to use run_adb with the updated device_serial handling
+        self.run_adb(['disconnect'])
 
-        if device_serial is not None:
-            self.run_adb(["disconnect", device_serial])
-        else:
-            print("No device serial number provided.")
-            
+# automation = Automation(adb_path, device_serial, port, screenshot_url)
+# automation.automate()
+# # Now if you need to change the device serial just update the property
+# automation.device_serial = 'new_serial_number'
+# # The next adb commands will use the new device serial

@@ -1,0 +1,12 @@
+Python:
+  executable: ./toolkit/python.exe
+  package: ./requirements.txt
+  pip: ./toolkit/pip.exe
+Git:
+  executable: ./toolkit/git/bin/bash.exe
+Simulator:
+  url: 127.0.0.1:62001
+  change_port: 60000
+  screenshot: 53520
+Web:
+  port: 18878

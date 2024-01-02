@@ -27,7 +27,6 @@ def is_device_connected(device_id, adb):
     return True
 
 
-
 class MNTInstaller(object):
     """ install minitouch for android devices """
 

@@ -63,6 +63,9 @@ class MNTDevice(object):
         self.stop()
         self.start()
 
+    def change_device(self, new_device_id):
+        self.device_id = new_device_id
+        self.reset()
     def start(self):
         # prepare for connection
         self.server = MNTServer(self.device_id, self._ADB, self.port)
