@@ -6,6 +6,7 @@ from modules.web.modules.renderTeam import renderTeam
 from modules.web.modules.devices_web import change_config
 from st import stzb
 
+
 def init():
     put_column([
         put_row([stzb.render()]),

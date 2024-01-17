@@ -1,5 +1,0 @@
-2024-01-17 10:27:25,233 - my_logger - DEBUG - This is a debug message
-2024-01-17 10:27:25,233 - my_logger - INFO - This is an info message
-2024-01-17 10:27:25,233 - my_logger - WARNING - This is a warning message
-2024-01-17 10:27:25,233 - my_logger - ERROR - This is an error message
-2024-01-17 10:27:25,233 - my_logger - CRITICAL - This is a critical message
