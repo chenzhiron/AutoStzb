@@ -1,15 +1,10 @@
 import time
 
 import numpy as np
-
-from device.AutoMation import automation
 from modules.ocr.main import ocrDefault
-from device.operate import operateTap, operateSwipe
 
 
 class OperatorSteps:
-    getScreenshots = automation.getScreenshots
-
     def __init__(self, area, txt, x=0, y=0):
         self.x = x
         self.y = y
@@ -45,10 +40,10 @@ class ClickOperatorSteps(OperatorSteps):
 
     def applyClick(self, current_lists=1, offset_y=0, status=False):
         if self.verifyOcr() or status:
-                if status:
-                    time.sleep(1)
-                operateTap(self.x * current_lists, self.y + offset_y)
-                return True
+            if status:
+                time.sleep(1)
+            operateTap(self.x * current_lists, self.y + offset_y)
+            return True
         return False
 
 

@@ -1,0 +1,83 @@
+Config:
+  screenshot: 1
+TeamManager:
+    - name: 部队1
+      state: False
+      x: 0
+      y: 0
+      count: 0
+      going: 0
+      team: 1
+      delay_time: 0
+      speed_time: 0
+      elapsed_time: 0
+      skip_conscription: False
+      skip_battle: False
+      battle_result: None
+      battle_await_time: 0
+      residue_person_ratio: 0.5
+      residue_enemy_ratio: 0.5
+    - name: 部队2
+      state: False
+      x: 0
+      y: 0
+      count: 0
+      going: 0
+      team: 2
+      delay_time: 0
+      speed_time: 0
+      elapsed_time: 0
+      skip_conscription: False
+      skip_battle: False
+      battle_result: None
+      battle_await_time: 0
+      residue_person_ratio: 0.5
+      residue_enemy_ratio: 0.5
+    - name: 部队3
+      state: False
+      x: 0
+      y: 0
+      count: 0
+      going: 0
+      team: 3
+      delay_time: 0
+      speed_time: 0
+      elapsed_time: 0
+      skip_conscription: False
+      skip_battle: False
+      battle_result: None
+      battle_await_time: 0
+      residue_person_ratio: 0.5
+      residue_enemy_ratio: 0.5
+    - name: 部队4
+      state: False
+      x: 0
+      y: 0
+      count: 0
+      going: 0
+      team: 4
+      delay_time: 0
+      speed_time: 0
+      elapsed_time: 0
+      skip_conscription: False
+      skip_battle: False
+      battle_result: None
+      battle_await_time: 0
+      residue_person_ratio: 0.5
+      residue_enemy_ratio: 0.5
+    - name: 部队5
+      state: False
+      x: 0
+      y: 0
+      count: 0
+      going: 0
+      team: 5
+      delay_time: 0
+      speed_time: 0
+      elapsed_time: 0
+      skip_conscription: False
+      skip_battle: False
+      battle_result: None
+      battle_await_time: 0
+      residue_person_ratio: 0.5
+      residue_enemy_ratio: 0.5

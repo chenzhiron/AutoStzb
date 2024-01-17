@@ -1,12 +1,15 @@
-from config.paths import ocr_det, ocr_rec, ocr_cls, ocr_keys
+from config.config import globalConfig
 from paddleocr import PaddleOCR
 
+ocr_det = globalConfig['Ocr']['det']
+ocr_rec = globalConfig['Ocr']['rec']
+ocr_cls = globalConfig['Ocr']['cls']
+ocr_keys = globalConfig['Ocr']['keys']
 ocr = PaddleOCR(lang="ch",
                 det_model_dir=ocr_det,
                 rec_model_dir=ocr_rec,
                 cls_model_dir=ocr_cls,
                 rec_char_dict_path=ocr_keys,
-                use_gpu=False,
                 show_log=False
                 )
 

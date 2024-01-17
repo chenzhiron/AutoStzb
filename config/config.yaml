@@ -1,0 +1,20 @@
+Adb:
+  executable: ./toolkit/adb/adb.exe
+Git:
+  executable: ./toolkit/git/bin/bash.exe
+Ocr:
+  cls: ./modules/ocr/models/ch_ppocr_mobile_v2.0_cls.infer
+  det: ./modules/ocr/models/ch_PP-OCRv4_det_infer.infer
+  keys: ./modules/ocr/models/ppocr_keys_v1.txt
+  rec: ./modules/ocr/models/ch_PP-OCRv4_rec_infer.infer
+Python:
+  executable: ./toolkit/python.exe
+  package: ./requirements.txt
+  pip: ./toolkit/pip.exe
+Simulator:
+  path: ./config/config.yaml
+  screenshot_tcp_port: 53520
+  touch_port: 56000
+  url: 127.0.0.1:62001
+Web:
+  port: 18878
