@@ -1,5 +1,3 @@
-Config:
-  screenshot: 1
 TeamManager:
     - name: 部队1
       state: False

@@ -10,7 +10,8 @@ class Devices(Automation, MNTDevice):
         automation_port = config['Simulator']['screenshot_tcp_port']
         device_id = config['Simulator']['url']
         operate_change_port = config['Simulator']['touch_port']
-        Automation.__init__(self, adb, automation_serial, automation_port, 1)
+        sleep = config['Simulator']['screenshot_sleep']
+        Automation.__init__(self, adb, automation_serial, automation_port, sleep)
         MNTDevice.__init__(self, device_id, adb, operate_change_port)
 
     def startDevices(self):

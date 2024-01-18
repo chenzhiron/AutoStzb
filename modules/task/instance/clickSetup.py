@@ -1,13 +1,31 @@
-from modules.devices.operate import operateTap
+# from modules.devices.operate import operateTap
 from modules.task.Class.OperatorSteps import ClickOperatorSteps
 from modules.general.module_options_name import *
 from modules.general.option_verify_area import *
 from modules.utils.utils import ocr_reg
+from types import MethodType
+
+
+def empty_run(self, device, instance):
+    device.operateTap(self.x, self.y)
+    return True
+
+
 # 点击空白回到静态页
-clik_empty = ClickOperatorSteps(0, None, address_empty[0], address_empty[1])
+click_empty = ClickOperatorSteps(0, None, address_empty[0], address_empty[1])
+click_empty.run = MethodType(empty_run, click_empty)
+
+
+def verify_run(self, device, instance):
+    if self.verify_txt():
+        device.operateTap(self.x, self.y)
+        return True
+    return False
+
 
 # 点击势力
 click_shili = ClickOperatorSteps(zhaomu_area, [zhaomu], shili_click[0], shili_click[1])
+click_shili.verifyOcr = MethodType(verify_run, click_shili)
 # 点击部队
 click_budui = ClickOperatorSteps(zhengbing_page_verify_area, [shili], click_list_x_y[0], click_list_x_y[1])
 # 点击征兵
@@ -18,7 +36,8 @@ click_zhengbing_sure = ClickOperatorSteps(0, None, zhengbing_page_swipe_sure_xy[
 # 征兵确认
 click_zhengbing_require = ClickOperatorSteps(queding_area, [queding], queding_area_xy[0], queding_area_xy[1])
 # 征兵已满
-click_satify = ClickOperatorSteps(zhengbing_page_swipe_verify, [zhengbing_satisfy], zhengbing_page_swipe_sure_xy[0], zhengbing_page_swipe_sure_xy[1])
+click_satify = ClickOperatorSteps(zhengbing_page_swipe_verify, [zhengbing_satisfy], zhengbing_page_swipe_sure_xy[0],
+                                  zhengbing_page_swipe_sure_xy[1])
 # 点击出征/ 扫荡  在此处是同一个页面 不需要校验
 click_chuzheng_or_saodang = ClickOperatorSteps(0, None, address_going_require[0], address_going_require[1])
 
@@ -35,7 +54,8 @@ click_sign_options = ClickOperatorSteps(0, None, address_sign_land_area[0], addr
 click_battle = ClickOperatorSteps(zhaomu_area, [zhaomu], click_draw_area[0], click_draw_area[1])
 
 # 查看个人详情
-click_battle_main = ClickOperatorSteps(person_battle_area, [person_battle, battle_bf2, battle_info_txt], click_draw_detail_area[0],
+click_battle_main = ClickOperatorSteps(person_battle_area, [person_battle, battle_bf2, battle_info_txt],
+                                       click_draw_detail_area[0],
                                        click_draw_detail_area[1])
 
 # 战报内部点击战斗地点
@@ -52,8 +72,8 @@ click_battle_lists = ClickOperatorSteps(retreat_area_require, [saodang, chuzheng
 def applyChangeClick(self):
     result = ocr_reg(self.getImgOcr())
     if any(item in result for item in self.verify_txt):
-            operateTap(self.x, self.y)
-            return True
+        # operateTap(self.x, self.y)
+        return True
     return False
 
 

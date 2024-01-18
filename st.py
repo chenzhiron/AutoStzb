@@ -72,6 +72,10 @@ class Stzb:
             time.sleep(5)
 
     def zhengbing(self, instance):
+        for i in range(10):
+            start = time.time()
+            self.device.getScreenshots()
+            print('zhengbing', time.time() - start)
         print('zhengbing', instance.next_run_times)
         return True
 

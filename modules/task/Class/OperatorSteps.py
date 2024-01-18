@@ -8,28 +8,44 @@ class OperatorSteps:
     def __init__(self, area, txt, x=0, y=0):
         self.x = x
         self.y = y
-        self.verify_txt = txt
+        self.txt = txt
         self.area = area
+        self.ocr_txt = None
 
-    def getImgOcr(self):
-        image = self.getScreenshots()
-        res = ocrDefault(np.array(image.crop(self.area)))
-        return res
+    def verifyOcr(self, source):
+        self.ocr_txt = ocrDefault(np.array(source.crop(self.area)))
+        return self.ocr_txt
 
-    def verifyOcr(self):
-        if self.area == 0:
-            return True
-
-        res = self.getImgOcr()
-        if res[0] is None:
-            return False
-        result = ''
-        for sublist in res:
-            for item in sublist:
-                result += item[1][0]
-        if not (result in self.verify_txt):
+    def verifyTxt(self):
+        if not (self.ocr_txt in self.txt):
             return False
         return True
+
+    def ocr_reg(self):
+        if bool(self.ocr_txt[0]):
+            return [item[1][0] for sublist in self.ocr_txt for item in sublist]
+        else:
+            return None
+
+    # def getImgOcr(self):
+    #     image = self.getScreenshots()
+    #     res = ocrDefault(np.array(image.crop(self.area)))
+    #     return res
+    #
+    # def verifyOcr(self):
+    #     if self.area == 0:
+    #         return True
+    #
+    #     res = self.getImgOcr()
+    #     if res[0] is None:
+    #         return False
+    #     result = ''
+    #     for sublist in res:
+    #         for item in sublist:
+    #             result += item[1][0]
+    #     if not (result in self.verify_txt):
+    #         return False
+    #     return True
 
 
 class ClickOperatorSteps(OperatorSteps):
