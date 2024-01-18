@@ -1,7 +1,7 @@
 import time
 from datetime import timedelta, datetime
 
-from pywebio.output import use_scope, put_button
+from pywebio.output import use_scope, put_button, put_text
 
 from config.config import globalConfig
 from modules.task.tasks import taskManager
@@ -16,15 +16,22 @@ class Stzb:
 
     def change_config(self):
         self.stop_event = not self.stop_event
-        if self.stop_event:
-            self.devices()
-            self.device.startDevices()
-        else:
-            self.device.closeDevice()
+        try:
+            if self.stop_event:
+                self.devices()
+                self.device.startDevices()
+            else:
+                self.device.closeDevice()
+            self.render()
+        except Exception as e:
+            self.stop_event = False
+            self.render()
+            print(e)
 
     def render(self):
         with use_scope('scheduler', clear=True):
-            put_button('调度器', onclick=self.change_config)
+            put_text('调度器状态').style('display:inline-block;')
+            put_button('运行中' if self.stop_event else '启动', onclick=self.change_config).style('display:inline-block;')
 
     def devices(self):
         from modules.devices.device import Devices

@@ -1,4 +1,4 @@
-from pywebio.output import use_scope, put_row, put_text, put_tabs, put_error, toast
+from pywebio.output import use_scope,  put_text, toast, put_scope
 from pywebio.pin import put_checkbox, pin_on_change, put_input
 from modules.task.tasks import taskManager
 from datetime import datetime
@@ -78,36 +78,30 @@ class TeamProp:
 
     def render(self):
         with use_scope('center', clear=True):
-            put_row([put_text('状态:'), put_checkbox('state', [{'label': '', 'value': True}], value=[self.state])]),
-            put_tabs([{
-                "title": '征兵',
-                "content": put_row([put_text('征兵'),
-                                    put_checkbox('skip_conscription', [{'label': '', 'value': True}],
-                                                 value=[self.skip_conscription])])
-            }, {
-                "title": '战斗配置',
-                "content": [
-                    put_row([put_text('平局等待选项')]),
-                    # validate = checkInit(0, 1)
-                    #  validate=checkInit(0, 1)
-                    put_row([put_text('我方剩余兵力比例'),
-                             put_input('residue_person_ratio', value=str(self.residue_person_ratio),
-                                       )]),
-                    put_row([put_text('敌方剩余兵力比例'),
-                             put_input('residue_enemy_ratio', value=str(self.residue_enemy_ratio),
-                                       )])]
-            },
-                {
-                    "title": '出征',
-                    "content": put_row(
-                        [put_text('出征'), put_checkbox('going', [{'label': '', 'value': True}], value=[self.going])]),
-                }, {
-                    "title": '扫荡',
-                    "content": put_row([put_text('扫荡次数'),
-                                        put_input('count', type='number', value=str(self.count))]),
-                }])
-
-            # validate = checkInit(1, 100)
+            put_scope('state',
+                      [put_text('状态:'),
+                       put_checkbox('state', [{'label': '', 'value': True}], value=[self.state]
+                                    )]
+                      ).style('display:grid;grid-template-columns:auto auto;')
+            put_scope('zhengbing', [
+                put_text('征兵'),
+                put_checkbox('skip_conscription', [{'label': '', 'value': True}],
+                             value=[self.skip_conscription])
+            ]).style('display:grid;grid-template-columns:auto auto;')
+            put_scope('combat_config', [put_text('平局等待选项'),
+                                        put_text('我方剩余兵力比例'),
+                                        put_input('residue_person_ratio', value=str(self.residue_person_ratio),
+                                                  ),
+                                        put_text('敌方剩余兵力比例'),
+                                        put_input('residue_enemy_ratio', value=str(self.residue_enemy_ratio),
+                                                  )
+                                        ])
+            put_scope('chuzheng',
+                      [put_text('出征'), put_checkbox('going', [{'label': '', 'value': True}], value=[self.going])]
+                      ).style('display:grid;grid-template-columns:auto auto;')
+            put_scope('saodang', [put_text('扫荡次数'),
+                                  put_input('count', type='number', value=str(self.count))]
+                      ).style('display:grid;grid-template-columns:auto auto;')
 
         pin_on_change('state', changeInit(self, 'state'), clear=True)
         pin_on_change('count', changeNum(self, 'count', 1, 100), clear=True)
