@@ -2,7 +2,7 @@ import time
 
 # from config.task_or_web_common import zhengbingType
 from modules.task.inherit.accidental import select_active_lists, battle_info, handle_out_map
-from modules.task.instance.clickSetup import *
+from modules.task.instance.setups import *
 from modules.task.instance.originalSetup import chuzheng_max_time, zhengbing_max_time, click_options_options
 from modules.task.instance.swipeSetup import swipe_zhengbing
 from modules.general.module_error_txt import zhengbing_error, chuzheng_error, zhanbao_error, chetui_error, sign_error, \

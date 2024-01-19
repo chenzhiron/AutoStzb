@@ -5,6 +5,7 @@ from pywebio.output import use_scope, put_button, put_text
 
 from config.config import globalConfig
 from modules.task.tasks import taskManager
+from modules.task.zhengbing import ZhengBing
 
 
 class Stzb:
@@ -31,7 +32,8 @@ class Stzb:
     def render(self):
         with use_scope('scheduler', clear=True):
             put_text('调度器状态').style('display:inline-block;')
-            put_button('运行中' if self.stop_event else '启动', onclick=self.change_config).style('display:inline-block;')
+            put_button('运行中' if self.stop_event else '启动', onclick=self.change_config).style(
+                'display:inline-block;')
 
     def devices(self):
         from modules.devices.device import Devices
@@ -57,7 +59,12 @@ class Stzb:
                 time.sleep(5)
 
     def run(self, task, command):
-        return self.__getattribute__(command)(task)
+        print('command', command)
+        method = getattr(self, command, None)
+        if method is not None:
+            return method(task)
+        else:
+            raise AttributeError(f"Command '{command}' is not a valid method of {self.__class__.__name__}")
 
     def loop(self):
         while 1:
@@ -66,17 +73,13 @@ class Stzb:
                 self.wait_until(task.next_run_times)
                 try:
                     success = self.run(task, task.execute_tasks.pop(0))
-                    print(task, success)
                 except IndexError as e:
                     print('task null', e)
             time.sleep(5)
 
     def zhengbing(self, instance):
-        for i in range(10):
-            start = time.time()
-            self.device.getScreenshots()
-            print('zhengbing', time.time() - start)
-        print('zhengbing', instance.next_run_times)
+        print('123456')
+        ZhengBing(device=self.device, instance=instance).run()
         return True
 
     def chuzheng(self, instance):

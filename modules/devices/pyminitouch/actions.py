@@ -39,7 +39,6 @@ class CommandBuilder(object):
         self.commit()
         final_content = self._content
         connection.send(final_content)
-        time.sleep(self._delay / 1000 + config.DEFAULT_DELAY)
         self.reset()
 
     def reset(self):
@@ -72,7 +71,7 @@ class MNTDevice(object):
             # real connection
             self.connection = MNTConnection(self.server.port, self.host)
         except Exception as e:
-            print(e)
+            print('点击方案出错', e)
 
     def stop(self):
         print(dir(self.connection))

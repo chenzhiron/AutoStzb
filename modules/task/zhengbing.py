@@ -1,24 +1,31 @@
-class zhengbing:
-    exec_step = []
+import time
+
+from modules.task.instance.setups import *
+
+
+class ZhengBing:
+    exec_step = [click_shili, click_budui, click_zhengbing, swipe_zhengbing,
+                 zhengbing_max_time, click_zhengbing_sure, click_zhengbing_require]
 
     def __init__(self, device, instance):
         self.device = device
         self.instance = instance
         self.step = 0
+        self.start_time = 0
 
     def run(self):
-        while self.step > len(self.exec_step):
+        self.start_time = time.time()
+        # 添加实例的下一次运行时间校验
+        while self.step < len(self.exec_step):
+            if time.time() - self.start_time > 120:
+                raise Exception('征兵超时')
             img = self.device.getScreenshots()
-            if img is None:
-                # 抛出异常
-                return None
             task_instance = self.exec_step[self.step]
             task_instance.verifyOcr(img)
-            res = self.exec_step[self.step].run(self.device, self.instance)
+            print(task_instance, 'task_instance')
+            res = task_instance.run(self.device, self.instance)
             if res:
                 self.step += 1
-            else:
-                self.step -= 1
         self.step = 0
         return True
 

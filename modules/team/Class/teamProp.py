@@ -47,12 +47,16 @@ class TeamProp:
         self.count = 0
         self.going = False
         self.team = None
+        # 体力下一次恢复时间
         self.delay_time = 0
+        # 出征时间
         self.speed_time = 0
+        # 征兵时间
         self.elapsed_time = 0
         self.skip_conscription = False
         self.skip_battle = False
         self.battle_result = None
+        # 平局等待时间
         self.battle_await_time = 0
         self.residue_person_ratio = 0.5
         self.residue_enemy_ratio = 0.5

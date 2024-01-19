@@ -1,3 +1,4 @@
+import datetime
 import os
 import subprocess
 import time
@@ -97,10 +98,11 @@ class Automation:
         time.sleep(self.sleep)
         response = requests.get(self.screenshot_url)
         if response.status_code == 200:
-            return Image.open(BytesIO(response.content))
+            res = Image.open(BytesIO(response.content))
+            res.save(datetime.datetime.now().strftime("%Y%m%d%H%M%S") + ".png")
+            return res
         else:
-            print('截图失败')
-            return None
+            raise Exception("截图数据返回失败")
 
     def disconnect(self, device_serial=None):
         if device_serial is None:
