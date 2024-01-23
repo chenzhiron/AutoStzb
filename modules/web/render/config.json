@@ -1,0 +1,175 @@
+{
+  "st": [
+    {
+      "name": "配置",
+      "scope": "aside",
+      "children": [
+        {
+          "name": "模拟器",
+          "scope": "collapse",
+          "children": [
+            {
+              "explain": "模拟器的adb地址",
+              "value": "127.0.0.1:62001"
+            }
+          ]
+        },
+        {
+          "name": "截图延迟",
+          "scope": "collapse",
+          "children": [
+            {
+              "explain": "截图延迟",
+              "value": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "主城",
+      "scope": "aside",
+      "children": [
+        {
+          "name": "部队一",
+          "scope": "collapse",
+          "children": [
+            {
+              "explain": "状态",
+              "value": true
+            },
+            {
+              "explain": "x坐标",
+              "value": ""
+            },
+            {
+              "explain": "y坐标",
+              "value": ""
+            },
+            {
+              "explain": "征兵",
+              "value": false
+            },
+            {
+              "explain": "出征",
+              "value": false
+            },
+            {
+              "explain": "扫荡次数",
+              "value": 0
+            },
+            {
+              "explain": "延迟",
+              "value": 0
+            },
+            {
+              "explain": "平局",
+              "value": null
+            },
+            {
+              "explain": "部队剩余比例",
+              "value": 0.5
+            },
+            {
+              "explain": "守军剩余比例",
+              "value": 0.5
+            }
+          ]
+        },
+        {
+          "name": "部队二",
+          "scope": "collapse",
+          "children": [
+            {
+              "explain": "状态",
+              "value": true
+            },
+            {
+              "explain": "x坐标",
+              "value": ""
+            },
+            {
+              "explain": "y坐标",
+              "value": ""
+            },
+            {
+              "explain": "征兵",
+              "value": false
+            },
+            {
+              "explain": "出征",
+              "value": false
+            },
+            {
+              "explain": "扫荡次数",
+              "value": 0
+            },
+            {
+              "explain": "延迟",
+              "value": 0
+            },
+            {
+              "explain": "平局",
+              "value": null
+            },
+            {
+              "explain": "部队剩余比例",
+              "value": 0.5
+            },
+            {
+              "explain": "守军剩余比例",
+              "value": 0.5
+            }
+          ]
+        },
+        {
+          "name": "部队三",
+          "scope": "collapse",
+          "children": [
+            {
+              "explain": "状态",
+              "value": true
+            },
+            {
+              "explain": "x坐标",
+              "value": ""
+            },
+            {
+              "explain": "y坐标",
+              "value": ""
+            },
+            {
+              "explain": "征兵",
+              "value": false
+            },
+            {
+              "explain": "出征",
+              "value": false
+            },
+            {
+              "explain": "扫荡次数",
+              "value": 0
+            },
+            {
+              "explain": "延迟",
+              "value": 0
+            },
+            {
+              "explain": "平局",
+              "value": null
+            },
+            {
+              "explain": "部队剩余比例",
+              "value": 0.5
+            },
+            {
+              "explain": "守军剩余比例",
+              "value": 0.5
+            }
+          ]
+        }
+      ]
+    }
+
+  ]
+}
