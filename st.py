@@ -4,7 +4,7 @@ from datetime import timedelta, datetime
 from pywebio.output import use_scope, put_button, put_text
 
 from config.config import globalConfig
-from modules.task.tasks import taskManager
+
 from modules.task.zhengbing import ZhengBing
 
 
@@ -13,21 +13,22 @@ class Stzb:
 
     def __init__(self):
         self.device = None
-        self.taskManagers = taskManager
+        from modules.web.web import ui
+        self.taskManagers = ui
 
     def change_config(self):
         self.stop_event = not self.stop_event
-        try:
-            if self.stop_event:
-                self.devices()
-                self.device.startDevices()
-            else:
-                self.device.closeDevice()
-            self.render()
-        except Exception as e:
-            self.stop_event = False
-            self.render()
-            print(e)
+        # try:
+        #     if self.stop_event:
+        #         self.devices()
+        #         self.device.startDevices()
+        #     else:
+        #         self.device.closeDevice()
+        self.render()
+        # except Exception as e:
+        #     self.stop_event = False
+        #     self.render()
+        #     print(e)
 
     def render(self):
         with use_scope('scheduler', clear=True):
@@ -40,14 +41,20 @@ class Stzb:
         self.device = Devices(globalConfig)
         return self.device
 
+    def sort_tasks(self):
+        data = self.taskManagers.get_data()[1]
+
+        return data
+
     def get_next_task(self):
         while 1:
             if self.stop_event:
-                task = self.taskManagers.get_tasks()
-                if task is None:
-                    time.sleep(5)
-                else:
-                    return task
+                task = self.sort_tasks()
+                print(task)
+                # if task is None:
+                #     time.sleep(5)
+                # else:
+                #     return task
             time.sleep(5)
 
     def wait_until(self, future):

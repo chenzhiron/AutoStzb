@@ -10,7 +10,8 @@
           "children": [
             {
               "explain": "模拟器的adb地址",
-              "value": "127.0.0.1:62001"
+              "value": "127.0.0.1:62001",
+              "readonly": false
             }
           ]
         },
@@ -20,7 +21,8 @@
           "children": [
             {
               "explain": "截图延迟",
-              "value": 1
+              "value": 1,
+              "readonly": false
             }
           ]
         }
@@ -36,43 +38,53 @@
           "children": [
             {
               "explain": "状态",
-              "value": true
+              "value": false,
+              "readonly": false
             },
             {
               "explain": "x坐标",
-              "value": ""
+              "value": "",
+              "readonly": false
             },
             {
               "explain": "y坐标",
-              "value": ""
+              "value": "",
+              "readonly": false
             },
             {
               "explain": "征兵",
-              "value": false
+              "value": false,
+              "readonly": false
             },
             {
               "explain": "出征",
-              "value": false
+              "value": false,
+              "readonly": false
             },
             {
               "explain": "扫荡次数",
-              "value": 0
+              "value": 0,
+              "readonly": false
             },
             {
               "explain": "延迟",
-              "value": 0
+              "value": 0,
+              "readonly": false
             },
             {
               "explain": "平局",
-              "value": null
+              "value": null,
+              "readonly": false
             },
             {
               "explain": "部队剩余比例",
-              "value": 0.5
+              "value": 0.5,
+              "readonly": false
             },
             {
               "explain": "守军剩余比例",
-              "value": 0.5
+              "value": 0.5,
+              "readonly": false
             }
           ]
         },
@@ -82,43 +94,53 @@
           "children": [
             {
               "explain": "状态",
-              "value": true
+              "value": false,
+              "readonly": false
             },
             {
               "explain": "x坐标",
-              "value": ""
+              "value": "",
+              "readonly": false
             },
             {
               "explain": "y坐标",
-              "value": ""
+              "value": "",
+              "readonly": false
             },
             {
               "explain": "征兵",
-              "value": false
+              "value": false,
+              "readonly": false
             },
             {
               "explain": "出征",
-              "value": false
+              "value": false,
+              "readonly": false
             },
             {
               "explain": "扫荡次数",
-              "value": 0
+              "value": 0,
+              "readonly": false
             },
             {
               "explain": "延迟",
-              "value": 0
+              "value": 0,
+              "readonly": false
             },
             {
               "explain": "平局",
-              "value": null
+              "value": null,
+              "readonly": false
             },
             {
               "explain": "部队剩余比例",
-              "value": 0.5
+              "value": 0.5,
+              "readonly": false
             },
             {
               "explain": "守军剩余比例",
-              "value": 0.5
+              "value": 0.5,
+              "readonly": false
             }
           ]
         },
@@ -128,43 +150,53 @@
           "children": [
             {
               "explain": "状态",
-              "value": true
+              "value": false,
+              "readonly": false
             },
             {
               "explain": "x坐标",
-              "value": ""
+              "value": "",
+              "readonly": false
             },
             {
               "explain": "y坐标",
-              "value": ""
+              "value": "",
+              "readonly": false
             },
             {
               "explain": "征兵",
-              "value": false
+              "value": false,
+              "readonly": false
             },
             {
               "explain": "出征",
-              "value": false
+              "value": false,
+              "readonly": false
             },
             {
               "explain": "扫荡次数",
-              "value": 0
+              "value": 0,
+              "readonly": false
             },
             {
               "explain": "延迟",
-              "value": 0
+              "value": 0,
+              "readonly": false
             },
             {
               "explain": "平局",
-              "value": null
+              "value": null,
+              "readonly": false
             },
             {
               "explain": "部队剩余比例",
-              "value": 0.5
+              "value": 0.5,
+              "readonly": false
             },
             {
               "explain": "守军剩余比例",
-              "value": 0.5
+              "value": 0.5,
+              "readonly": false
             }
           ]
         }
