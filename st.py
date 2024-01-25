@@ -15,6 +15,7 @@ class Stzb:
         self.device = None
         from modules.web.web import ui
         self.taskManagers = ui
+        self.stData = None
 
     def change_config(self):
         self.stop_event = not self.stop_event
@@ -41,29 +42,67 @@ class Stzb:
         self.device = Devices(globalConfig)
         return self.device
 
-    def sort_tasks(self):
-        data = self.taskManagers.get_data()[1]
+    def up_data(self):
+        # self.taskManagers.update_data(self.stData)
+        pass
 
-        return data
+    def wait_until(self, future):
+        future = future + timedelta(seconds=1)
+        if datetime.now() > future:
+            return True
+        else:
+            return False
+
+    def sort_tasks(self):
+        while 1:
+            self.stData = self.taskManagers.get_data()
+            data = self.stData[1]
+            filtered_data = [
+                unit for unit in data['children']
+                if any(child['explain'] == '状态' and child['value'] is True for child in unit['children']) and
+                   any(child['explain'] == 'next_run_time' and child['value'] for child in unit['children'])
+            ]
+            sorted_data = sorted(
+                filtered_data,
+                key=lambda unit: datetime.strptime(
+                    next(child['value'] for child in unit['children'] if child['explain'] == 'next_run_time'),
+                    '%Y-%m-%d %H:%M:%S'
+                )
+            )
+            if len(sorted_data) == 0:
+                time.sleep(1)
+                continue
+            next_run_time = 0
+            for child in sorted_data[0]['children']:
+                if child['explain'] == 'next_run_time':
+                    next_run_time = child['value']
+                    break
+            if self.wait_until(datetime.strptime(next_run_time, '%Y-%m-%d %H:%M:%S')):
+                return sorted_data[0]
+            time.sleep(1)
 
     def get_next_task(self):
         while 1:
             if self.stop_event:
                 task = self.sort_tasks()
-                print(task)
-                # if task is None:
-                #     time.sleep(5)
-                # else:
-                #     return task
+                fn_name = None
+                for v in task['children']:
+                    if v['explain'] == 'next_run_fn':
+                        fn_name = v['value']
+                return task, fn_name
+
             time.sleep(5)
 
-    def wait_until(self, future):
-        future = future + timedelta(seconds=1)
+    def loop(self):
         while 1:
-            if datetime.now() > future:
-                return True
-            else:
-                time.sleep(5)
+            if self.stop_event:
+                task, fn = self.get_next_task()
+                try:
+                    success = self.run(task, fn)
+                    self.up_data()
+                except IndexError as e:
+                    print('task null', e)
+            time.sleep(5)
 
     def run(self, task, command):
         print('command', command)
@@ -73,24 +112,16 @@ class Stzb:
         else:
             raise AttributeError(f"Command '{command}' is not a valid method of {self.__class__.__name__}")
 
-    def loop(self):
-        while 1:
-            if self.stop_event:
-                task = self.get_next_task()
-                self.wait_until(task.next_run_times)
-                try:
-                    success = self.run(task, task.execute_tasks.pop(0))
-                except IndexError as e:
-                    print('task null', e)
-            time.sleep(5)
-
     def zhengbing(self, instance):
-        print('123456')
         ZhengBing(device=self.device, instance=instance).run()
         return True
 
     def chuzheng(self, instance):
         print('chuzheng', instance.next_run_times)
+        return True
+
+    def zhanbao(self, instance):
+        print('zhanbao', instance.next_run_times)
         return True
 
     def saodang(self, instance):

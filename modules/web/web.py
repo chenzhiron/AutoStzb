@@ -83,7 +83,7 @@ class WebConfigUI(WebConfig):
             with use_scope('center', clear=True):
                 for index, item in enumerate(aside):
                     input_name = f'item_{index}'
-                    if item['value'] is not None:
+                    if item['value'] is not None and item['show']:
                         if isinstance(item['value'], bool):
                             put_scope(input_name, [
                                 put_text(item['explain']),
