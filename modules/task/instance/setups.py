@@ -1,6 +1,6 @@
 from modules.task.Class.OperatorSteps import *
-from modules.general.module_options_name import *
-from modules.general.option_verify_area import *
+from modules.task.general.module_options_name import *
+from modules.task.general.option_verify_area import *
 
 # 点击空白回到静态页
 click_empty = EntryOperatorSteps([0, 0, 0, 0], None, address_empty[0], address_empty[1])
