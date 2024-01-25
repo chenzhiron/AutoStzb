@@ -5,7 +5,7 @@ from pywebio.output import use_scope, put_button, put_text
 
 from config.config import globalConfig
 
-from modules.task.zhengbing import ZhengBing
+from modules.task.steps import ZhengBing
 
 
 class Stzb:

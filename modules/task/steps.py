@@ -3,18 +3,23 @@ import time
 from modules.task.instance.setups import *
 
 
-class ZhengBing:
-    exec_step = [click_shili, click_budui, click_zhengbing, swipe_zhengbing,
-                 zhengbing_max_time, click_zhengbing_sure, click_zhengbing_require]
-
+class Origin:
     def __init__(self, device, instance):
         self.device = device
         self.instance = instance
         self.step = 0
         self.start_time = 0
 
+
+class ZhengBing(Origin):
+    def __init__(self, device, instance):
+        super().__init__(device, instance)
+        self.exec_step = [click_shili, click_budui, click_zhengbing, swipe_zhengbing,
+                          zhengbing_max_time, click_zhengbing_sure, click_zhengbing_require]
+
     def run(self):
         self.start_time = time.time()
+        # 先截一张图，看下当前的图出现元素有哪些，跳转到对应的位置，并继续下一步
         # 添加实例的下一次运行时间校验
         while self.step < len(self.exec_step):
             if time.time() - self.start_time > 120:
@@ -64,3 +69,27 @@ class ZhengBing:
         #     if click_zhengbing_sure.applyClick():
         #         # logger.info('确认征兵')
         #         continue
+
+
+class Chuzheng(Origin):
+    def __init__(self, devices, instance):
+        super().__init__(devices, instance)
+
+    def run(self):
+        pass
+
+
+class Zhanbao(Origin):
+    def __init__(self, devices, instance):
+        super().__init__(devices, instance)
+
+    def run(self):
+        pass
+
+
+class Saodang(Origin):
+    def __init__(self, devices, instance):
+        super().__init__(devices, instance)
+
+    def run(self):
+        pass
