@@ -1,16 +1,10 @@
 .DS_Store
-dist/electron/*
-npm-debug.log
-npm-debug.log.*
-thumbs.db
 !.gitkeep
-node_modules/
 *.pyc
 .idea
 .idea/*
 **/__pycache__/
 **/__pycache__/*
-start.bat
 .venv
 toolkit/*
 !toolkit/adb

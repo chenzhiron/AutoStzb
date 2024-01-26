@@ -1,6 +1,6 @@
 import time
 
-from modules.task.instance.setups import *
+from modules.task.setups import *
 
 
 class Origin:
@@ -8,29 +8,33 @@ class Origin:
         self.device = device
         self.instance = instance
         self.step = 0
-        self.start_time = 0
 
 
 class ZhengBing(Origin):
     def __init__(self, device, instance):
         super().__init__(device, instance)
-        self.exec_step = [click_shili, click_budui, click_zhengbing, swipe_zhengbing,
+        self.exec_step = [verfiy_main, click_budui, click_zhengbing, swipe_zhengbing,
                           zhengbing_max_time, click_zhengbing_sure, click_zhengbing_require]
 
     def run(self):
-        self.start_time = time.time()
         # 先截一张图，看下当前的图出现元素有哪些，跳转到对应的位置，并继续下一步
+        # 看下主页活动在不在，然后看下在不在势力，接着查看 征兵按钮，接着 查看 进度条页面，接着识别确认征兵
+        img = self.device.getScreenshots()
+        for index, fn in enumerate(self.exec_step):
+            fn.verifyOcr(img)
+            if fn.verifyTxt():
+                self.step = index
+
         # 添加实例的下一次运行时间校验
         while self.step < len(self.exec_step):
-            if time.time() - self.start_time > 120:
-                raise Exception('征兵超时')
-            img = self.device.getScreenshots()
-            task_instance = self.exec_step[self.step]
-            task_instance.verifyOcr(img)
-            print(task_instance, 'task_instance')
-            res = task_instance.run(self.device, self.instance)
-            if res:
-                self.step += 1
+            for i in range(30):
+                img = self.device.getScreenshots()
+                task_instance = self.exec_step[self.step]
+                task_instance.verifyOcr(img)
+                if task_instance.run(self.device, self.instance):
+                    self.step += 1
+                    break
+                time.sleep(0.5)
         self.step = 0
         return True
 

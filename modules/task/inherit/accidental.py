@@ -2,7 +2,7 @@ import numpy as np
 
 from modules.devices.AutoMation import automation
 from modules.devices.operate import operateTap
-from modules.task.Class.OperatorSteps import OperatorSteps
+from modules.task.OperatorSteps import OperatorSteps
 from modules.task.general.module_options_name import zhaomu
 from modules.task.general.option_verify_area import tili_area, address_execute_list, status_area, person_status_number_area, \
     enemy_status_number_area, bianduilists, return_area, zhaomu_area
