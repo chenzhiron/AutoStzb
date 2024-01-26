@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 from modules.ocr.main import ocrDefault
 from modules.utils.utils import calculate_max_timestamp
@@ -71,3 +73,24 @@ class OcrOperatorSteps(OperatorSteps):
         sleep_time = calculate_max_timestamp(self.ocr_txt)
         # instance.changeConfig(self.key, sleep_time)
         return True
+
+
+# 返回静态页
+class OutOperatorSteps(OperatorSteps):
+    def __init__(self, area, txt, x, y):
+        super().__init__(area, txt, x, y)
+
+    def run(self, device, instance):
+        while 1:
+            img = device.getScreenshots()
+            self.verifyOcr(img)
+            if self.verifyTxt():
+                return True
+            time.sleep(0.5)
+
+# 出征页面选择 额外编写
+
+
+# 战报详情，重写整个方法
+class InfoOperatorSteps:
+    pass
