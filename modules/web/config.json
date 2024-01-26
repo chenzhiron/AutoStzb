@@ -11,7 +11,8 @@
             {
               "explain": "模拟器的adb地址",
               "value": "127.0.0.1:62001",
-              "readonly": false
+              "readonly": false,
+              "show": true
             }
           ]
         },
@@ -22,7 +23,8 @@
             {
               "explain": "截图延迟",
               "value": 1,
-              "readonly": false
+              "readonly": false,
+              "show": true
             }
           ]
         }

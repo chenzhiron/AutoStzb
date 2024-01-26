@@ -11,22 +11,22 @@ click_empty = EntryOperatorSteps([0, 0, 0, 0], None, address_empty[0], address_e
 click_shili = VerifyOperatorSteps(zhaomu_area, [zhaomu], shili_click[0], shili_click[1])
 
 # 点击部队
-click_budui = VerifyOperatorSteps(zhengbing_page_verify_area, [shili], click_list_x_y[0], click_list_x_y[1])
+click_budui = VerifyOperatorSteps(shili_area, [shili], jizun_duiwu[0], jizun_duiwu[1])
 
 # 点击征兵
-click_zhengbing = VerifyOperatorSteps(zhengbing_page_area, [zhengbing], zhengbing_click_xy[0], zhengbing_click_xy[1])
+click_zhengbing = VerifyOperatorSteps(zhengbing_area, [zhengbing], zhengbing_area[0], zhengbing_area[1])
 
 # 滑动征兵进度条
-swipe_zhengbing = SwipeOperatorSteps(zhengbing_page_swipe_verify, [require_zhengbing], zhengbing_page_swipe)
+swipe_zhengbing = SwipeOperatorSteps(zhengbing_swipe_verify, [require_zhengbing], zhengbing_page_swipe)
 
 # 征兵时间
 zhengbing_max_time = OcrOperatorSteps(zhengbing_time_area, None, 'elapsed_time')
 
 # 点击确认征兵，在此处是同一个页面 不需要校验
-click_zhengbing_sure = EntryOperatorSteps([0, 0, 0, 0], None, zhengbing_page_swipe_sure_xy[0], zhengbing_page_swipe_sure_xy[1])
+click_zhengbing_sure = EntryOperatorSteps([0, 0, 0, 0], None, queren_area[0], queren_area[1])
 
 # 征兵确认
-click_zhengbing_require = VerifyOperatorSteps(queding_area, [queding], queding_area_xy[0], queding_area_xy[1])
+click_zhengbing_require = VerifyOperatorSteps(queren_sure, [queding], queren_sure[0], queren_sure[1])
 # 征兵已满
 click_satify = VerifyOperatorSteps(zhengbing_page_swipe_verify, [zhengbing_satisfy], zhengbing_page_swipe_sure_xy[0],
                                    zhengbing_page_swipe_sure_xy[1])

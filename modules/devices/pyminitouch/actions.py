@@ -132,11 +132,11 @@ class MNTDevice(object):
     def ext_smooth_swipe(
             self, points, pressure=100, duration=None, part=None, no_down=None, no_up=None
     ):
+
         if not part:
-            part = 10
+            part = 30
 
         points = [list(map(int, each_point)) for each_point in points]
-
         for each_index in range(len(points) - 1):
             cur_point = points[each_index]
             next_point = points[each_index + 1]

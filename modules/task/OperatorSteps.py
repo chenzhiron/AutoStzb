@@ -15,13 +15,21 @@ class OperatorSteps:
 
     def verifyOcr(self, source):
         res = ocrDefault(np.array(source.crop(self.area)))
+        print(res, 'res')
         self.ocr_txt = self.ocr_reg(res)
         return self.ocr_txt
 
     def verifyTxt(self):
-        if not (self.ocr_txt in self.txt):
+        print(self.ocr_txt, 'ocr_txt')
+        print(self.txt, 'self.txt')
+        if self.txt is None or self.ocr_txt is None:
             return False
-        return True
+        if len(self.ocr_txt) > 0 and self.ocr_txt[0] is None:
+            return False
+        for v in self.txt:
+            if v in self.ocr_txt:
+                return True
+        return False
 
     def ocr_reg(self, res):
         if bool(res[0]):
@@ -58,8 +66,7 @@ class SwipeOperatorSteps(OperatorSteps):
 
     def run(self, device, instance):
         if self.verifyTxt():
-            for v in self.swipe_lists:
-                device.operateSwipe(v[0], v[1], v[2], v[3])
+            device.operateSwipe(self.swipe_lists)
             return True
         return False
 
@@ -71,6 +78,7 @@ class OcrOperatorSteps(OperatorSteps):
 
     def run(self, device, instance):
         sleep_time = calculate_max_timestamp(self.ocr_txt)
+        print(sleep_time, 'sleep_time')
         # instance.changeConfig(self.key, sleep_time)
         return True
 
@@ -87,6 +95,7 @@ class OutOperatorSteps(OperatorSteps):
             if self.verifyTxt():
                 return True
             time.sleep(0.5)
+
 
 # 出征页面选择 额外编写
 

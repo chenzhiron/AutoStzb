@@ -18,17 +18,17 @@ class Stzb:
 
     def change_config(self):
         self.stop_event = not self.stop_event
-        # try:
-        #     if self.stop_event:
-        #         self.devices()
-        #         self.device.startDevices()
-        #     else:
-        #         self.device.closeDevice()
-        self.render()
-        # except Exception as e:
-        #     self.stop_event = False
-        #     self.render()
-        #     print(e)
+        try:
+            if self.stop_event:
+                self.devices()
+                self.device.startDevices()
+            else:
+                self.device.closeDevice()
+                self.render()
+        except Exception as e:
+            self.stop_event = False
+            self.render()
+            print(e)
 
     def render(self):
         with use_scope('scheduler', clear=True):
@@ -98,6 +98,8 @@ class Stzb:
                 task, fn = self.get_next_task()
                 try:
                     success = self.run(task, fn)
+                    print(success)
+                    print(task, fn)
                     self.up_data()
                 except IndexError as e:
                     print('task null', e)

@@ -5,8 +5,8 @@ from modules.task.setups import *
 
 class Origin:
     def __init__(self, device, instance):
-        self.device = device
-        self.instance = instance
+        self.devices = device
+        self.instances = instance
         self.step = 0
 
 
@@ -19,7 +19,7 @@ class ZhengBing(Origin):
     def run(self):
         # 先截一张图，看下当前的图出现元素有哪些，跳转到对应的位置，并继续下一步
         # 看下主页活动在不在，然后看下在不在势力，接着查看 征兵按钮，接着 查看 进度条页面，接着识别确认征兵
-        img = self.device.getScreenshots()
+        img = self.devices.getScreenshots()
         for index, fn in enumerate(self.exec_step):
             fn.verifyOcr(img)
             if fn.verifyTxt():
@@ -28,10 +28,10 @@ class ZhengBing(Origin):
         # 添加实例的下一次运行时间校验
         while self.step < len(self.exec_step):
             for i in range(30):
-                img = self.device.getScreenshots()
+                img = self.devices.getScreenshots()
                 task_instance = self.exec_step[self.step]
                 task_instance.verifyOcr(img)
-                if task_instance.run(self.device, self.instance):
+                if task_instance.run(self.devices, self.instances):
                     self.step += 1
                     break
                 time.sleep(0.5)

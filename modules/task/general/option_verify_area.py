@@ -68,7 +68,7 @@ shili_click = (326, 640)
 # 点击势力后 进入第一个页面，左上角征兵
 zhengbing_page_verify_area = (0, 0, 200, 60)
 # 第一个部队坐标
-click_list_x_y = (150, 260)
+# click_list_x_y = (150, 260)
 # 部队 征兵 按钮的位置
 zhengbing_page_area = (575, 470, 705, 520)
 # 征兵按钮点击的位置
@@ -77,12 +77,6 @@ zhengbing_click_xy = (650, 500)
 zhengbing_page_swipe_verify = (1000, 630, 1130, 670)
 # 点击确认征兵按钮
 zhengbing_page_swipe_sure_xy = (1080, 650)
-# 征兵滑块区域
-zhengbing_page_swipe = ((410, 435, 850, 435),
-                        (410, 545, 850, 435),
-                        (410, 650, 850, 435))
-# 征兵时间
-zhengbing_time_area = (760, 385, 848, 635)
 
 # 征兵确认区域 / 去往战报平局确定区域
 queding_area = (700, 450, 880, 500)
@@ -127,3 +121,29 @@ shili_area = (119, 19, 225, 72)
 zhengbing_area = (745, 597, 853, 645)
 # 拖动进度条校验位置
 zhengbing_swipe_verify = (1263, 806, 1400, 835)
+# 征兵滑块区域
+zhengbing_page_swipe = ((515, 545, 1100, 545),
+                        (515, 680, 1100, 680),
+                        (515, 815, 1100, 815))
+# 征兵时间
+zhengbing_time_area = (870, 480, 980, 800)
+
+# 点击确认征兵
+queren_area = (1220, 796, 1430, 840)
+
+# 征兵最后确定
+queren_sure = (900, 570, 1035, 612)
+
+# 进入坐标页面
+pointss = (1330, 840, 1450, 880)
+# 输入x和y
+# x坐标
+x = (1100, 860)
+y = (1235, 680)
+# 跳转好像不可中断， 有操作空间
+# 输入 x 跟 y
+
+
+
+# ---------------
+jizun_duiwu = (200, 340)

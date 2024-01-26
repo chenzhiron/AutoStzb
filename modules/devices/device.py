@@ -1,3 +1,5 @@
+import time
+
 from modules.devices.Class.AutoMationClass import Automation
 from modules.devices.pyminitouch.actions import MNTDevice
 
@@ -30,11 +32,11 @@ class Devices(Automation, MNTDevice):
         self.tap([(x, y)])
         return True
 
-    def operateSwipe(self, x1, y1, x2, y2):
-        self.ext_smooth_swipe([(x1, y1), (x2, y2)],
-                              duration=1000,
-                              pressure=50
-                              )
+    def operateSwipe(self, points_list):
+        for v in points_list:
+            x1, y1, x2, y2 = v
+            self.ext_smooth_swipe([(x1, y1), (x2, y2)], duration=30)
+            time.sleep(1)
 
 # if __name__ == '__main__':
 #     test = Devices(globalConfig)
