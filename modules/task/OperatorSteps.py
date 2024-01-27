@@ -2,7 +2,7 @@ import time
 
 import numpy as np
 from modules.ocr.main import ocrDefault
-from modules.utils.utils import calculate_max_timestamp
+from modules.utils.utils import calculate_max_timestamp, get_current_date
 
 
 class OperatorSteps:
@@ -78,8 +78,14 @@ class OcrOperatorSteps(OperatorSteps):
 
     def run(self, device, instance):
         sleep_time = calculate_max_timestamp(self.ocr_txt)
+        for v in instance['children']:
+            if sleep_time == 0 and v['explain'] == 'next_run_fn':
+                v['value'] = None
+                return True
+            if v['explain'] == 'next_run_time':
+                v['value'] = get_current_date(add_seconds=sleep_time)
+                break
         print(sleep_time, 'sleep_time')
-        # instance.changeConfig(self.key, sleep_time)
         return True
 
 
@@ -94,12 +100,54 @@ class OutOperatorSteps(OperatorSteps):
             self.verifyOcr(img)
             if self.verifyTxt():
                 return True
-            time.sleep(0.5)
+            device.operateTap(self.x, self.y)
 
 
-# 出征页面选择 额外编写
+# 出征/扫荡页面选择 额外编写
+class GoingOperatorSteps:
+    def __init__(self, area, txt, offset_x, offset_y):
+        self.area = area
+        self.txt = txt
+        self.x = 0
+        self.y = 0
+        self.offset_x = offset_x
+        self.offset_y = offset_y
+        self.ocr_txt = None
+
+    def verifyOcr(self, img):
+        res = ocrDefault(np.array(img.crop(self.area)))
+        if res[0] is None:
+            self.ocr_txt = None
+            return
+        self.ocr_txt = res[0][0][0][1][0]
+        coordinates = res[0][0][0]
+        self.offset_x = (coordinates[0][0] + coordinates[2][0]) / 2
+        self.offset_y = (coordinates[0][1] + coordinates[2][1]) / 2
+
+    def verifyTxt(self):
+        print(self.ocr_txt, 'ocr_txt')
+        print(self.txt, 'self.txt')
+        if self.ocr_txt is None:
+            return False
+        for v in self.txt:
+            if v == self.ocr_txt:
+                return True
+        return False
+
+    def run(self, device, instane):
+        if self.verifyTxt():
+            device.operateTap(self.x + self.offset_x, self.y + self.offset_y)
+            return True
+        return False
+
+# 出征/扫荡部队选择
 
 
 # 战报详情，重写整个方法
 class InfoOperatorSteps:
-    pass
+    def __init__(self, leftarea, centerarea, rightarea, txt):
+        self.leftarea = leftarea
+        self.centerarea = centerarea
+        self.rightarea = rightarea
+        self.txt = txt
+        self.ocr_txt = None

@@ -28,18 +28,20 @@ class WebConfigUI(WebConfig):
     def __init__(self):
         super().__init__()
 
-    def ret_data(self):
-        return self.config_data
-
     def start(self):
         start_server(self.init, port=9091, auto_open_webbrowser=True, debug=True)
 
     def init(self):
-        self.format_com(self.config_data)
+        self.format_com([self.config_data, self.main_data])
 
-    def update_data(self, new_data):
+    def update_main_refresh(self, new_data):
         """更新数据并刷新UI视图。"""
-        self.config_data = new_data
+        super().update_main_data(new_data)
+        self.refresh_view()
+
+    def update_config_refresh(self, new_data):
+        """更新数据并刷新UI视图。"""
+        super().update_config_data(new_data)
         self.refresh_view()
 
     def refresh_view(self):
@@ -83,21 +85,22 @@ class WebConfigUI(WebConfig):
             with use_scope('center', clear=True):
                 for index, item in enumerate(aside):
                     input_name = f'item_{index}'
-                    if item['value'] is not None and item['show']:
-                        if isinstance(item['value'], bool):
-                            put_scope(input_name, [
-                                put_text(item['explain']),
-                                put_checkbox(input_name, [{'label': '', 'value': True}], value=[item['value']])
-                            ]).style('display:grid;grid-template-columns:auto auto;')
-                            pin_on_change(input_name, self.pin_change_bool(self, item), clear=True)
+                    if item['show']:
+                        if item['value'] is not None:
+                            if isinstance(item['value'], bool):
+                                put_scope(input_name, [
+                                    put_text(item['explain']),
+                                    put_checkbox(input_name, [{'label': '', 'value': True}], value=[item['value']])
+                                ]).style('display:grid;grid-template-columns:auto auto;')
+                                pin_on_change(input_name, self.pin_change_bool(self, item), clear=True)
+                            else:
+                                put_scope(input_name, [
+                                    put_text(item['explain']),
+                                    put_input(input_name, value=str(item['value']), readonly=item['readonly'])
+                                ]).style('display:grid;grid-template-columns:auto auto;')
+                                pin_on_change(input_name, self.reg_str(self, item), clear=True)
                         else:
-                            put_scope(input_name, [
-                                put_text(item['explain']),
-                                put_input(input_name, value=str(item['value']), readonly=item['readonly'])
-                            ]).style('display:grid;grid-template-columns:auto auto;')
-                            pin_on_change(input_name, self.reg_str(self, item), clear=True)
-                    else:
-                        put_text(item['explain'])
+                            put_text(item['explain'])
 
         return render
 

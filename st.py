@@ -18,17 +18,17 @@ class Stzb:
 
     def change_config(self):
         self.stop_event = not self.stop_event
-        try:
-            if self.stop_event:
-                self.devices()
-                self.device.startDevices()
-            else:
-                self.device.closeDevice()
-                self.render()
-        except Exception as e:
-            self.stop_event = False
-            self.render()
-            print(e)
+        # try:
+        #     if self.stop_event:
+        #         self.devices()
+        #         self.device.startDevices()
+        #     else:
+        #         self.device.closeDevice()
+        #         self.render()
+        # except Exception as e:
+        #     self.stop_event = False
+        self.render()
+        # print(e)
 
     def render(self):
         with use_scope('scheduler', clear=True):
@@ -42,7 +42,11 @@ class Stzb:
         return self.device
 
     def up_data(self):
-        # self.taskManagers.update_data(self.stData)
+        for v in self.stData['children']:
+            if v['explain'] == 'next_run_time' and self.wait_until(v['value']):
+                v['value'] = datetime.now()
+        # change_data = self.taskManagers.get_main_data()
+        self.taskManagers.update_main_refresh(self.stData)
         pass
 
     def wait_until(self, future):
@@ -54,10 +58,9 @@ class Stzb:
 
     def sort_tasks(self):
         while 1:
-            self.stData = self.taskManagers.get_data()
-            data = self.stData[1]
+            self.stData = self.taskManagers.get_main_data()
             filtered_data = [
-                unit for unit in data['children']
+                unit for unit in self.stData['children']
                 if any(child['explain'] == '状态' and child['value'] is True for child in unit['children']) and
                    any(child['explain'] == 'next_run_time' and child['value'] for child in unit['children'])
             ]
@@ -71,6 +74,7 @@ class Stzb:
             if len(sorted_data) == 0:
                 time.sleep(1)
                 continue
+            # 此处需要做额外的判断 包含 next_run_fn 为None情况
             next_run_time = 0
             for child in sorted_data[0]['children']:
                 if child['explain'] == 'next_run_time':
@@ -97,9 +101,8 @@ class Stzb:
             if self.stop_event:
                 task, fn = self.get_next_task()
                 try:
-                    success = self.run(task, fn)
-                    print(success)
                     print(task, fn)
+                    self.run(task, fn)
                     self.up_data()
                 except IndexError as e:
                     print('task null', e)

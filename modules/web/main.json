@@ -1,0 +1,401 @@
+{
+      "name": "主城",
+      "scope": "aside",
+      "children": [
+        {
+          "name": "部队一",
+          "scope": "collapse",
+          "id": 1,
+          "children": [
+            {
+              "explain": "状态",
+              "value": false,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "next_run_time",
+              "value": "2024-01-01 00:00:00",
+              "readonly": true,
+              "show": true
+            },
+            {
+              "explain": "next_run_fn",
+              "value": "zhengbing",
+              "readonly": true,
+              "show": false
+            },
+            {
+              "explain": "x坐标",
+              "value": "",
+              "readonly": false,
+               "show": true
+            },
+            {
+              "explain": "y坐标",
+              "value": "",
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "征兵",
+              "value": false,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "出征",
+              "value": false,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "扫荡次数",
+              "value": 0,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "延迟",
+              "value": 0,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "平局",
+              "value": null,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "部队剩余比例",
+              "value": 0.5,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "守军剩余比例",
+              "value": 0.5,
+              "readonly": false,
+              "show": true
+            }
+          ]
+        },
+        {
+          "name": "部队二",
+          "scope": "collapse",
+          "id": 2,
+          "children": [
+            {
+              "explain": "状态",
+              "value": false,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "next_run_time",
+              "value": "2024-01-01 00:00:00",
+              "readonly": true,
+              "show": true
+            },
+            {
+              "explain": "next_run_fn",
+              "value": "zhengbing",
+              "readonly": true,
+              "show": false
+            },
+            {
+              "explain": "x坐标",
+              "value": "",
+              "readonly": false,
+               "show": true
+            },
+            {
+              "explain": "y坐标",
+              "value": "",
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "征兵",
+              "value": false,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "出征",
+              "value": false,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "扫荡次数",
+              "value": 0,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "延迟",
+              "value": 0,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "平局",
+              "value": null,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "部队剩余比例",
+              "value": 0.5,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "守军剩余比例",
+              "value": 0.5,
+              "readonly": false,
+              "show": true
+            }
+          ]
+        },
+         {
+          "name": "部队三",
+          "scope": "collapse",
+          "id": 3,
+          "children": [
+            {
+              "explain": "状态",
+              "value": false,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "next_run_time",
+              "value": "2024-01-01 00:00:00",
+              "readonly": true,
+              "show": true
+            },
+            {
+              "explain": "next_run_fn",
+              "value": "zhengbing",
+              "readonly": true,
+              "show": false
+            },
+            {
+              "explain": "x坐标",
+              "value": "",
+              "readonly": false,
+               "show": true
+            },
+            {
+              "explain": "y坐标",
+              "value": "",
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "征兵",
+              "value": false,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "出征",
+              "value": false,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "扫荡次数",
+              "value": 0,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "延迟",
+              "value": 0,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "平局",
+              "value": null,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "部队剩余比例",
+              "value": 0.5,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "守军剩余比例",
+              "value": 0.5,
+              "readonly": false,
+              "show": true
+            }
+          ]
+        },
+         {
+          "name": "部队四",
+          "scope": "collapse",
+          "id": 4,
+          "children": [
+            {
+              "explain": "状态",
+              "value": false,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "next_run_time",
+              "value": "2024-01-01 00:00:00",
+              "readonly": true,
+              "show": true
+            },
+            {
+              "explain": "next_run_fn",
+              "value": "zhengbing",
+              "readonly": true,
+              "show": false
+            },
+            {
+              "explain": "x坐标",
+              "value": "",
+              "readonly": false,
+               "show": true
+            },
+            {
+              "explain": "y坐标",
+              "value": "",
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "征兵",
+              "value": false,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "出征",
+              "value": false,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "扫荡次数",
+              "value": 0,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "延迟",
+              "value": 0,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "平局",
+              "value": null,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "部队剩余比例",
+              "value": 0.5,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "守军剩余比例",
+              "value": 0.5,
+              "readonly": false,
+              "show": true
+            }
+          ]
+        },
+         {
+          "name": "部队五",
+          "scope": "collapse",
+          "id": 5,
+          "children": [
+            {
+              "explain": "状态",
+              "value": false,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "next_run_time",
+              "value": "2024-01-01 00:00:00",
+              "readonly": true,
+              "show": true
+            },
+            {
+              "explain": "next_run_fn",
+              "value": "zhengbing",
+              "readonly": true,
+              "show": false
+            },
+            {
+              "explain": "x坐标",
+              "value": "",
+              "readonly": false,
+               "show": true
+            },
+            {
+              "explain": "y坐标",
+              "value": "",
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "征兵",
+              "value": false,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "出征",
+              "value": false,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "扫荡次数",
+              "value": 0,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "延迟",
+              "value": 0,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "平局",
+              "value": null,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "部队剩余比例",
+              "value": 0.5,
+              "readonly": false,
+              "show": true
+            },
+            {
+              "explain": "守军剩余比例",
+              "value": 0.5,
+              "readonly": false,
+              "show": true
+            }
+          ]
+        }
+      ]
+}
