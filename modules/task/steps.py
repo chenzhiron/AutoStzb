@@ -38,7 +38,7 @@ class ZhengBing(Origin):
                 task_instance = self.exec_step[self.step]
                 task_instance.verifyOcr(img)
                 res = task_instance.run(self.devices, self.instances)
-                if bool(res):
+                if isinstance(res, dict):
                     self.tasks_result.update(res)
                     self.step += 1
                     break
