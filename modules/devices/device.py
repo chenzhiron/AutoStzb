@@ -25,7 +25,7 @@ class Devices(Automation, MNTDevice):
     def closeDevice(self):
         super().stop()
         super().disconnect()
-
+        super().run_adb(['kill-server'])
     def getScreenshots(self):
         return super().getScreenshots()
 

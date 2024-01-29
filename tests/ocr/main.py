@@ -27,18 +27,10 @@ ocr = PaddleOCR(lang="ch",
                 use_dilation=True,
                 # use_angle_cls=True,
                 det_db_score_mode="slow",
-                det_db_unclip_ratio=10,
-                det_db_box_thresh=0.1,
-                det_db_thresh=0.1,
-                max_batch_size=1
+                det_db_unclip_ratio=10
                 )
 
 
 def ocrDefault(sources):
     result = ocr.ocr(sources, cls=False)
     return result
-
-    # for idx in range(len(result)):
-    #     res = result[idx]
-    #     for line in res:
-    #         print(line)

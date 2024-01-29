@@ -83,24 +83,22 @@ class WebConfigUI(WebConfig):
     def components_collapse_button(self, aside):
         def render():
             with use_scope('center', clear=True):
-                for index, item in enumerate(aside):
-                    input_name = f'item_{index}'
-                    if item['show']:
-                        if item['value'] is not None:
-                            if isinstance(item['value'], bool):
-                                put_scope(input_name, [
-                                    put_text(item['explain']),
-                                    put_checkbox(input_name, [{'label': '', 'value': True}], value=[item['value']])
-                                ]).style('display:grid;grid-template-columns:auto auto;')
-                                pin_on_change(input_name, self.pin_change_bool(self, item), clear=True)
-                            else:
-                                put_scope(input_name, [
-                                    put_text(item['explain']),
-                                    put_input(input_name, value=str(item['value']), readonly=item['readonly'])
-                                ]).style('display:grid;grid-template-columns:auto auto;')
-                                pin_on_change(input_name, self.reg_str(self, item), clear=True)
+                for key, value in aside.items():
+                    if value['show'] or value['value'] is not None:
+                        if isinstance(value['value'], bool):
+                            put_scope(key, [
+                                put_text(value['explain']),
+                                put_checkbox(key, [{'label': '', 'value': True}], value=[value['value']])
+                            ]).style('display:grid;grid-template-columns:auto auto;')
+                            pin_on_change(key, self.pin_change_bool(self, value), clear=True)
                         else:
-                            put_text(item['explain'])
+                            put_scope(key, [
+                                put_text(value['explain']),
+                                put_input(key, value=str(value['value']), readonly=value['readonly'])
+                            ]).style('display:grid;grid-template-columns:auto auto;')
+                            pin_on_change(key, self.reg_str(self, value), clear=True)
+                    else:
+                        put_text(value['explain'])
 
         return render
 

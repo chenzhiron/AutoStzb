@@ -5,6 +5,9 @@ from modules.ocr.main import ocrDefault
 from modules.utils.utils import calculate_max_timestamp, get_current_date
 
 
+# 方法 run()
+# 结果为True 返回格式: {key:value} or {}, 其中 key 为要修改的实例的属性， value 为本次修改的值
+# 结果为False 返回 False
 class OperatorSteps:
     def __init__(self, area, txt, x=0, y=0):
         self.x = x
@@ -44,7 +47,7 @@ class EntryOperatorSteps(OperatorSteps):
 
     def run(self, device, instance):
         device.operateTap(self.x, self.y)
-        return True
+        return {}
 
 
 class VerifyOperatorSteps(OperatorSteps):
@@ -55,7 +58,7 @@ class VerifyOperatorSteps(OperatorSteps):
         if self.verifyTxt():
             device.operateTap(self.x, self.y)
             print('x', self.x, 'y', self.y)
-            return True
+            return {}
         return False
 
 
@@ -67,7 +70,7 @@ class SwipeOperatorSteps(OperatorSteps):
     def run(self, device, instance):
         if self.verifyTxt():
             device.operateSwipe(self.swipe_lists)
-            return True
+            return {}
         return False
 
 
@@ -78,15 +81,9 @@ class OcrOperatorSteps(OperatorSteps):
 
     def run(self, device, instance):
         sleep_time = calculate_max_timestamp(self.ocr_txt)
-        for v in instance['children']:
-            if sleep_time == 0 and v['explain'] == 'next_run_fn':
-                v['value'] = None
-                return True
-            if v['explain'] == 'next_run_time':
-                v['value'] = get_current_date(add_seconds=sleep_time)
-                break
-        print(sleep_time, 'sleep_time')
-        return True
+        return {
+            "await_time": sleep_time
+        }
 
 
 # 返回静态页
@@ -99,7 +96,7 @@ class OutOperatorSteps(OperatorSteps):
             img = device.getScreenshots()
             self.verifyOcr(img)
             if self.verifyTxt():
-                return True
+                return {}
             device.operateTap(self.x, self.y)
 
 

@@ -5,26 +5,26 @@
     {
       "name": "模拟器",
       "scope": "collapse",
-      "children": [
-        {
+      "children": {
+        "simulator": {
           "explain": "模拟器的adb地址",
           "value": "127.0.0.1:62001",
           "readonly": false,
           "show": true
         }
-      ]
+      }
     },
     {
       "name": "截图延迟",
       "scope": "collapse",
-      "children": [
-        {
+      "children": {
+        "screenshot_sleep": {
           "explain": "截图延迟",
           "value": 1,
           "readonly": false,
           "show": true
         }
-      ]
+      }
     }
   ]
 }
