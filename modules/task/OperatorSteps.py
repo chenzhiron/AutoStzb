@@ -82,7 +82,7 @@ class OcrOperatorSteps(OperatorSteps):
     def run(self, device, instance):
         sleep_time = calculate_max_timestamp(self.ocr_txt)
         return {
-            "await_time": sleep_time
+            self.key: sleep_time
         }
 
 

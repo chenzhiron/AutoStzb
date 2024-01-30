@@ -9,7 +9,9 @@ class Origin:
         self.devices = device
         self.instances = instance
         self.step = 0
-        self.tasks_result = {}
+        self.tasks_result = {
+            type: 1
+        }
 
 
 class ZhengBing(Origin):

@@ -1,8 +1,11 @@
+import threading
+
 import pywebio
 from pywebio import start_server
 
 from pywebio.output import put_button, use_scope, put_collapse, put_text, put_scope, clear
 from pywebio.pin import put_input, put_checkbox, pin_on_change
+from pywebio.session import register_thread
 
 from modules.web.config import WebConfig
 
@@ -45,21 +48,18 @@ class WebConfigUI(WebConfig):
         self.refresh_view()
 
     def refresh_view(self):
-        """刷新UI视图以显示最新的数据。"""
-        self.clear('st')  # 清除当前视图
         self.init()  # 重新初始化视图
 
     def format_com(self, data):
         from st import stzb
         aside_elements = [self.components_aside(v) for v in data]
-        self.clear('st')
-        put_scope('scheduler', stzb.render())
+        put_scope('scheduler', stzb.render(), clear=True)
         put_scope('st', [
             put_scope('aside', []).style('width:100px'),
             put_scope('collapse', []).style('width:200px'),
             put_scope('center', []).style('flex:1'),
-        ]).style('display:flex;')
-        with use_scope('aside'):
+        ], clear=True).style('display:flex;')
+        with use_scope('aside', clear=True):
             for element in aside_elements:
                 element.show()
 
@@ -70,7 +70,7 @@ class WebConfigUI(WebConfig):
         def render():
             collapse_group = [self.cvcomponents_aside(v) for v in collapse]
             for v in collapse:
-                self.clear(v['scope'])
+                clear(v['scope'])
             for v in collapse:
                 with use_scope(v['scope'], clear=True):
                     put_collapse(title, collapse_group)
@@ -121,10 +121,10 @@ class WebConfigUI(WebConfig):
 
         return render
 
-    @staticmethod
-    def clear(scope_name):
-        # 实现清除作用域的静态方法
-        clear(scope_name)
+    # @staticmethod
+    # def clear(scope_name):
+    #     # 实现清除作用域的静态方法
+    #     clear(scope_name)
 
 
 ui = WebConfigUI()

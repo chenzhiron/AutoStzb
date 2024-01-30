@@ -1,3 +1,5 @@
+import threading
+
 import time
 from datetime import timedelta, datetime
 
@@ -5,6 +7,7 @@ from pywebio.output import use_scope, put_button, put_text
 
 from config.config import globalConfig
 from modules.task.steps import ZhengBing
+from modules.utils.utils import get_current_date
 
 
 class Stzb:
@@ -17,15 +20,15 @@ class Stzb:
 
     def change_config(self):
         self.stop_event = not self.stop_event
-        try:
-            if self.stop_event:
-                self.devices()
-                self.device.startDevices()
-            else:
-                self.device.closeDevice()
-                self.render()
-        except Exception as e:
-            self.stop_event = False
+        # try:
+        #     if self.stop_event:
+        #         self.devices()
+        #         self.device.startDevices()
+        #     else:
+        #         self.device.closeDevice()
+        #         self.render()
+        # except Exception as e:
+        #     self.stop_event = False
         self.render()
         # print(e)
 
@@ -42,7 +45,14 @@ class Stzb:
 
     def up_data(self, task, execute_result):
         self.verify_next_tasks(task, execute_result)
+        new_data = self.taskManagers.get_main_data()
+        new_task = list(filter(lambda x: x['id'] == task['id'], new_data['children']))[0]
+        new_task['children']['state']['value'] = task['children']['state']['value']
+        new_task['children']['next_run_time']['value'] = task['children']['next_run_time']['value']
+        new_task['children']['next_run_fn']['value'] = task['children']['next_run_fn']['value']
+        new_task['children']['await_time']['value'] = task['children']['await_time']['value']
         print('task', task, 'execute_result', execute_result)
+        self.taskManagers.update_main_refresh(new_data)
 
     def wait_until(self, future):
         future = future + timedelta(seconds=1)
@@ -67,7 +77,26 @@ class Stzb:
 
     # 对于任务函数，通过记录上一次执行的函数来计算下一次执行的函数任务
     def verify_next_tasks(self, config, result=None):
-        pass
+        if not isinstance(result, dict):
+            return config
+        current_task = config['children']
+        # 校验征兵模块
+        if result['type'] == 1:
+            times = result['await_time']
+            if times == 0:
+                if current_task['mopping_up']['value'] != 0:
+                    current_task['next_run_fn']['value'] = 'saodang'
+                elif current_task['going']['value']:
+                    current_task['next_run_fn']['value'] = 'chuzheng'
+                else:
+                    current_task['state']['value'] = False
+            else:
+                current_task['next_run_fn']['value'] = 'zhengbing'
+            current_task['next_run_time']['value'] = get_current_date(times)
+            current_task['await_time']['value'] = times
+        del result['type']
+        config.update(result)
+        return config
 
     def get_next_task(self):
         while 1:
@@ -100,7 +129,11 @@ class Stzb:
             raise AttributeError(f"Command '{command}' is not a valid method of {self.__class__.__name__}")
 
     def zhengbing(self, instance):
-        return ZhengBing(device=self.device, instance=instance).run()
+        # return ZhengBing(device=self.device, instance=instance).run()
+        return {
+            'type': 1,
+            'await_time': 999
+        }
 
     def chuzheng(self, instance):
         print('chuzheng', instance.next_run_times)
@@ -119,4 +152,3 @@ stzb = Stzb()
 # if __name__ == '__main__':
 #     stzb = Stzb()
 #     stzb.loop()
-

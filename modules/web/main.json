@@ -22,7 +22,7 @@
         "await_time": {
           "explain": "征兵等待时间",
           "value": 0,
-          "readonly": false,
+          "readonly": true,
           "show": true
         },
         "next_run_time": {

@@ -20,7 +20,7 @@ click_zhengbing = VerifyOperatorSteps(zhengbing_area, [zhengbing], zhengbing_are
 swipe_zhengbing = SwipeOperatorSteps(zhengbing_swipe_verify, [require_zhengbing], zhengbing_page_swipe)
 
 # 征兵时间
-zhengbing_max_time = OcrOperatorSteps(zhengbing_time_area, None, 'next_run_time')
+zhengbing_max_time = OcrOperatorSteps(zhengbing_time_area, None, 'await_time')
 
 # 点击确认征兵，在此处是同一个页面 不需要校验
 click_zhengbing_sure = EntryOperatorSteps([0, 0, 0, 0], None, queren_area[0], queren_area[1])
