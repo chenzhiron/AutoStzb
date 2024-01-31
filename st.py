@@ -1,10 +1,5 @@
-import threading
-
 import time
 from datetime import timedelta, datetime
-
-from pywebio.output import use_scope, put_button, put_text
-
 from config.config import globalConfig
 from modules.task.steps import ZhengBing
 from modules.utils.utils import get_current_date
@@ -15,28 +10,9 @@ class Stzb:
 
     def __init__(self):
         self.device = None
-        from modules.web.web import ui
+        from modules.web.web import ui, event
         self.taskManagers = ui
-
-    def change_config(self):
-        self.stop_event = not self.stop_event
-        # try:
-        #     if self.stop_event:
-        #         self.devices()
-        #         self.device.startDevices()
-        #     else:
-        #         self.device.closeDevice()
-        #         self.render()
-        # except Exception as e:
-        #     self.stop_event = False
-        self.render()
-        # print(e)
-
-    def render(self):
-        with use_scope('scheduler', clear=True):
-            put_text('调度器状态').style('display:inline-block;')
-            put_button('运行中' if self.stop_event else '启动', onclick=self.change_config).style(
-                'display:inline-block;')
+        self.ui_event = event
 
     def devices(self):
         from modules.devices.device import Devices
@@ -52,14 +28,26 @@ class Stzb:
         new_task['children']['next_run_fn']['value'] = task['children']['next_run_fn']['value']
         new_task['children']['await_time']['value'] = task['children']['await_time']['value']
         print('task', task, 'execute_result', execute_result)
-        self.taskManagers.update_main_refresh(new_data)
+        self.taskManagers.update_main_data(new_data)
+        self.ui_event.set()
 
     def wait_until(self, future):
-        future = future + timedelta(seconds=1)
-        if datetime.now() > future:
-            return True
-        else:
-            return False
+        # 如果future是字符串类型，尝试将其解析为datetime对象
+        if isinstance(future, str):
+            try:
+                future = datetime.fromisoformat(future)
+            except ValueError:
+                raise ValueError("future string is not in the correct format")
+
+        # 如果future不是datetime类型，抛出错误
+        elif not isinstance(future, datetime):
+            raise TypeError("future must be a datetime object or a valid datetime string")
+
+        # 在future上增加1秒
+        future += timedelta(seconds=1)
+
+        # 返回是否已经到达或超过future时间
+        return datetime.now() >= future
 
     def sort_tasks(self):
         while 1:
@@ -70,10 +58,13 @@ class Stzb:
                     if key == 'state' and value['value']:
                         filtered_data.append(v)
             if len(filtered_data) == 0:
-                time.sleep(1)
+                time.sleep(2)
                 continue
             filtered_data.sort(key=lambda x: x['children']['next_run_time']['value'])
-            return filtered_data[0]
+            current_task_tims = filtered_data[0]['children']['next_run_time']['value']
+            if self.wait_until(current_task_tims):
+                return filtered_data[0]
+            time.sleep(2)
 
     # 对于任务函数，通过记录上一次执行的函数来计算下一次执行的函数任务
     def verify_next_tasks(self, config, result=None):
@@ -94,30 +85,34 @@ class Stzb:
                 current_task['next_run_fn']['value'] = 'zhengbing'
             current_task['next_run_time']['value'] = get_current_date(times)
             current_task['await_time']['value'] = times
-        del result['type']
-        config.update(result)
+        # current_task.update(result)
         return config
 
     def get_next_task(self):
         while 1:
-            if self.stop_event:
+            if self.taskManagers.get_state():
                 task = self.sort_tasks()
                 fn_name = None
                 for key, v in task['children'].items():
                     if key == 'next_run_fn' and v['value'] is not None:
                         fn_name = v['value']
                 return task, fn_name
-
             time.sleep(5)
 
     def loop(self):
         while 1:
-            if self.stop_event:
+            if self.taskManagers.get_state():
+                if self.device is None:
+                    self.devices()
+                    self.device.startDevices()
                 task, fn = self.get_next_task()
                 print(task, fn)
                 result = self.run(task, fn)
                 print(result)
                 self.up_data(task, result)
+            else:
+                if self.device is not None:
+                    self.device.closeDevice()
             time.sleep(5)
 
     def run(self, task, command):
@@ -129,11 +124,11 @@ class Stzb:
             raise AttributeError(f"Command '{command}' is not a valid method of {self.__class__.__name__}")
 
     def zhengbing(self, instance):
-        # return ZhengBing(device=self.device, instance=instance).run()
-        return {
-            'type': 1,
-            'await_time': 999
-        }
+        return ZhengBing(device=self.device, instance=instance).run()
+        # return {
+        #     'type': 1,
+        #     'await_time': 999
+        # }
 
     def chuzheng(self, instance):
         print('chuzheng', instance.next_run_times)

@@ -3,12 +3,12 @@ import threading
 import pywebio
 from pywebio import start_server
 
-from pywebio.output import put_button, use_scope, put_collapse, put_text, put_scope, clear
+from pywebio.output import put_button, use_scope, put_collapse, put_text, put_scope, clear, remove
 from pywebio.pin import put_input, put_checkbox, pin_on_change
-from pywebio.session import register_thread
 
+event = threading.Event()
 from modules.web.config import WebConfig
-
+from modules.devices.device import Devices
 pywebio.config(css_style="""
     * {
         margin: 0 ;
@@ -30,12 +30,23 @@ pywebio.config(css_style="""
 class WebConfigUI(WebConfig):
     def __init__(self):
         super().__init__()
+        self.state = False
+
+    def get_state(self):
+        return self.state
 
     def start(self):
         start_server(self.init, port=9091, auto_open_webbrowser=True, debug=True)
 
     def init(self):
         self.format_com([self.config_data, self.main_data])
+        while 1:
+            event.wait()
+            remove('aside')
+            remove('collapse')
+            remove('center')
+            self.format_com([self.config_data, self.main_data])
+            event.clear()
 
     def update_main_refresh(self, new_data):
         """更新数据并刷新UI视图。"""
@@ -50,18 +61,20 @@ class WebConfigUI(WebConfig):
     def refresh_view(self):
         self.init()  # 重新初始化视图
 
+    def change_config(self):
+        self.state = not self.state
+
     def format_com(self, data):
-        from st import stzb
+
         aside_elements = [self.components_aside(v) for v in data]
-        put_scope('scheduler', stzb.render(), clear=True)
-        put_scope('st', [
-            put_scope('aside', []).style('width:100px'),
-            put_scope('collapse', []).style('width:200px'),
-            put_scope('center', []).style('flex:1'),
-        ], clear=True).style('display:flex;')
-        with use_scope('aside', clear=True):
-            for element in aside_elements:
-                element.show()
+        with use_scope('scheduler', clear=True):
+            put_text('调度器状态').style('display:inline-block;'),
+            put_button('运行中' if self.state else '启动', onclick=self.change_config).style(
+                'display:inline-block;')
+        with use_scope('st', clear=True):
+            put_scope('aside', aside_elements).style('width:100px;display:inline-block;')
+            put_scope('collapse', []).style('width:200px;display:inline-block;')
+            put_scope('center', []).style('flex:1;display:inline-block;')
 
     def components_aside(self, aside):
         return put_button(aside['name'], onclick=self.components_collapse(aside['children'], aside['name']))
@@ -86,16 +99,16 @@ class WebConfigUI(WebConfig):
                 for key, value in aside.items():
                     if value['show'] or value['value'] is not None:
                         if isinstance(value['value'], bool):
-                            put_scope(key, [
+                            with use_scope(key, clear=True):
                                 put_text(value['explain']),
-                                put_checkbox(key, [{'label': '', 'value': True}], value=[value['value']])
-                            ]).style('display:grid;grid-template-columns:auto auto;')
+                                put_checkbox(key, [{'label': '', 'value': True}], value=[value['value']]
+                                             ).style('display:grid;grid-template-columns:auto auto;')
                             pin_on_change(key, self.pin_change_bool(self, value), clear=True)
                         else:
-                            put_scope(key, [
+                            with use_scope(key, clear=True):
                                 put_text(value['explain']),
-                                put_input(key, value=str(value['value']), readonly=value['readonly'])
-                            ]).style('display:grid;grid-template-columns:auto auto;')
+                                put_input(key, value=str(value['value']), readonly=value['readonly']
+                                          ).style('display:grid;grid-template-columns:auto auto;')
                             pin_on_change(key, self.reg_str(self, value), clear=True)
                     else:
                         put_text(value['explain'])

@@ -10,7 +10,7 @@ class Origin:
         self.instances = instance
         self.step = 0
         self.tasks_result = {
-            type: 1
+            'type': 1
         }
 
 
