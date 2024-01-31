@@ -47,7 +47,9 @@ class EntryOperatorSteps(OperatorSteps):
 
     def run(self, device, instance):
         device.operateTap(self.x, self.y)
-        return {}
+        return {
+            'next': True
+        }
 
 
 class VerifyOperatorSteps(OperatorSteps):
@@ -58,7 +60,9 @@ class VerifyOperatorSteps(OperatorSteps):
         if self.verifyTxt():
             device.operateTap(self.x, self.y)
             print('x', self.x, 'y', self.y)
-            return {}
+            return {
+                'next': True
+            }
         return False
 
 
@@ -70,7 +74,9 @@ class SwipeOperatorSteps(OperatorSteps):
     def run(self, device, instance):
         if self.verifyTxt():
             device.operateSwipe(self.swipe_lists)
-            return {}
+            return {
+                'next': True
+            }
         return False
 
 
@@ -82,6 +88,7 @@ class OcrOperatorSteps(OperatorSteps):
     def run(self, device, instance):
         sleep_time = calculate_max_timestamp(self.ocr_txt)
         return {
+            'next': sleep_time != 0,
             self.key: sleep_time
         }
 
@@ -96,7 +103,9 @@ class OutOperatorSteps(OperatorSteps):
             img = device.getScreenshots()
             self.verifyOcr(img)
             if self.verifyTxt():
-                return {}
+                return {
+                    'next': True
+                }
             device.operateTap(self.x, self.y)
 
 

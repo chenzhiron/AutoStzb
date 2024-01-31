@@ -42,6 +42,9 @@ class ZhengBing(Origin):
                 res = task_instance.run(self.devices, self.instances)
                 if isinstance(res, dict):
                     self.tasks_result.update(res)
+                    if not res['next']:
+                        # 调取返回主页函数
+                        return self.tasks_result
                     self.step += 1
                     break
         return self.tasks_result
