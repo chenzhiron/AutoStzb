@@ -1,5 +1,6 @@
 import datetime
-
+import numpy as np
+from PIL import Image
 from scipy.stats import truncnorm
 
 
@@ -45,3 +46,62 @@ def generate_normal_distribution(ranges, sd=25):
             scale=sd).rvs()
         result.append(int(data))
     return result
+
+
+def blackout_image_except_region(image_path, region):
+    """
+    Black out a region of an image except for the specified area.
+
+    Parameters:
+    - image_path: str, the path to the image that should be processed.
+    - region: tuple, a 4-tuple specifying the left, upper, right, and lower pixel coordinate.
+
+    Returns:
+    - An Image object with the region outside the specified area blacked out.
+    """
+    # Load the original image
+    original_image = Image.open(image_path)
+
+    # Create a black image of the same size as the original image
+    black_image = Image.new('RGB', original_image.size, 'black')
+
+    # Crop the specified region from the original image
+    cropped_region = original_image.crop(region)
+
+    # Paste the cropped region onto the black image at the same coordinates
+    black_image.paste(cropped_region, region)
+
+    return black_image
+
+
+def blackout_image_except_region_efficient(image_path, region):
+    """
+    Black out a region of an image except for the specified area, more efficiently.
+
+    Parameters:
+    - image_path: str, the path to the image that should be processed.
+    - region: tuple, a 4-tuple specifying the left, upper, right, and lower pixel coordinate.
+
+    Returns:
+    - An Image object with the region outside the specified area blacked out.
+    """
+    # Load the original image
+    original_image = Image.open(image_path)
+
+    # Convert the image into a NumPy array for faster processing
+    img_array = np.array(original_image)
+
+    # Extract the coordinates from the region
+    left, upper, right, lower = region
+
+    # Create a mask for the area to blackout
+    mask = np.ones_like(img_array, dtype=bool)  # Create a mask initialized to True
+    mask[upper:lower, left:right] = False  # Set the region to keep to False
+
+    # Apply the mask to black out regions
+    img_array[mask] = 0  # Set the True areas of the mask to black
+
+    # Convert the NumPy array back to a PIL Image
+    blacked_out_image = Image.fromarray(img_array)
+
+    return blacked_out_image
