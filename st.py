@@ -3,6 +3,7 @@ from datetime import timedelta, datetime
 from config.config import globalConfig
 from modules.task.steps import ZhengBing
 from modules.utils.utils import get_current_date
+from modules.store.store import store
 
 
 class Stzb:
@@ -10,9 +11,9 @@ class Stzb:
 
     def __init__(self):
         self.device = None
-        from modules.web.web import ui, event
+        from modules.web.web import ui
         self.taskManagers = ui
-        self.ui_event = event
+        self.store = store
 
     def devices(self):
         from modules.devices.device import Devices
@@ -20,7 +21,7 @@ class Stzb:
         return self.device
 
     def up_data(self, task, execute_result):
-        self.verify_next_tasks(task, execute_result)
+        task = self.verify_next_tasks(task, execute_result)
         new_data = self.taskManagers.get_main_data()
         new_task = list(filter(lambda x: x['id'] == task['id'], new_data['children']))[0]
         new_task['children']['state']['value'] = task['children']['state']['value']
@@ -28,8 +29,7 @@ class Stzb:
         new_task['children']['next_run_fn']['value'] = task['children']['next_run_fn']['value']
         new_task['children']['await_time']['value'] = task['children']['await_time']['value']
         print('task', task, 'execute_result', execute_result)
-        self.taskManagers.update_main_data(new_data)
-        self.ui_event.set()
+        self.store.add_store(new_data)
 
     def wait_until(self, future):
         # 如果future是字符串类型，尝试将其解析为datetime对象
@@ -85,7 +85,6 @@ class Stzb:
                 current_task['next_run_fn']['value'] = 'zhengbing'
             current_task['next_run_time']['value'] = get_current_date(times)
             current_task['await_time']['value'] = times
-        # current_task.update(result)
         return config
 
     def get_next_task(self):
@@ -125,11 +124,6 @@ class Stzb:
 
     def zhengbing(self, instance):
         return ZhengBing(device=self.device, instance=instance).run()
-        # return {
-        #     'type': 1,
-        #     'await_time': 999
-        # }
-
     def chuzheng(self, instance):
         print('chuzheng', instance.next_run_times)
         return True

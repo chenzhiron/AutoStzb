@@ -1,4 +1,4 @@
-import threading
+import time
 
 import pywebio
 from pywebio import start_server
@@ -6,9 +6,10 @@ from pywebio import start_server
 from pywebio.output import put_button, use_scope, put_collapse, put_text, put_scope, clear, remove
 from pywebio.pin import put_input, put_checkbox, pin_on_change
 
-event = threading.Event()
 from modules.web.config import WebConfig
+from modules.store.store import store
 from modules.devices.device import Devices
+
 pywebio.config(css_style="""
     * {
         margin: 0 ;
@@ -31,6 +32,7 @@ class WebConfigUI(WebConfig):
     def __init__(self):
         super().__init__()
         self.state = False
+        self.store = store
 
     def get_state(self):
         return self.state
@@ -41,12 +43,14 @@ class WebConfigUI(WebConfig):
     def init(self):
         self.format_com([self.config_data, self.main_data])
         while 1:
-            event.wait()
-            remove('aside')
-            remove('collapse')
-            remove('center')
-            self.format_com([self.config_data, self.main_data])
-            event.clear()
+            res = self.store.get_store()
+            if bool(res):
+                self.update_main_data(res)
+                remove('aside')
+                remove('collapse')
+                remove('center')
+                self.format_com([self.config_data, self.main_data])
+            time.sleep(5)
 
     def update_main_refresh(self, new_data):
         """更新数据并刷新UI视图。"""
