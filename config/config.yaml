@@ -13,8 +13,7 @@ Python:
   pip: ./toolkit/pip.exe
 Simulator:
   path: ./config/config.yaml
-  screenshot_tcp_port: 53520
-  touch_port: 56000
+  simulator_map_port: 53520
   url: 127.0.0.1:62001
   screenshot_sleep: 0.5
 Web:

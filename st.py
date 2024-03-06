@@ -10,7 +10,6 @@ class Stzb:
     stop_event = False
 
     def __init__(self):
-        self.device = None
         from modules.web.web import ui
         self.taskManagers = ui
         self.store = store
@@ -101,17 +100,11 @@ class Stzb:
     def loop(self):
         while 1:
             if self.taskManagers.get_state():
-                if self.device is None:
-                    self.devices()
-                    self.device.startDevices()
                 task, fn = self.get_next_task()
                 print(task, fn)
                 result = self.run(task, fn)
                 print(result)
                 self.up_data(task, result)
-            else:
-                if self.device is not None:
-                    self.device.closeDevice()
             time.sleep(5)
 
     def run(self, task, command):
