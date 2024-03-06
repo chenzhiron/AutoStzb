@@ -10,6 +10,7 @@ class Stzb:
     stop_event = False
 
     def __init__(self):
+        self.device = None
         from modules.web.web import ui
         self.taskManagers = ui
         self.store = store
@@ -100,6 +101,8 @@ class Stzb:
     def loop(self):
         while 1:
             if self.taskManagers.get_state():
+                if self.device is None:
+                    self.devices()
                 task, fn = self.get_next_task()
                 print(task, fn)
                 result = self.run(task, fn)
@@ -113,6 +116,7 @@ class Stzb:
         if method is not None:
             return method(task)
         else:
+
             raise AttributeError(f"Command '{command}' is not a valid method of {self.__class__.__name__}")
 
     def zhengbing(self, instance):

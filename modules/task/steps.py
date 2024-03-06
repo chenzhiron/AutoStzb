@@ -47,6 +47,7 @@ class ZhengBing(Origin):
                         return self.tasks_result
                     self.step += 1
                     break
+            raise Exception('征兵步骤执行异常')
         return self.tasks_result
 
 

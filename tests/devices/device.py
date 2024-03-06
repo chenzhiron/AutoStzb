@@ -1,45 +1,37 @@
 import time
 
-from modules.devices.Class.AutoMationClass import Automation
-from modules.devices.pyminitouch.actions import MNTDevice
+import uiautomator2 as u2
+import websocket
+import adbutils
 
 
-class Devices(Automation, MNTDevice):
-
-    def __init__(self, config):
-        adb = config['Adb']['executable']
-        automation_serial = config['Simulator']['url']
-        automation_port = config['Simulator']['screenshot_tcp_port']
-        device_id = config['Simulator']['url']
-        operate_change_port = config['Simulator']['touch_port']
-        sleep = config['Simulator']['screenshot_sleep']
-        Automation.__init__(self, adb, automation_serial, automation_port, sleep)
-        MNTDevice.__init__(self, device_id, adb, operate_change_port)
-
-    def startDevices(self):
-        super().run_adb(['kill-server'])
-        super().run_adb(["connect", self.device_serial])
-        super().run_automate_in_thread()
-        super().start()
-
-    def closeDevice(self):
-        super().stop()
-        super().disconnect()
-        super().run_adb(['kill-server'])
+class Devices:
+    def __init__(self, config) -> None:
+        simulator = config['Simulator']['url']
+        self.d = u2.connect(simulator)
+        print(self.d.info)
+        lport = adbutils.adb.device(simulator).forward_port(7912)
+        self.ws = websocket.WebSocket()
+        self.ws.connect('ws://localhost:{}/minicap'.format(lport))
 
     def getScreenshots(self):
-        return super().getScreenshots()
+        while True:
+            data = self.ws.recv()
+            print('data', data)
+            if not isinstance(data, (bytes, bytearray)):
+                continue
+            with open('test.png', 'wb') as f:
+                f.write(data)
+            return data
 
     def operateTap(self, x, y):
-        self.tap([(x, y)])
-        return True
+        self.d.click(x, y)
 
     def operateSwipe(self, points_list):
         for v in points_list:
             x1, y1, x2, y2 = v
-            self.ext_smooth_swipe([(x1, y1), (x2, y2)], duration=30)
-            time.sleep(1)
+            self.d.swipe(x1, y1, x2, y2, steps=5)
 
-# if __name__ == '__main__':
-#     test = Devices(globalConfig)
-#     print(test.close)
+    def operateInput(self, txt):
+        self.d.clear_text()
+        self.d.send_keys(txt)

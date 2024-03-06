@@ -1,11 +1,12 @@
 import uiautomator2 as u2
 import websocket
 import adbutils
-
-
+from PIL import Image
+import io
 class Devices:
     def __init__(self, config) -> None:
         simulator = config['Simulator']['url']
+        print('simulator', simulator)
         self.d = u2.connect(simulator)
         lport = adbutils.adb.device(simulator).forward_port(7912)
         self.ws = websocket.WebSocket()
@@ -16,7 +17,7 @@ class Devices:
             data = self.ws.recv()
             if not isinstance(data, (bytes, bytearray)):
                 continue
-            return data
+            return Image.open(io.BytesIO(data))
 
     def operateTap(self, x, y):
         self.d.click(x, y)

@@ -17,6 +17,7 @@ class OperatorSteps:
         self.ocr_txt = None
 
     def verifyOcr(self, source):
+        print(self.area, 'area')
         res = ocrDefault(np.array(source.crop(self.area)))
         print(res, 'res')
         self.ocr_txt = self.ocr_reg(res)
