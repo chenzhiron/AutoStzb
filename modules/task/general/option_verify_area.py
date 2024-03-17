@@ -118,9 +118,9 @@ huodon_area = (180, 120, 235, 150)
 # 势力选择部队页面
 shili_area = (0, 0, 168, 85)
 # 点击证兵位置
-zhengbing_area = (745, 597, 853, 645)
+zhengbing_area = (710, 590, 885, 655)
 # 拖动进度条校验位置
-zhengbing_swipe_verify = (1263, 806, 1400, 835)
+zhengbing_swipe_verify = (475, 480, 588, 530)
 # 征兵滑块区域
 zhengbing_page_swipe = ((515, 545, 1100, 545),
                         (515, 680, 1100, 680),
