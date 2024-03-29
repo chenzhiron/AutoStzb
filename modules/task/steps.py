@@ -13,6 +13,10 @@ class Origin:
             'type': 1
         }
 
+    def ret_main(self):
+
+        return True
+
 
 class ZhengBing(Origin):
     def __init__(self, device, instance):
@@ -34,24 +38,25 @@ class ZhengBing(Origin):
         # 看下主页活动在不在，然后看下在不在势力，接着查看 征兵按钮，接着 查看 进度条页面，接着识别确认征兵
         # 添加实例的下一次运行时间校验
         self.verifySteps()
+        start_time = time.time()
+        self.step -= 1
         while self.step < len(self.exec_step):
-            for i in range(10):
-                img = self.devices.getScreenshots()
-                task_instance = self.exec_step[self.step]
-                task_instance.verifyOcr(img)
-                res = task_instance.run(self.devices, self.instances)
-                if isinstance(res, dict):
-                    self.tasks_result.update(res)
-                    if not res['next']:
+            img = self.devices.getScreenshots()
+            task_instance = self.exec_step[self.step]
+            task_instance.verifyOcr(img)
+            res = task_instance.run(self.devices, self.instances)
+            if isinstance(res, dict):
+                self.tasks_result.update(res)
+                if not res['next']:
                         # 调取返回主页函数
-                        return self.tasks_result
-                    self.step += 1
-                    break
-            raise Exception('征兵步骤执行异常')
+                    return self.tasks_result
+                self.step += 1
+            if time.time() - start_time > 60:
+                raise TimeoutError('征兵超时')
         return self.tasks_result
 
 
-class Chuzheng(Origin):
+class ChuZheng(Origin):
     def __init__(self, devices, instance):
         super().__init__(devices, instance)
 

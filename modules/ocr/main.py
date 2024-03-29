@@ -10,7 +10,9 @@ ocr = PaddleOCR(lang="ch",
                 rec_model_dir=ocr_rec,
                 cls_model_dir=ocr_cls,
                 rec_char_dict_path=ocr_keys,
-                show_log=False
+                show_log=True,
+                save_crop_res=True,
+                warmup=True
                 )
 
 
