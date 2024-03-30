@@ -5,7 +5,12 @@ class OptionExplain:
         self.value = value
         self.option_type = option_type
         self.options = options
+    def on_change_event(self, new_value, origin, origin_controller):
+        origin_controller[self] = new_value
+        origin[self.name] = new_value
+        print('origin', origin_controller, origin)
 
+        
 team = OptionExplain(
     'team',
     '部队',
