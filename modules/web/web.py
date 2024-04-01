@@ -2,8 +2,10 @@ import json
 import os
 import copy
 import functools
+import threading
+import time
 
-from pywebio.output import put_row, put_scope, use_scope, put_collapse,put_button, put_column, put_text
+from pywebio.output import put_row, put_scope, use_scope, put_collapse,put_button, put_column, put_text, clear
 from pywebio import start_server
 from pywebio.session import set_env
 
@@ -34,12 +36,14 @@ class Web(WebConfig):
     def __init__(self):
         super().__init__()
 
-    # def get_main_data(self):
-    #     return copy.deepcopy(self.data)
-
-    # def update_main_data(self, data):
-    #     self.data = data
-
+    def get_data(self, key):
+        return copy.deepcopy(self.data[key])
+    def set_data(self, key, value):
+        if key == 'task':
+            for v in range(len(self.data['task'])):
+                self.data['task'][v].update(value[v])
+        else:
+            self.data[key] = value
     @use_scope('menu_bar', clear=True)
     def render_memu_bar(self, updata):
           OptionPage([updata, {
@@ -85,14 +89,27 @@ class Web(WebConfig):
         self.render_state()
         self.render_title('主页')
         put_row([
-            put_scope('navigation_bar', []),
-            put_scope('function_bar', []),
-            put_scope('menu_bar', []),
-            put_scope('log_bar', [])
-        ]).style('display:flex')
+                    put_scope('navigation_bar', []),
+                    put_scope('function_bar', []),
+                    put_scope('menu_bar', []),
+                    put_scope('log_bar', [])
+                ]).style('display:flex')
         self.render_navigation_bar()
-         
+
+ui = Web()   
+
+def start_web():
+    start_server(ui.render, port=9091, debug=True)
 
 if __name__ == '__main__':
-    ui = Web()
-    start_server(ui.render, port=9091, debug=True)
+    thread = threading.Thread(target=start_web)
+    thread.setDaemon(True)
+    thread.start()
+    time.sleep(5)
+    print('启动成功,请访问http://localhost:9091')
+    res = ui.get_data('task')
+    for v in res:
+        v['skip_await'] = True
+    ui.set_data('task', res)
+    print('next', res)
+    time.sleep(55)

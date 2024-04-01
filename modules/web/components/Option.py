@@ -19,7 +19,9 @@ class Component:
         if self.types == 'str':
             self.controller = put_input(self.key, value=self.value)
         if self.types == 'bool':
-            self.controller = put_checkbox(self.key, value=[self.value], options=[self.value])
+            self.controller = put_checkbox(self.key, 
+                                           value= self.value if self.value else None,
+                                           options=[self.value])
             res = self.controller.spec['input']['options']
             for v in res:
                 v['label'] = ''
