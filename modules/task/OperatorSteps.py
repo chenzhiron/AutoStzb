@@ -18,8 +18,10 @@ class OperatorSteps:
 
     def verifyOcr(self, source):
         print(self.area, 'area')
+        if self.area is None:
+            self.ocr_txt = ''
+            return self.ocr_txt
         res = ocrDefault(np.array(source.crop(self.area)))
-        print(res, 'res')
         self.ocr_txt = self.ocr_reg(res)
         return self.ocr_txt
 
@@ -81,10 +83,6 @@ class OcrOperatorSteps(OperatorSteps):
         super().__init__(area, txt, x, y)
         self.key = key
 
-    def verifyTxt(self):
-        if self.ocr_txt is None:
-            return False
-
     def verifyOcr(self, source):
         res = ocrDefault(np.array(source.crop(self.area)))
         self.ocr_txt = self.ocr_reg(res)
@@ -98,6 +96,8 @@ class OcrOperatorSteps(OperatorSteps):
 
     def run(self, device, instance):
         sleep_time = calculate_max_timestamp(self.ocr_txt)
+        if sleep_time == None:
+            return False
         return {
             'next': sleep_time != 0,
             self.key: sleep_time
@@ -109,14 +109,13 @@ class OutOperatorSteps(OperatorSteps):
     def __init__(self, area, txt, x, y):
         super().__init__(area, txt, x, y)
 
-    def run(self, device, instance):
+    def run(self, device):
         while 1:
             img = device.getScreenshots()
             self.verifyOcr(img)
             if self.verifyTxt():
-                return {
-                    'next': True
-                }
+                return True
+            time.sleep(0.5)
             device.operateTap(self.x, self.y)
 
 
@@ -126,29 +125,86 @@ class InputOperatorSteps(OperatorSteps):
         self.input_value = input_value
         super().__init__(area, txt, x, y)
 
-    def run(self):
-        # 点击后输入 并退出
-        pass
+    def run(self, device, instance):
+        if self.verifyTxt():
+            device.operateTap(self.x, self.y)
+            time.sleep(0.5)
+            print(self.input_value)
+            device.operateInput(self.input_value)
+            device.operateTap(400, 400)
+            return {
+                'next': True
+            }
+        return False
+
+class Land_EntryOperatorSteps(OperatorSteps):
+    def __init__(self, area, txt, x=0, y=0):
+        super().__init__(area, txt, x, y)
+    def verifyOcr(self, source):
+        self.ocr_txt = ''
+        return self.ocr_txt
+    def run(self, device, instance):
+        time.sleep(5)
+        device.operateTap(self.x, self.y)
+        return {
+            'next': True
+        }
 
 
 class ExtraOperatorSteps(OperatorSteps):
     def __init__(self, area, txt, x, y):
         super().__init__(area, txt, x, y)
+        self.offset_x = 0
+        self.offset_y = 0
+        self.state = False
 
     # 重写 识别方法
-    def run(self):
-        # 根据截图区域识别 扫荡跟出征 并加上偏移坐标
-        pass
+    def verifyOcr(self, source):
+        res = ocrDefault(np.array(source.crop(self.area)))
+        try:
+            processed_data = []
+            for item in res[0]:
+                points, label_confidence = item
+                label, _ = label_confidence
+                # Assuming the points are [top_left, top_right, bottom_right, bottom_left]
+                left = points[0][0]
+                top = points[0][1]
+                right = points[2][0]
+                bottom = points[2][1]
+                processed_item = [left, top, right, bottom, label]
+                processed_data.append(processed_item)
+            for v in processed_data:
+                if v[4] == self.txt:
+                    self.offset_x = v[0]
+                    self.offset_y = v[1]
+                    self.state = True
+                    return self.state
+        except Exception as e:
+            print(e)
+            return self.state
+
+    def run(self, device, instance):
+        res = device.getScreenshots()
+        if not self.verifyOcr(res):
+           return False
+        device.operateTap(self.offset_x + self.x, self.offset_y + self.y)
+        return {
+                'next': True
+        }
 
 
 class StatusOcrOperatorSteps(OperatorSteps):
-    def __init__(self, key, area, txt, x=0, y=0):
+    def __init__(self, area, txt, key, x=0, y=0):
         super().__init__(area, txt, x, y)
         self.key = key
 
-    def run(self):
-        # 查询状态
-        pass
+    def run(self, device, instance):
+        if self.ocr_txt:
+            return {
+                self.key: self.ocr_txt,
+                "next": True
+            }
+        return False
 
 
 class NumberOcrOperatorSteps(OperatorSteps):
@@ -156,6 +212,24 @@ class NumberOcrOperatorSteps(OperatorSteps):
         super().__init__(area, txt, x, y)
         self.key = key
 
-    def run(self):
-        # 查询人数
-        pass
+    def run(self, device, instance):
+        print(self.ocr_txt)
+        if self.ocr_txt:
+            return {
+                self.key: list(map(int, self.ocr_txt.split('/'))),
+                "next": True
+            }
+        return False
+
+class ChetuitOperatorSteps(OperatorSteps):
+    def __init__(self,area, txt, x=0, y=0):
+        super().__init__(area, txt, x, y)
+
+    def run(self, device, instance):
+        sleep_time = calculate_max_timestamp(self.ocr_txt)
+        if sleep_time == None:
+             return False
+        device.operateTap(self.x, self.y)
+        return {
+            "next": True
+        }
