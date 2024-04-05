@@ -1,147 +1,115 @@
+import json
+import os
+import copy
+import functools
+import threading
 import time
 
-import pywebio
+from pywebio.output import put_row, put_scope, use_scope, put_collapse,put_button, put_column, put_text, clear
 from pywebio import start_server
+from pywebio.session import set_env
 
-from pywebio.output import put_button, use_scope, put_collapse, put_text, put_scope, clear, remove
-from pywebio.pin import put_input, put_checkbox, pin_on_change
-
-from modules.web.config import WebConfig
-from modules.store.store import store
-from modules.devices.device import Devices
-
-pywebio.config(css_style="""
-    * {
-        margin: 0 ;
-        padding: 0 ;
-    }
-    .container {padding:0;
-    margin:0;
-    max-width: 100%;
-    }
-    .pywebio {
-        padding:0;
-    }
-    .footer{
-        display: none;
-        }
-""")
+from components.Option import OptionPage
+from components.prop_all import *
 
 
-class WebConfigUI(WebConfig):
+current_file_path = os.path.abspath(__file__)
+
+# 获取当前文件所在的目录
+current_dir_path = os.path.dirname(current_file_path)
+
+# 拼接config.yaml的路径
+config_file_path = os.path.join(current_dir_path, 'config.json')
+
+print(config_file_path)
+
+class WebConfig:
+    def __init__(self):
+        self.data = None
+        self.config_file = config_file_path
+        with open(self.config_file, 'r', encoding='utf-8') as load_f:
+            load_dict = json.load(load_f)
+            self.data = load_dict
+
+class Web(WebConfig):
+
     def __init__(self):
         super().__init__()
-        self.state = False
-        self.store = store
 
-    def get_state(self):
-        return self.state
+    def get_data(self, key):
+        return copy.deepcopy(self.data[key])
+    def set_data(self, key, value):
+        if key == 'task':
+            for v in range(len(self.data['task'])):
+                self.data['task'][v].update(value[v])
+        else:
+            self.data[key] = value
+    @use_scope('menu_bar', clear=True)
+    def render_memu_bar(self, updata):
+          OptionPage([updata, {
+                    team: updata['team'],
+                    skip_await: updata['skip_await'],
+                    state: updata['state'],
+                    explain: updata['explain'],
+                    await_time: updata['await_time'],
+                    next_run_time: updata['next_run_time'],
+                    mopping_up: updata['mopping_up'],
+                    delay: updata['delay'],
+                    draw_txt: updata['draw_txt'],
+                    residue_troops_person: updata['residue_troops_person'],
+                    residue_troops_enemy: updata['residue_troops_enemy']
+                }]).dispatch()
+          
+    @use_scope('navigation_bar', clear=True)
+    def render_navigation_bar(self):
+        tasks_render = []
+        for v in self.data['task']:
+            tasks_render.append(put_button('队伍', onclick= functools.partial(self.render_memu_bar, updata = v)))
+        put_collapse('任务', tasks_render)
+    
+    def change_state(self, state):
+        self.data['state'] = state
+        self.render_state()
 
-    def start(self):
-        start_server(self.init, port=9091, auto_open_webbrowser=True, debug=True)
+    @use_scope('state', clear=True)
+    def render_state(self):
+        put_text('调度器').style('display:inline-block')
+        if self.data['state'] == 0:
+            put_button('启动', onclick= functools.partial(self.change_state, state = 1)).style('display:inline-block')
+        if self.data['state'] == 1:
+            put_button('停止', onclick= functools.partial(self.change_state, state = 0)).style('display:inline-block')
 
-    def init(self):
-        self.format_com([self.config_data, self.main_data])
-        while 1:
-            res = self.store.get_store()
-            if bool(res):
-                self.update_main_data(res)
-                remove('aside')
-                remove('collapse')
-                remove('center')
-                self.format_com([self.config_data, self.main_data])
-            time.sleep(5)
+    @use_scope('title', clear=True)
+    def render_title(self, title):
+        put_text(title).style('display:inline-block')
 
-    def update_main_refresh(self, new_data):
-        """更新数据并刷新UI视图。"""
-        super().update_main_data(new_data)
-        self.refresh_view()
+    def render(self):
+        set_env(title="AutoStzb", output_max_width='100%')
+        put_scope('topp', [put_scope('state', []), put_scope('title', [])]).style('display:flex')
+        self.render_state()
+        self.render_title('主页')
+        put_row([
+                    put_scope('navigation_bar', []),
+                    put_scope('function_bar', []),
+                    put_scope('menu_bar', []),
+                    put_scope('log_bar', [])
+                ]).style('display:flex')
+        self.render_navigation_bar()
 
-    def update_config_refresh(self, new_data):
-        """更新数据并刷新UI视图。"""
-        super().update_config_data(new_data)
-        self.refresh_view()
+ui = Web()   
 
-    def refresh_view(self):
-        self.init()  # 重新初始化视图
+def start_web():
+    start_server(ui.render, port=9091, debug=True)
 
-    def change_config(self):
-        self.state = not self.state
-
-    def format_com(self, data):
-
-        aside_elements = [self.components_aside(v) for v in data]
-        with use_scope('scheduler', clear=True):
-            put_text('调度器状态').style('display:inline-block;'),
-            put_button('运行中' if self.state else '启动', onclick=self.change_config).style(
-                'display:inline-block;')
-        with use_scope('st', clear=True):
-            put_scope('aside', aside_elements).style('width:100px;display:inline-block;')
-            put_scope('collapse', []).style('width:200px;display:inline-block;')
-            put_scope('center', []).style('flex:1;display:inline-block;')
-
-    def components_aside(self, aside):
-        return put_button(aside['name'], onclick=self.components_collapse(aside['children'], aside['name']))
-
-    def components_collapse(self, collapse, title):
-        def render():
-            collapse_group = [self.cvcomponents_aside(v) for v in collapse]
-            for v in collapse:
-                clear(v['scope'])
-            for v in collapse:
-                with use_scope(v['scope'], clear=True):
-                    put_collapse(title, collapse_group)
-
-        return render
-
-    def cvcomponents_aside(self, aside):
-        return put_button(aside['name'], onclick=self.components_collapse_button(aside['children']))
-
-    def components_collapse_button(self, aside):
-        def render():
-            with use_scope('center', clear=True):
-                for key, value in aside.items():
-                    if value['show'] or value['value'] is not None:
-                        if isinstance(value['value'], bool):
-                            with use_scope(key, clear=True):
-                                put_text(value['explain']),
-                                put_checkbox(key, [{'label': '', 'value': True}], value=[value['value']]
-                                             ).style('display:grid;grid-template-columns:auto auto;')
-                            pin_on_change(key, self.pin_change_bool(self, value), clear=True)
-                        else:
-                            with use_scope(key, clear=True):
-                                put_text(value['explain']),
-                                put_input(key, value=str(value['value']), readonly=value['readonly']
-                                          ).style('display:grid;grid-template-columns:auto auto;')
-                            pin_on_change(key, self.reg_str(self, value), clear=True)
-                    else:
-                        put_text(value['explain'])
-
-        return render
-
-    @staticmethod
-    def pin_change_bool(self, v):
-        def render(i):
-            if len(i) > 0:
-                v['value'] = True
-            else:
-                v['value'] = False
-
-        return render
-
-    @staticmethod
-    def reg_str(self, item):
-        def render(v):
-            if v is None:
-                return None
-            item['value'] = v
-
-        return render
-
-    # @staticmethod
-    # def clear(scope_name):
-    #     # 实现清除作用域的静态方法
-    #     clear(scope_name)
-
-
-ui = WebConfigUI()
+if __name__ == '__main__':
+    thread = threading.Thread(target=start_web)
+    thread.setDaemon(True)
+    thread.start()
+    time.sleep(5)
+    print('启动成功,请访问http://localhost:9091')
+    res = ui.get_data('task')
+    for v in res:
+        v['skip_await'] = True
+    ui.set_data('task', res)
+    print('next', res)
+    time.sleep(55)
