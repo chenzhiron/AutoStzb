@@ -2,15 +2,13 @@ import json
 import os
 import copy
 import functools
-import threading
-import time
 
-from pywebio.output import put_row, put_scope, use_scope, put_collapse,put_button, put_column, put_text, clear
+from pywebio.output import put_row, put_scope, use_scope, put_collapse,put_button, put_text
 from pywebio import start_server
 from pywebio.session import set_env
 
-from components.Option import OptionPage
-from components.prop_all import *
+from modules.web.components.Option import OptionPage
+from modules.web.components.prop_all import *
 
 
 current_file_path = os.path.abspath(__file__)
@@ -36,7 +34,9 @@ class Web(WebConfig):
     def __init__(self):
         super().__init__()
 
-    def get_data(self, key):
+    def get_data(self, key=None):
+        if key is None:
+            return copy.deepcopy(self.data)
         return copy.deepcopy(self.data[key])
     def set_data(self, key, value):
         if key == 'task':
@@ -51,9 +51,11 @@ class Web(WebConfig):
                     skip_await: updata['skip_await'],
                     state: updata['state'],
                     explain: updata['explain'],
+                    recruit_person:updata['recruit_person'],
+                    going: updata['going'],
+                    mopping_up: updata['mopping_up'],
                     await_time: updata['await_time'],
                     next_run_time: updata['next_run_time'],
-                    mopping_up: updata['mopping_up'],
                     delay: updata['delay'],
                     draw_txt: updata['draw_txt'],
                     residue_troops_person: updata['residue_troops_person'],
@@ -101,15 +103,15 @@ ui = Web()
 def start_web():
     start_server(ui.render, port=9091, debug=True)
 
-if __name__ == '__main__':
-    thread = threading.Thread(target=start_web)
-    thread.setDaemon(True)
-    thread.start()
-    time.sleep(5)
-    print('启动成功,请访问http://localhost:9091')
-    res = ui.get_data('task')
-    for v in res:
-        v['skip_await'] = True
-    ui.set_data('task', res)
-    print('next', res)
-    time.sleep(55)
+# if __name__ == '__main__':
+#     thread = threading.Thread(target=start_web)
+#     thread.setDaemon(True)
+#     thread.start()
+#     time.sleep(5)
+#     print('启动成功,请访问http://localhost:9091')
+#     res = ui.get_data('task')
+#     for v in res:
+#         v['skip_await'] = True
+#     ui.set_data('task', res)
+#     print('next', res)
+#     time.sleep(55)

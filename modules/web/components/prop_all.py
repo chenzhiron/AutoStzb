@@ -6,6 +6,11 @@ class OptionExplain:
         self.option_type = option_type
         self.options = options
     def on_change_event(self, new_value, origin, origin_controller):
+        if type(new_value) is list:
+            if len(new_value) == 1:
+                new_value = True
+            else:
+                new_value = False
         origin_controller[self] = new_value
         origin[self.name] = new_value
         print('origin', origin_controller, origin)
@@ -21,14 +26,14 @@ team = OptionExplain(
 skip_await = OptionExplain(
     'skip_await',
     '跳过等待',
-    False,
+    True,
     'bool'
 )
 
 state = OptionExplain(
     'state',
     '状态',
-    False,
+    True,
     'bool'
 )
 
@@ -77,13 +82,13 @@ recruit_person = OptionExplain(
 going = OptionExplain(
     'going',
     '出征',
-    False,
+    True,
     'bool'
 )
 mopping_up = OptionExplain(
     'mopping_up',
     '扫荡',
-    False,
+    True,
     'bool'
 )
 

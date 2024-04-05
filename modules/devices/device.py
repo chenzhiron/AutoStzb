@@ -8,7 +8,7 @@ import requests
 import subprocess
 import os 
 
-adbpath = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'toolkit', 'adb')
+adbpath = os.path.join(os.getcwd(), 'toolkit', 'adb')
 os.environ['PATH'] += adbpath
 command = 'adb.exe shell CLASSPATH=/data/local/tmp/DroidCast_raw-release-1.1.apk app_process /system/bin ink.mol/droidcast_raw.Main --port=53516'
 def subprocess_run(command):
