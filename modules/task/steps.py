@@ -10,7 +10,7 @@ class Origin:
         self.instances = instance
         self.step = 0
         self.tasks_result = {
-            'type': 1
+            'type': None
         }
 
     def ret_main(self):
@@ -33,6 +33,7 @@ class ZhengBing(Origin):
         print('征兵一个判断图循环用时:', time.time() - start_time)
 
     def run(self):
+        self.tasks_result['type'] = self.__class__.__name__
         # 先截一张图，看下当前的图出现元素有哪些，跳转到对应的位置，并继续下一步
         # 看下主页活动在不在，然后看下在不在势力，接着查看 征兵按钮，接着 查看 进度条页面，接着识别确认征兵
         # 添加实例的下一次运行时间校验
@@ -46,12 +47,12 @@ class ZhengBing(Origin):
             task_instance.verifyOcr(img)
             res = task_instance.run(self.devices, self.instances)
             print('函数运行结果', res, '当前运行的函数', task_instance)
-            if isinstance(res, dict):
-                self.tasks_result.update(res)
-                if not res['next']:
-                        # 调取返回主页函数
-                    return self.tasks_result
-                self.step += 1
+            if res == False:
+                continue
+            self.tasks_result.update(res)
+            if not res['next']:
+                break
+            self.step += 1
             if time.time() - start_time > 60:
                 raise TimeoutError('征兵超时')
         self.ret_main()
@@ -68,20 +69,21 @@ class ChuZheng(Origin):
         click_land_y.input_value = instance['y']
 
     def run(self):
+        self.tasks_result['type'] = self.__class__.__name__
         start_time = time.time()
         while self.step < len(self.exec_step):
             img = self.devices.getScreenshots()
             task_instance = self.exec_step[self.step]
             task_instance.verifyOcr(img)
             res = task_instance.run(self.devices, self.instances)
-            if isinstance(res, dict):
-                self.tasks_result.update(res)
-                if not res['next']:
-                    # 调取返回主页函数
-                    return self.tasks_result
-                self.step += 1
+            if res == False:
+                continue
+            self.tasks_result.update(res)
+            if not res['next']:
+                break
+            self.step += 1
             if time.time() - start_time > 60:
-                raise TimeoutError('征兵超时')
+                raise TimeoutError('出征超时')
         self.ret_main()
         return self.tasks_result
 
@@ -94,18 +96,19 @@ class Zhanbao(Origin):
         click_search_y.input_value = instance['y']
 
     def run(self):
+        self.tasks_result['type'] = self.__class__.__name__
         start_time = time.time()
         while self.step < len(self.exec_step):
             img = self.devices.getScreenshots()
             task_instance = self.exec_step[self.step]
             task_instance.verifyOcr(img)
             res = task_instance.run(self.devices, self.instances)
-            if isinstance(res, dict):
-                self.tasks_result.update(res)
-                if not res['next']:
-                    # 调取返回主页函数
-                    return self.tasks_result
-                self.step += 1
+            if res == False:
+                continue
+            self.tasks_result.update(res)
+            if not res['next']:
+                break
+            self.step += 1
             if time.time() - start_time > 60:
                 raise TimeoutError('战报超时')
         self.ret_main()
@@ -121,20 +124,22 @@ class Saodang(Origin):
             click_land_y.input_value = instance['y']
 
     def run(self):
+        self.tasks_result['type'] = self.__class__.__name__
+
         start_time = time.time()
         while self.step < len(self.exec_step):
             img = self.devices.getScreenshots()
             task_instance = self.exec_step[self.step]
             task_instance.verifyOcr(img)
             res = task_instance.run(self.devices, self.instances)
-            if isinstance(res, dict):
-                self.tasks_result.update(res)
-                if not res['next']:
-                    # 调取返回主页函数
-                    return self.tasks_result
-                self.step += 1
+            if res == False:
+                continue
+            self.tasks_result.update(res)
+            if not res['next']:
+                break
+            self.step += 1
             if time.time() - start_time > 60:
-                raise TimeoutError('征兵超时')
+                raise TimeoutError('扫荡超时')
         self.ret_main()
         return self.tasks_result
 
@@ -142,20 +147,22 @@ class PingJuChetui(Origin):
     def __init__(self, devices, instance):
             super().__init__(devices, instance)
             self.exec_step = [click_info_require, click_go_require,click_state_info,click_chetui,click_chetui_require]
+
     def run(self):
+        self.tasks_result['type'] = self.__class__.__name__
         start_time = time.time()
         while self.step < len(self.exec_step):
             img = self.devices.getScreenshots()
             task_instance = self.exec_step[self.step]
             task_instance.verifyOcr(img)
             res = task_instance.run(self.devices, self.instances)
-            if isinstance(res, dict):
-                self.tasks_result.update(res)
-                if not res['next']:
-                    # 调取返回主页函数
-                    return self.tasks_result
-                self.step += 1
+            if res == False:
+                continue
+            self.tasks_result.update(res)
+            if not res['next']:
+                break
+            self.step += 1
             if time.time() - start_time > 60:
-                raise TimeoutError('战报超时')
+                raise TimeoutError('平局撤退超时')
         self.ret_main()
         return self.tasks_result

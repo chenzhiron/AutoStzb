@@ -16,10 +16,22 @@ class Stzb:
             globalConfig['Simulator']['url'] = simulator
         self.device = Devices(globalConfig)
         return self.device
-
-    def up_data(self, task, execute_result):
-        pass
-
+    
+    # 对于任务函数，通过记录上一次执行的函数来计算下一次执行的函数任务
+    def task_updata(self, task, execute_result):
+        # 未完成全部征兵,资源不够无法一次性拉完+5分钟等待
+        if execute_result['type'] == 'ZhengBing' and execute_result['await_time'] != 0:
+            task['next_run_time'] = datetime.now() + timedelta(seconds=execute_result['await_time'] + 300)
+            self.taskManagers.set_data()
+            return None
+        # 已完成全部征兵
+        if execute_result['type'] == 'ZhengBing' and execute_result['await_time'] == 0:
+            task['next_run_time'] = datetime.now() + timedelta(seconds=1)
+            task['recruit_person'] = False
+            self.taskManagers.set_data()
+            return None
+        
+        
     def wait_until(self, future):
         # 如果future是字符串类型，尝试将其解析为datetime对象
         if isinstance(future, str):
@@ -55,16 +67,16 @@ class Stzb:
                 return filtered_data[0]
             time.sleep(2)
 
-    # 对于任务函数，通过记录上一次执行的函数来计算下一次执行的函数任务
-    def verify_next_tasks(self, config, result=None):
-        pass
-
     def get_next_task(self):
         while 1:
             if self.taskManagers.get_data('state'):
                 task = self.sort_tasks()
                 if task['recruit_person'] == True:
                     return task, 'zhengbing'
+                if task['going'] == True:
+                    return task, 'chuzheng'
+                if task['mopping_up'] == True:
+                    return task, 'saodang'
             time.sleep(5)
 
     def loop(self):
@@ -78,8 +90,8 @@ class Stzb:
                 print(task, fn)
                 result = self.run(task, fn)
                 print(result)
-                self.up_data(task, result)
-            time.sleep(5)
+                self.task_updata(task, result)
+            time.sleep(3)
 
     def run(self, task, command):
         print('command', command)
@@ -90,6 +102,7 @@ class Stzb:
             raise AttributeError(f"Command '{command}' is not a valid method of {self.__class__.__name__}")
 
     def zhengbing(self, instance):
+        #  {"type": ZhengBing, "await_time": 0 | 1-Max}
         return ZhengBing(device=self.device, instance=instance).run()
     def chuzheng(self, instance):
         print('chuzheng', instance.next_run_times)

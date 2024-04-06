@@ -38,10 +38,11 @@ class Web(WebConfig):
         if key is None:
             return copy.deepcopy(self.data)
         return copy.deepcopy(self.data[key])
-    def set_data(self, key, value):
+    def set_data(self, key, value, keyid = None):
         if key == 'task':
-            for v in range(len(self.data['task'])):
-                self.data['task'][v].update(value[v])
+            for v in self.data['task']:
+                if v['id'] == keyid:
+                    v.update(value)
         else:
             self.data[key] = value
     @use_scope('menu_bar', clear=True)
