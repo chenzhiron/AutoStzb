@@ -74,9 +74,23 @@ class Stzb:
                 if task['recruit_person'] == True:
                     return task, 'zhengbing'
                 if task['going'] == True:
-                    return task, 'chuzheng'
+                    if task['step'] == 0:
+                        return task, 'chuzheng'
+                    if task['step'] == 1:
+                        return task, 'zhanbao'
+                    if task['step'] == 2:
+                        return task, 'chetui'
+                    if task['step'] == 3:
+                        return task, 'zhengbing'
                 if task['mopping_up'] == True:
-                    return task, 'saodang'
+                    if task['step'] == 0:
+                        return task, 'saodang'
+                    if task['step'] == 1:
+                        return task, 'zhanbao'
+                    if task['step'] == 2:
+                        return task, 'chetui'
+                    if task['step'] == 3:
+                        return task, 'zhengbing'
             time.sleep(5)
 
     def loop(self):
