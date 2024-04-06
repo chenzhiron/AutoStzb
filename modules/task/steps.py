@@ -40,8 +40,8 @@ class ZhengBing(Origin):
         self.verifySteps()
         start_time = time.time()
         print(self.step, '初始化 self.step')
-        self.step -= 1
         while self.step < len(self.exec_step):
+            print(self.step, 'self.step')
             img = self.devices.getScreenshots()
             task_instance = self.exec_step[self.step]
             task_instance.verifyOcr(img)
@@ -72,6 +72,7 @@ class ChuZheng(Origin):
         self.tasks_result['type'] = self.__class__.__name__
         start_time = time.time()
         while self.step < len(self.exec_step):
+            print(self.step, 'self.step')
             img = self.devices.getScreenshots()
             task_instance = self.exec_step[self.step]
             task_instance.verifyOcr(img)
@@ -99,6 +100,7 @@ class Zhanbao(Origin):
         self.tasks_result['type'] = self.__class__.__name__
         start_time = time.time()
         while self.step < len(self.exec_step):
+            print(self.step, 'self.step')
             img = self.devices.getScreenshots()
             task_instance = self.exec_step[self.step]
             task_instance.verifyOcr(img)
@@ -128,6 +130,7 @@ class Saodang(Origin):
 
         start_time = time.time()
         while self.step < len(self.exec_step):
+            print(self.step, 'self.step')
             img = self.devices.getScreenshots()
             task_instance = self.exec_step[self.step]
             task_instance.verifyOcr(img)
@@ -152,6 +155,7 @@ class PingJuChetui(Origin):
         self.tasks_result['type'] = self.__class__.__name__
         start_time = time.time()
         while self.step < len(self.exec_step):
+            print(self.step, 'self.step')
             img = self.devices.getScreenshots()
             task_instance = self.exec_step[self.step]
             task_instance.verifyOcr(img)

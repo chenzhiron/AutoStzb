@@ -34,7 +34,7 @@ class OperatorSteps:
 
     def ocr_reg(self, res):
         if bool(res[0]):
-            return [item[1][0] for sublist in res for item in sublist][0]
+            return ''.join(label for sublist in res for subsublist in sublist for _, (label, _) in [subsublist])
         else:
             return None
 

@@ -21,14 +21,16 @@ class Stzb:
     def task_updata(self, task, execute_result):
         # 未完成全部征兵,资源不够无法一次性拉完+5分钟等待
         if execute_result['type'] == 'ZhengBing' and execute_result['await_time'] != 0:
-            task['next_run_time'] = datetime.now() + timedelta(seconds=execute_result['await_time'] + 300)
-            self.taskManagers.set_data()
+            if execute_result['await_time'] < 300:
+                execute_result['await_time'] += 300
+            task['next_run_time'] = (datetime.now() + timedelta(seconds=execute_result['await_time'])).strftime("%Y-%m-%d %H:%M:%S")
+            self.taskManagers.set_data('task', task, task['id'])
             return None
         # 已完成全部征兵
         if execute_result['type'] == 'ZhengBing' and execute_result['await_time'] == 0:
-            task['next_run_time'] = datetime.now() + timedelta(seconds=1)
+            task['next_run_time'] = (datetime.now() + timedelta(seconds=1)).strftime("%Y-%m-%d %H:%M:%S")
             task['recruit_person'] = False
-            self.taskManagers.set_data()
+            self.taskManagers.set_data('task', task, task['id'])
             return None
         
         
@@ -119,16 +121,14 @@ class Stzb:
         #  {"type": ZhengBing, "await_time": 0 | 1-Max}
         return ZhengBing(device=self.device, instance=instance).run()
     def chuzheng(self, instance):
-        print('chuzheng', instance.next_run_times)
-        return True
+        return ChuZheng(device=self.device, instance=instance).run()
 
     def zhanbao(self, instance):
-        print('zhanbao', instance.next_run_times)
-        return True
+        return Zhanbao(device=self.device, instance=instance).run()
 
     def saodang(self, instance):
         print('saodang', instance.next_run_times)
-        return True
+        return Saodang(device=self.device, instance=instance).run()
 
 
 stzb = Stzb()
