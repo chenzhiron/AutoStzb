@@ -54,7 +54,7 @@ click_sign_land_chuzheng = ExtraOperatorSteps([950, 250, 1400, 660], '出证', 9
 click_going_lists = VerifyOperatorSteps([0, 690, 200, 750], '请选择部队', 800, 700)
 # ~
 # 识别时间
-going_max_time = OcrOperatorSteps([770, 645, 895, 695], '', 'speed_time')
+going_max_time = OcrOperatorSteps([770, 645, 895, 695], '', '_speed_time')
 # 点击出征
 click_chuzheng = VerifyOperatorSteps([1350, 804, 1425, 850], '出证', 1350, 825)
 # 点击扫荡
@@ -74,7 +74,7 @@ click_search_y = InputOperatorSteps('', [1400, 618, 1500, 655], '搜索', 1300, 
 # 点击搜索
 click_search = EntryOperatorSteps([1400, 618, 1500, 655], '搜索', 1440, 635)
 # 判断状态
-lists_status = StatusOcrOperatorSteps([675, 270, 870, 360], '', 'list_status')
+lists_status = StatusOcrOperatorSteps([675, 270, 870, 360], '', '_list_status')
 # 平局 ~~~~~~~~~
 # 查询兵力
 # 我方

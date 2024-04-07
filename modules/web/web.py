@@ -52,6 +52,8 @@ class Web(WebConfig):
                     skip_await: updata['skip_await'],
                     state: updata['state'],
                     explain: updata['explain'],
+                    x: updata['x'],
+                    y: updata['y'],
                     recruit_person:updata['recruit_person'],
                     going: updata['going'],
                     mopping_up: updata['mopping_up'],

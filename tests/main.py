@@ -13,7 +13,7 @@ if __name__ == '__main__':
     #     "x": "684",
     #     "y":"738"
     # }).run()
-    # res = Zhanbao(device, {
+    # res = ZhanBao(device, {
     #     "x": "684",
     #     "y":"738"
     # }).run()

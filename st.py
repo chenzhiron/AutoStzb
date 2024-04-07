@@ -19,21 +19,45 @@ class Stzb:
     
     # 对于任务函数，通过记录上一次执行的函数来计算下一次执行的函数任务
     def task_updata(self, task, execute_result):
-        # 未完成全部征兵,资源不够无法一次性拉完+5分钟等待
-        if execute_result['type'] == 'ZhengBing' and execute_result['await_time'] != 0:
-            if execute_result['await_time'] < 300:
-                execute_result['await_time'] += 300
-            task['next_run_time'] = (datetime.now() + timedelta(seconds=execute_result['await_time'])).strftime("%Y-%m-%d %H:%M:%S")
+
+        if execute_result['type'] == 'ChuZheng':
+            if task['_step'] == 1:
+                task['next_run_time'] = (datetime.now() + timedelta(seconds=execute_result['_speed_time'])).strftime("%Y-%m-%d %H:%M:%S")
+                task['x'] = ','.join(task['x'])
+                task['y'] = ','.join(task['y'])
+            elif task['_step'] == 2:
+                task['next_run_time'] = (datetime.now() + timedelta(seconds=1)).strftime("%Y-%m-%d %H:%M:%S")
+            elif task['_step'] == 3:
+                task['next_run_time'] = (datetime.now() + timedelta(seconds=execute_result['_speed_time'])).strftime("%Y-%m-%d %H:%M:%S")
+                task['x'].pop(0)
+                task['y'].pop(0)
+                if len(task['x']) == 0 or len(task['y']) == 0:
+                    task['going'] = False
+                task['x'] = ','.join(task['x'])
+                task['y'] = ','.join(task['y'])
             self.taskManagers.set_data('task', task, task['id'])
-            return None
-        # 已完成全部征兵
-        if execute_result['type'] == 'ZhengBing' and execute_result['await_time'] == 0:
-            task['next_run_time'] = (datetime.now() + timedelta(seconds=1)).strftime("%Y-%m-%d %H:%M:%S")
-            task['recruit_person'] = False
+
+        elif execute_result['type'] == 'SaoDang':
+            if task['_step'] == 1 or task['_step'] == 3:
+                task['next_run_time'] = (datetime.now() + timedelta(seconds=execute_result['_speed_time'])).strftime("%Y-%m-%d %H:%M:%S")
+                task['x'] = ','.join(task['x'])
+                task['y'] = ','.join(task['y'])
+            elif task['_step'] == 2:
+                task['next_run_time'] = (datetime.now() + timedelta(seconds=1)).strftime("%Y-%m-%d %H:%M:%S")
             self.taskManagers.set_data('task', task, task['id'])
-            return None
-        
-        
+
+        elif execute_result['type'] == 'ZhengBing':
+            if execute_result['await_time'] != 0 :
+                if execute_result['await_time'] < 300:
+                    execute_result['await_time'] += 300
+                task['next_run_time'] = (datetime.now() + timedelta(seconds=execute_result['await_time'])).strftime("%Y-%m-%d %H:%M:%S")
+                self.taskManagers.set_data('task', task, task['id'])
+            else:
+                task['next_run_time'] = (datetime.now() + timedelta(seconds=1)).strftime("%Y-%m-%d %H:%M:%S")
+                task['recruit_person'] = False
+                self.taskManagers.set_data('task', task, task['id'])
+
+
     def wait_until(self, future):
         # 如果future是字符串类型，尝试将其解析为datetime对象
         if isinstance(future, str):
@@ -58,8 +82,14 @@ class Stzb:
             print('stData', stData)
             filtered_data = []
             for v in stData['task']:
+               if v.get('_step') == None:
+                    v['_step'] = 0
                if v['state']:
                     filtered_data.append(v)
+                    if len(v['x']) > 0:
+                        v['x'] = v['x'].split(',')
+                    if len(v['y']) > 0:
+                        v['y'] = v['y'].split(',')
             if len(filtered_data) == 0:
                 time.sleep(2)
                 continue
@@ -73,26 +103,30 @@ class Stzb:
         while 1:
             if self.taskManagers.get_data('state'):
                 task = self.sort_tasks()
-                if task['recruit_person'] == True:
-                    return task, 'zhengbing'
-                if task['going'] == True:
-                    if task['step'] == 0:
+                if task['going']:
+                    if task['_step'] == 0:
                         return task, 'chuzheng'
-                    if task['step'] == 1:
+                    if task['_step'] == 1:
                         return task, 'zhanbao'
-                    if task['step'] == 2:
+                    if task['_step'] == 2:
                         return task, 'chetui'
-                    if task['step'] == 3:
+                    if task['_step'] == 3 and task['recruit_person']:
                         return task, 'zhengbing'
-                if task['mopping_up'] == True:
-                    if task['step'] == 0:
+                    else:
+                        return task, 'chuzheng'
+                if task['mopping_up']:
+                    if task['_step'] == 0:
                         return task, 'saodang'
-                    if task['step'] == 1:
+                    if task['_step'] == 1:
                         return task, 'zhanbao'
-                    if task['step'] == 2:
+                    if task['_step'] == 2:
                         return task, 'chetui'
-                    if task['step'] == 3:
+                    if task['_step'] == 3 and task['recruit_person']:
                         return task, 'zhengbing'
+                    else:
+                        return task, 'saodang'
+                if task['recruit_person']:
+                    return task, 'zhengbing'
             time.sleep(5)
 
     def loop(self):
@@ -124,11 +158,11 @@ class Stzb:
         return ChuZheng(device=self.device, instance=instance).run()
 
     def zhanbao(self, instance):
-        return Zhanbao(device=self.device, instance=instance).run()
-
+        return ZhanBao(device=self.device, instance=instance).run()
+    def chetui(self, instance):
+        return PingJuChetui(device=self.device, instance=instance).run()
     def saodang(self, instance):
-        print('saodang', instance.next_run_times)
-        return Saodang(device=self.device, instance=instance).run()
+        return SaoDang(device=self.device, instance=instance).run()
 
 
 stzb = Stzb()
