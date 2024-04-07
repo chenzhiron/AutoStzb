@@ -22,6 +22,7 @@ class ZhengBing(Origin):
         super().__init__(device, instance)
         self.exec_step = [verfiy_main, click_budui, click_zhengbing, swipe_zhengbing,
                           zhengbing_max_time, click_zhengbing_sure, click_zhengbing_require]
+        
 
     def verifySteps(self):
         start_time = time.time()
@@ -33,6 +34,7 @@ class ZhengBing(Origin):
         print('征兵一个判断图循环用时:', time.time() - start_time)
 
     def run(self):
+        click_budui.x = self.instance['team'] * 200
         self.tasks_result['type'] = self.__class__.__name__
         # 先截一张图，看下当前的图出现元素有哪些，跳转到对应的位置，并继续下一步
         # 看下主页活动在不在，然后看下在不在势力，接着查看 征兵按钮，接着 查看 进度条页面，接着识别确认征兵
@@ -60,14 +62,14 @@ class ZhengBing(Origin):
 
 
 class ChuZheng(Origin):
-    def __init__(self, devices, instance):
-        super().__init__(devices, instance)
+    def __init__(self, device, instance):
+        super().__init__(device, instance)
         # 前置识图进入跳转页面
         self.exec_step = [click_big_land, click_land_x, click_land_y, click_land_require, click_land_center,
                           click_sign_land_chuzheng, click_going_lists, going_max_time, click_chuzheng]
         click_land_x.input_value = instance['x'][0]
         click_land_y.input_value = instance['y'][0]
-
+        click_going_lists.x = instance['team'] * 220 - 60 + 220
     def run(self):
         self.tasks_result['_step'] = 1
         self.tasks_result['type'] = self.__class__.__name__
@@ -90,15 +92,14 @@ class ChuZheng(Origin):
         return self.tasks_result
 
 class ZhanBao(Origin):
-    def __init__(self, devices, instance):
-        super().__init__(devices, instance)
+    def __init__(self, device, instance):
+        super().__init__(device, instance)
         self.exec_step = [verfiy_main_info, click_search_screen, click_search_x, click_search_y, click_search,
                           lists_status, search_persons, search_enemy]
         click_search_x.input_value = instance['x'][0]
         click_search_y.input_value = instance['y'][0]
-
+        
     def run(self):
-        self.tasks_result['_step'] = 2
         self.tasks_result['type'] = self.__class__.__name__
         start_time = time.time()
         while self._step < len(self.exec_step):
@@ -115,19 +116,25 @@ class ZhanBao(Origin):
             self._step += 1
             if time.time() - start_time > 60:
                 raise TimeoutError('战报超时')
-        # 并传递上一次出征的时间
-        self.tasks_result['_step'] = 3
+        if self.tasks_result['_list_status'] == '胜' or self.tasks_result['_list_status'] == '败':
+            self.tasks_result['_step'] = 3
+        else:
+            person_status = self.tasks_result[0] > self.tasks_result['person'][1] * self.instances['residue_troops_person'] 
+            enemy_statue = self.tasks_result[0] < self.tasks_result['enemy'][1] * self.instances['residue_troops_enemy']
+            self.tasks_result['_step'] = 2
+            print('person_status', person_status, 'enemy_statue', enemy_statue)
         self.ret_main()
         return self.tasks_result
 
 class SaoDang(Origin):
-    def __init__(self, devices, instance):
-            super().__init__(devices, instance)
-            # 前置识图进入跳转页面
-            self.exec_step = [click_big_land, click_land_x, click_land_y, click_land_require, click_land_center,
-                            click_sign_land_chuzheng, click_going_lists, going_max_time, click_saodang]
-            click_land_x.input_value = instance['x'][0]
-            click_land_y.input_value = instance['y'][0]
+    def __init__(self, device, instance):
+        super().__init__(device, instance)
+        # 前置识图进入跳转页面
+        self.exec_step = [click_big_land, click_land_x, click_land_y, click_land_require, click_land_center,
+                        click_sign_land_saodang, click_going_lists, going_max_time, click_saodang]
+        click_land_x.input_value = instance['x'][0]
+        click_land_y.input_value = instance['y'][0]
+        click_going_lists.x = instance['team'] * 220 - 60 + 220
 
     def run(self):
         self.tasks_result['_step'] = 1
@@ -151,9 +158,9 @@ class SaoDang(Origin):
         return self.tasks_result
 
 class PingJuChetui(Origin):
-    def __init__(self, devices, instance):
-            super().__init__(devices, instance)
-            self.exec_step = [click_info_require, click_go_require,click_state_info,click_chetui,click_chetui_require]
+    def __init__(self, device, instance):
+        super().__init__(device, instance)
+        self.exec_step = [click_info_require, click_go_require, click_state_info,click_chetui,click_chetui_require]
 
     def run(self):
         self.tasks_result['_step'] = 3

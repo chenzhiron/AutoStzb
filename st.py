@@ -21,13 +21,13 @@ class Stzb:
     def task_updata(self, task, execute_result):
 
         if execute_result['type'] == 'ChuZheng':
-            if task['_step'] == 1:
+            if execute_result['_step'] == 1:
                 task['next_run_time'] = (datetime.now() + timedelta(seconds=execute_result['_speed_time'])).strftime("%Y-%m-%d %H:%M:%S")
                 task['x'] = ','.join(task['x'])
                 task['y'] = ','.join(task['y'])
-            elif task['_step'] == 2:
+            elif execute_result['_step'] == 2:
                 task['next_run_time'] = (datetime.now() + timedelta(seconds=1)).strftime("%Y-%m-%d %H:%M:%S")
-            elif task['_step'] == 3:
+            elif execute_result['_step'] == 3:
                 task['next_run_time'] = (datetime.now() + timedelta(seconds=execute_result['_speed_time'])).strftime("%Y-%m-%d %H:%M:%S")
                 task['x'].pop(0)
                 task['y'].pop(0)
@@ -35,15 +35,24 @@ class Stzb:
                     task['going'] = False
                 task['x'] = ','.join(task['x'])
                 task['y'] = ','.join(task['y'])
+            task['_speed_time'] = execute_result['_speed_time']
+            task['_step'] = execute_result['_step']
             self.taskManagers.set_data('task', task, task['id'])
 
         elif execute_result['type'] == 'SaoDang':
-            if task['_step'] == 1 or task['_step'] == 3:
+            if execute_result['_step'] == 1 or execute_result['_step'] == 3:
                 task['next_run_time'] = (datetime.now() + timedelta(seconds=execute_result['_speed_time'])).strftime("%Y-%m-%d %H:%M:%S")
                 task['x'] = ','.join(task['x'])
                 task['y'] = ','.join(task['y'])
             elif task['_step'] == 2:
                 task['next_run_time'] = (datetime.now() + timedelta(seconds=1)).strftime("%Y-%m-%d %H:%M:%S")
+            task['_speed_time'] = execute_result['_speed_time']
+            task['_step'] = execute_result['_step']
+            self.taskManagers.set_data('task', task, task['id'])
+
+        elif execute_result['type'] == 'ZhanBao':
+            task['_step'] = execute_result['_step']
+            task['next_run_time'] = (datetime.now() + timedelta(seconds=task['_speed_time'])).strftime("%Y-%m-%d %H:%M:%S")
             self.taskManagers.set_data('task', task, task['id'])
 
         elif execute_result['type'] == 'ZhengBing':
@@ -54,7 +63,9 @@ class Stzb:
                 self.taskManagers.set_data('task', task, task['id'])
             else:
                 task['next_run_time'] = (datetime.now() + timedelta(seconds=1)).strftime("%Y-%m-%d %H:%M:%S")
-                task['recruit_person'] = False
+                task['_step'] = 0
+                if not task['going'] and not task['mopping_up']:
+                    task['recruit_person'] = False
                 self.taskManagers.set_data('task', task, task['id'])
 
 
@@ -82,13 +93,13 @@ class Stzb:
             print('stData', stData)
             filtered_data = []
             for v in stData['task']:
-               if v.get('_step') == None:
+                if v.get('_step') == None:
                     v['_step'] = 0
-               if v['state']:
+                if v['state']:
                     filtered_data.append(v)
-                    if len(v['x']) > 0:
+                    if len(v['x']) > 0 and type(v['x']) != list:
                         v['x'] = v['x'].split(',')
-                    if len(v['y']) > 0:
+                    if len(v['y']) > 0 and type(v['y']) != list:
                         v['y'] = v['y'].split(',')
             if len(filtered_data) == 0:
                 time.sleep(2)
