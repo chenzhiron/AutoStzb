@@ -7,7 +7,7 @@ class Origin:
     # 接收实例配置，但是不修改实例的任何属性，只读
     def __init__(self, device, instance):
         self.devices = device
-        self.instances = instance
+        self.instance = instance
         self._step = 0
         self.tasks_result = {
             'type': None
@@ -47,7 +47,7 @@ class ZhengBing(Origin):
             img = self.devices.getScreenshots()
             task_instance = self.exec_step[self._step]
             task_instance.verifyOcr(img)
-            res = task_instance.run(self.devices, self.instances)
+            res = task_instance.run(self.devices, self.instance)
             print('函数运行结果', res, '当前运行的函数', task_instance)
             if res == False:
                 continue
@@ -79,7 +79,7 @@ class ChuZheng(Origin):
             img = self.devices.getScreenshots()
             task_instance = self.exec_step[self._step]
             task_instance.verifyOcr(img)
-            res = task_instance.run(self.devices, self.instances)
+            res = task_instance.run(self.devices, self.instance)
             if res == False:
                 continue
             self.tasks_result.update(res)
@@ -107,7 +107,7 @@ class ZhanBao(Origin):
             img = self.devices.getScreenshots()
             task_instance = self.exec_step[self._step]
             task_instance.verifyOcr(img)
-            res = task_instance.run(self.devices, self.instances)
+            res = task_instance.run(self.devices, self.instance)
             if res == False:
                 continue
             self.tasks_result.update(res)
@@ -119,8 +119,8 @@ class ZhanBao(Origin):
         if self.tasks_result['_list_status'] == '胜' or self.tasks_result['_list_status'] == '败':
             self.tasks_result['_step'] = 3
         else:
-            person_status = self.tasks_result[0] > self.tasks_result['person'][1] * self.instances['residue_troops_person'] 
-            enemy_statue = self.tasks_result[0] < self.tasks_result['enemy'][1] * self.instances['residue_troops_enemy']
+            person_status = self.tasks_result[0] > self.tasks_result['person'][1] * self.instance['residue_troops_person'] 
+            enemy_statue = self.tasks_result[0] < self.tasks_result['enemy'][1] * self.instance['residue_troops_enemy']
             self.tasks_result['_step'] = 2
             print('person_status', person_status, 'enemy_statue', enemy_statue)
         self.ret_main()
@@ -145,7 +145,7 @@ class SaoDang(Origin):
             img = self.devices.getScreenshots()
             task_instance = self.exec_step[self._step]
             task_instance.verifyOcr(img)
-            res = task_instance.run(self.devices, self.instances)
+            res = task_instance.run(self.devices, self.instance)
             if res == False:
                 continue
             self.tasks_result.update(res)
@@ -171,7 +171,7 @@ class PingJuChetui(Origin):
             img = self.devices.getScreenshots()
             task_instance = self.exec_step[self._step]
             task_instance.verifyOcr(img)
-            res = task_instance.run(self.devices, self.instances)
+            res = task_instance.run(self.devices, self.instance)
             if res == False:
                 continue
             self.tasks_result.update(res)
