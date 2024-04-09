@@ -118,12 +118,18 @@ class ZhanBao(Origin):
                 raise TimeoutError('战报超时')
         if self.tasks_result['_list_status'] == '胜' or self.tasks_result['_list_status'] == '败':
             self.tasks_result['_step'] = 3
+            self.ret_main()
         else:
-            person_status = self.tasks_result[0] > self.tasks_result['person'][1] * self.instance['residue_troops_person'] 
-            enemy_statue = self.tasks_result[0] < self.tasks_result['enemy'][1] * self.instance['residue_troops_enemy']
-            self.tasks_result['_step'] = 2
+            person_status = float(self.tasks_result['person'][0]) > float(self.tasks_result['person'][1]) * float(self.instance['residue_troops_person'] )
+            enemy_statue = float(self.tasks_result['enemy'][0]) < float(self.tasks_result['enemy'][1]) * float(self.instance['residue_troops_enemy'])
+            if person_status and enemy_statue:
+                self.tasks_result['_info_all'] = True
+                self.tasks_result['_step'] = 1
+                self.ret_main()
+            else:
+                self.tasks_result['_info_all'] = False
+                self.tasks_result['_step'] = 2
             print('person_status', person_status, 'enemy_statue', enemy_statue)
-        self.ret_main()
         return self.tasks_result
 
 class SaoDang(Origin):

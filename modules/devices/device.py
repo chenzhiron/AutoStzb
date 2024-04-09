@@ -14,6 +14,8 @@ command = 'adb.exe shell CLASSPATH=/data/local/tmp/DroidCast_raw-release-1.1.apk
 def subprocess_run(command):
     # 使用 subprocess.run() 执行命令，并捕获其输出和状态
     result = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.DEVNULL)
+    # ress = result.communicate()
+    # print('ress', ress)
     return result
 
 def send_get_request(url):
@@ -32,14 +34,18 @@ def send_get_request(url):
         return None
 
 
-screenshots_prop = subprocess_run(command)
+
 class Devices:
     def __init__(self, config) -> None:
+        self.screenshots_prop = subprocess_run(command)
         simulator = config['Simulator']['url']
         print('simulator', simulator)
         self.d = u2.connect(simulator)
         print(self.d.info)
+        # ress = self.d.shell('CLASSPATH=/data/local/tmp/DroidCast_raw-release-1.1.apk app_process /system/bin ink.mol/droidcast_raw.Main --port=53516')
+        print(adb.device())
         adb.device(simulator).forward('tcp:53516', 'tcp:53516')
+        # print(adb.device())
         self.url = 'http://127.0.0.1:53516/preview'
 
     def getScreenshots(self):
