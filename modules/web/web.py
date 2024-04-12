@@ -3,13 +3,16 @@ import os
 import copy
 import functools
 
+from flask import config
 from pywebio.output import put_row, put_scope, use_scope, put_collapse,put_button, put_text
-from pywebio import start_server
+from pywebio import start_server, config
 from pywebio.session import set_env
 
-from modules.web.components.Option import OptionPage
-from modules.web.components.prop_all import *
-
+# from modules.web.components.Option import OptionPage
+# from modules.web.components.prop_all import *
+from components.Option import *
+from components.prop_all import *
+from styles import style
 
 current_file_path = os.path.abspath(__file__)
 
@@ -90,7 +93,11 @@ class Web(WebConfig):
 
     def render(self):
         set_env(title="AutoStzb", output_max_width='100%')
-        put_scope('topp', [put_scope('state', []), put_scope('title', [])]).style('display:flex')
+        config(css_style=style)
+        put_scope('top', [
+                            put_scope('state', []),
+                            put_scope('title', [])
+                            ])
         self.render_state()
         self.render_title('主页')
         put_row([
@@ -100,21 +107,12 @@ class Web(WebConfig):
                     put_scope('log_bar', [])
                 ]).style('display:flex')
         self.render_navigation_bar()
+        
 
 ui = Web()   
 
 def start_web():
     start_server(ui.render, port=9091, debug=True)
-
-# if __name__ == '__main__':
-#     thread = threading.Thread(target=start_web)
-#     thread.setDaemon(True)
-#     thread.start()
-#     time.sleep(5)
-#     print('启动成功,请访问http://localhost:9091')
-#     res = ui.get_data('task')
-#     for v in res:
-#         v['skip_await'] = True
-#     ui.set_data('task', res)
-#     print('next', res)
-#     time.sleep(55)
+    
+if __name__ == '__main__':
+   start_web()

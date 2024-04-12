@@ -26,14 +26,14 @@ team = OptionExplain(
 skip_await = OptionExplain(
     'skip_await',
     '跳过等待',
-    True,
+    [],
     'bool'
 )
 
 state = OptionExplain(
     'state',
     '状态',
-    True,
+    [],
     'bool'
 )
 
@@ -75,20 +75,20 @@ y = OptionExplain(
 recruit_person = OptionExplain(
     'recruit_person',
     '征兵',
-    True,
+    [],
     'bool'
 )
 
 going = OptionExplain(
     'going',
     '出征',
-    True,
+    [],
     'bool'
 )
 mopping_up = OptionExplain(
     'mopping_up',
     '扫荡',
-    True,
+    [],
     'bool'
 )
 
