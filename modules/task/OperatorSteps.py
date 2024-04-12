@@ -119,8 +119,26 @@ class OutOperatorSteps(OperatorSteps):
             device.operateTap(self.x, self.y)
 
 
-# 出征/扫荡 额外情况
+# 战报坐标
 class InputOperatorSteps(OperatorSteps):
+    def __init__(self, input_value, area, txt, x, y):
+        self.input_value = input_value
+        super().__init__(area, txt, x, y)
+
+    def run(self, device, instance):
+        if self.verifyTxt():
+            device.operateTap(self.x, self.y)
+            time.sleep(0.5)
+            print(self.input_value)
+            device.operateInput(self.input_value)
+            device.operateTap(400, 400)
+            return {
+                'next': True
+            }
+        return False
+
+# 土地坐标
+class GotoOperatorSteps(OperatorSteps):
     def __init__(self, input_value, area, txt, x, y):
         self.input_value = input_value
         super().__init__(area, txt, x, y)

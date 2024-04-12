@@ -41,8 +41,8 @@ click_satify = VerifyOperatorSteps(zhengbing_page_swipe_verify, [zhengbing_satis
 # 出征 + 扫荡选项
 click_big_land = VerifyOperatorSteps(huodon_area, '活动', 1410, 100)
 # 跳转土地位置
-click_land_x = InputOperatorSteps('', [1430, 835, 1550, 880], '跳转', 1200, 860)
-click_land_y = InputOperatorSteps('', [1430, 835, 1550, 880], '跳转', 1330, 860)
+click_land_x = GotoOperatorSteps('', [1430, 835, 1550, 880], '跳转', 1200, 860)
+click_land_y = GotoOperatorSteps('', [1430, 835, 1550, 880], '跳转', 1330, 860)
 click_land_require = VerifyOperatorSteps([1430, 835, 1550, 880], '跳转', 1430, 860)
 # 跳转后点击土地中心
 click_land_center = Land_EntryOperatorSteps(None, '', 800, 450)

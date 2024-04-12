@@ -8,11 +8,9 @@ from pywebio.output import put_row, put_scope, use_scope, put_collapse,put_butto
 from pywebio import start_server, config
 from pywebio.session import set_env
 
-# from modules.web.components.Option import OptionPage
-# from modules.web.components.prop_all import *
-from components.Option import *
-from components.prop_all import *
-from styles import style
+from modules.web.components.Option import OptionPage
+from modules.web.components.prop_all import *
+from modules.web.styles import style
 
 current_file_path = os.path.abspath(__file__)
 
