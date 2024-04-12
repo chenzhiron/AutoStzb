@@ -81,15 +81,15 @@ class Web(WebConfig):
 
     @use_scope('state', clear=True)
     def render_state(self):
-        put_text('调度器').style('display:inline-block')
+        put_text('调度器')
         if self.data['state'] == 0:
-            put_button('启动', onclick= functools.partial(self.change_state, state = 1)).style('display:inline-block')
+            put_button('启动', onclick= functools.partial(self.change_state, state = 1))
         if self.data['state'] == 1:
-            put_button('停止', onclick= functools.partial(self.change_state, state = 0)).style('display:inline-block')
+            put_button('停止', onclick= functools.partial(self.change_state, state = 0))
 
     @use_scope('title', clear=True)
     def render_title(self, title):
-        put_text(title).style('display:inline-block')
+        put_text(title)
 
     def render(self):
         set_env(title="AutoStzb", output_max_width='100%')
@@ -100,12 +100,12 @@ class Web(WebConfig):
                             ])
         self.render_state()
         self.render_title('主页')
-        put_row([
+        put_scope('content', [
                     put_scope('navigation_bar', []),
-                    put_scope('function_bar', []),
                     put_scope('menu_bar', []),
                     put_scope('log_bar', [])
-                ]).style('display:flex')
+        ])
+        
         self.render_navigation_bar()
         
 
