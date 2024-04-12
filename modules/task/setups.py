@@ -74,13 +74,13 @@ click_search_y = InputOperatorSteps('', [1400, 618, 1500, 655], '搜索', 1300, 
 # 点击搜索
 click_search = EntryOperatorSteps([1400, 618, 1500, 655], '搜索', 1440, 635)
 # 判断状态
-lists_status = StatusOcrOperatorSteps([675, 270, 870, 360], '', '_list_status')
+lists_status = StatusOcrOperatorSteps([675, 270, 870, 420], '', '_list_status')
 # 平局 ~~~~~~~~~
 # 查询兵力
 # 我方
 search_persons = NumberOcrOperatorSteps('person', [90, 235, 250, 280], '')
 # 敌方
-search_enemy = NumberOcrOperatorSteps('enemy', [1313, 235, 1475, 280], '')
+search_enemy = NumberOcrOperatorSteps('enemy', [1321, 235, 1475, 280], '')
 
 # 平局撤退
 click_info_require = EntryOperatorSteps(None, '', 790, 208)
