@@ -7,8 +7,12 @@ from modules.task.steps import *
 device = Devices(globalConfig)
 
 if __name__ == '__main__':
-    res = PingJuChetui(device, {}).run()
-    print(res)
+    ress = device.getScreenshots()
+    left, top, right, bottom = (985,400,1540,812)
+    resss = ocrDefault(ress[top:bottom, left:right])
+    print(resss)
+    # res = PingJuChetui(device, {}).run()
+    # print(res)
     # res = ZhengBing(device, {
     #     "x": "684",
     #     "y":"738"

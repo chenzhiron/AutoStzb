@@ -98,26 +98,27 @@ class Stzb:
     def sort_tasks(self):
         while 1:
             stData = self.taskManagers.get_data()
-            print('stData', stData)
-            filtered_data = []
-            for v in stData['task']:
-                if v.get('_step') == None:
-                    v['_step'] = 0
-                if v['state']:
-                    filtered_data.append(v)
-                    if len(v['x']) > 0 and type(v['x']) != list:
-                        v['x'] = v['x'].split(',')
-                    if len(v['y']) > 0 and type(v['y']) != list:
-                        v['y'] = v['y'].split(',')
-            if len(filtered_data) == 0:
+            if stData['state']:
+                print('stData', stData)
+                filtered_data = []
+                for v in stData['task']:
+                    if v.get('_step') == None:
+                        v['_step'] = 0
+                    if v['state']:
+                        filtered_data.append(v)
+                        if len(v['x']) > 0 and type(v['x']) != list:
+                            v['x'] = v['x'].split(',')
+                        if len(v['y']) > 0 and type(v['y']) != list:
+                            v['y'] = v['y'].split(',')
+                if len(filtered_data) == 0:
+                    time.sleep(2)
+                    continue
+                filtered_data.sort(key=lambda x: x['next_run_time'])
+                current_task_tims = filtered_data[0]['next_run_time']
+                if self.wait_until(current_task_tims):
+                    return filtered_data[0]
                 time.sleep(2)
-                continue
-            filtered_data.sort(key=lambda x: x['next_run_time'])
-            current_task_tims = filtered_data[0]['next_run_time']
-            if self.wait_until(current_task_tims):
-                return filtered_data[0]
-            time.sleep(2)
-
+            break
     def get_next_task(self):
         while 1:
             if self.taskManagers.get_data('state'):
@@ -146,8 +147,8 @@ class Stzb:
                         return task, 'saodang'
                 if task['recruit_person']:
                     return task, 'zhengbing'
-            time.sleep(5)
-
+                time.sleep(5)
+            return None, None
     def loop(self):
         self.devices()
         while 1:
@@ -157,6 +158,8 @@ class Stzb:
                     self.devices(res['simulator'])
                 task, fn = self.get_next_task()
                 print(task, fn)
+                if task is None or fn is None:
+                    continue
                 result = self.run(task, fn)
                 print(result)
                 self.task_updata(task, result)

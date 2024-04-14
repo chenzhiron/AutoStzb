@@ -21,7 +21,8 @@ class OperatorSteps:
         if self.area is None:
             self.ocr_txt = ''
             return self.ocr_txt
-        res = ocrDefault(np.array(source.crop(self.area)))
+        left, top, right, bottom = self.area
+        res = ocrDefault(source[top:bottom, left:right])
         self.ocr_txt = self.ocr_reg(res)
         return self.ocr_txt
 
@@ -84,7 +85,8 @@ class OcrOperatorSteps(OperatorSteps):
         self.key = key
 
     def verifyOcr(self, source):
-        res = ocrDefault(np.array(source.crop(self.area)))
+        left, top, right, bottom = self.area
+        res = ocrDefault(source[top:bottom, left:right])
         self.ocr_txt = self.ocr_reg(res)
         return self.ocr_txt
 
@@ -142,13 +144,48 @@ class GotoOperatorSteps(OperatorSteps):
     def __init__(self, input_value, area, txt, x, y):
         self.input_value = input_value
         super().__init__(area, txt, x, y)
+    
+    def dispatch(self, device, v):
+        left, top, right, bottom = (985,400,1540,812)
+        new_img = device.getScreenshots()
+        ocr_res = ocrDefault(new_img[top:bottom, left:right])
+        try:
+            processed_data = []
+            for item in ocr_res[0]:
+                points, label_confidence = item
+                label, _ = label_confidence
+                # Assuming the points are [top_left, top_right, bottom_right, bottom_left]
+                l = points[0][0]
+                t = points[0][1]
+                r = points[2][0]
+                b = points[2][1]
+                processed_item = [label, (l + r) / 2, (t + b) / 2]
+                processed_data.append(processed_item)
+            for v in processed_data:
+                if v[0] == '删除':
+                    for i in range(4):
+                        device.operateTap(left + v[1], top + v[2])
+                        time.sleep(0.3)
+                    break
+            for v in self.input_value:
+                for n in processed_data:
+                    if n[0] == v:
+                        device.operateTap(left + n[1], top + n[2])
+                        time.sleep(0.3)
+                        break
+        except Exception as e:
+            print('dispath error', e)
+            return False
+
+        return True
 
     def run(self, device, instance):
         if self.verifyTxt():
             device.operateTap(self.x, self.y)
             time.sleep(0.5)
-            print(self.input_value)
-            device.operateInput(self.input_value)
+            self.dispatch(device, self.input_value)
+            # while not 
+                # self.dispatch(device, self.input_value)
             device.operateTap(400, 400)
             return {
                 'next': True
@@ -178,7 +215,8 @@ class ExtraOperatorSteps(OperatorSteps):
 
     # 重写 识别方法
     def verifyOcr(self, source):
-        res = ocrDefault(np.array(source.crop(self.area)))
+        left, top, right, bottom = self.area
+        res = ocrDefault(source[top:bottom, left:right])
         try:
             processed_data = []
             for item in res[0]:
