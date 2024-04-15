@@ -2,11 +2,12 @@ import json
 import os
 import copy
 import functools
+import threading
 
-from flask import config
-from pywebio.output import put_row, put_scope, use_scope, put_collapse,put_button, put_text
+from pywebio.output import put_scope, use_scope, put_collapse,put_button, put_text
+from pywebio_battery import put_logbox, logbox_append
 from pywebio import start_server, config
-from pywebio.session import set_env
+from pywebio.session import set_env, register_thread, defer_call
 
 from modules.web.components.Option import OptionPage
 from modules.web.components.prop_all import *
@@ -22,6 +23,8 @@ config_file_path = os.path.join(current_dir_path, 'config.json')
 
 print(config_file_path)
 
+log_status = True
+
 class WebConfig:
     def __init__(self):
         self.data = None
@@ -29,6 +32,11 @@ class WebConfig:
         with open(self.config_file, 'r', encoding='utf-8') as load_f:
             load_dict = json.load(load_f)
             self.data = load_dict
+        self.logs = []
+    def add_log(self, msg):
+        if len(self.logs) > 500:
+            self.logs = self.logs[400:]
+        self.logs.append(msg)
 
 class Web(WebConfig):
 
@@ -90,6 +98,16 @@ class Web(WebConfig):
         put_text(title)
 
     def render(self):
+        # 日志记录
+        t = threading.Thread(target=log_thread)
+        register_thread(t)
+        t.start()
+        # 用户访问 web 时，开启单独线程处理，必须使用 defer_call 用户关闭会话后，自动把输出log进程结束 
+        # https://pywebio.readthedocs.io/zh-cn/latest/guide.html#thread-in-server-mode
+        @defer_call
+        def clearlog():
+            log_status = False
+
         set_env(title="AutoStzb", output_max_width='100%')
         config(css_style=style)
         put_scope('top', [
@@ -101,16 +119,25 @@ class Web(WebConfig):
         put_scope('content', [
                     put_scope('navigation_bar', []),
                     put_scope('menu_bar', []),
-                    put_scope('log_bar', [])
+                    put_scope('log_bar', [put_logbox('log', height='100%')])
         ])
-        
         self.render_navigation_bar()
         
 
 ui = Web()   
 
+# 日志输出函数
+def log_thread():
+    try:
+        while log_status:
+            if len(ui.logs) > 0:
+                logbox_append('log', ui.logs.pop(0))
+    except Exception as e:
+        print(e)
+    print('thread end')
+
 def start_web():
     start_server(ui.render, port=9091, debug=True)
-    
+
 if __name__ == '__main__':
-   start_web()
+    start_web()

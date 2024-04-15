@@ -2,8 +2,8 @@ import time
 from datetime import timedelta, datetime
 from config.config import globalConfig
 from modules.task.steps import *
-from modules.utils.utils import get_current_date
 from modules.web.web import ui
+from modules.logs.logs import st_logger
 
 class Stzb:
     def __init__(self):
@@ -19,7 +19,6 @@ class Stzb:
     
     # 对于任务函数，通过记录上一次执行的函数来计算下一次执行的函数任务
     def task_updata(self, task, execute_result):
-
         if execute_result['type'] == 'ChuZheng':
             task['next_run_time'] = (datetime.now() + timedelta(seconds=execute_result['_speed_time'])).strftime("%Y-%m-%d %H:%M:%S")
             task['x'] = ','.join(task['x'])
@@ -96,59 +95,57 @@ class Stzb:
         return datetime.now() >= future
 
     def sort_tasks(self):
-        while 1:
-            stData = self.taskManagers.get_data()
-            if stData['state']:
-                print('stData', stData)
-                filtered_data = []
-                for v in stData['task']:
-                    if v.get('_step') == None:
-                        v['_step'] = 0
-                    if v['state']:
-                        filtered_data.append(v)
-                        if len(v['x']) > 0 and type(v['x']) != list:
-                            v['x'] = v['x'].split(',')
-                        if len(v['y']) > 0 and type(v['y']) != list:
-                            v['y'] = v['y'].split(',')
-                if len(filtered_data) == 0:
-                    time.sleep(2)
-                    continue
-                filtered_data.sort(key=lambda x: x['next_run_time'])
-                current_task_tims = filtered_data[0]['next_run_time']
-                if self.wait_until(current_task_tims):
-                    return filtered_data[0]
-                time.sleep(2)
-            break
+        stData = self.taskManagers.get_data()
+        if stData['state']:
+            filtered_data = []
+            for v in stData['task']:
+                if v.get('_step') == None:
+                    v['_step'] = 0
+                if v['state']:
+                    filtered_data.append(v)
+                    if len(v['x']) > 0 and type(v['x']) != list:
+                        v['x'] = v['x'].split(',')
+                    if len(v['y']) > 0 and type(v['y']) != list:
+                        v['y'] = v['y'].split(',')
+            if len(filtered_data) == 0:
+                return None
+            filtered_data.sort(key=lambda x: x['next_run_time'])
+            current_task_tims = filtered_data[0]['next_run_time']
+            if self.wait_until(current_task_tims):
+                return filtered_data[0]
+            else:
+                return None
+        return None
     def get_next_task(self):
-        while 1:
-            if self.taskManagers.get_data('state'):
-                task = self.sort_tasks()
-                if task['going']:
-                    if task['_step'] == 0:
-                        return task, 'chuzheng'
-                    if task['_step'] == 1:
-                        return task, 'zhanbao'
-                    if task['_step'] == 2:
-                        return task, 'chetui'
-                    if task['_step'] == 3 and task['recruit_person']:
-                        return task, 'zhengbing'
-                    else:
-                        return task, 'chuzheng'
-                if task['mopping_up']:
-                    if task['_step'] == 0:
-                        return task, 'saodang'
-                    if task['_step'] == 1:
-                        return task, 'zhanbao'
-                    if task['_step'] == 2:
-                        return task, 'chetui'
-                    if task['_step'] == 3 and task['recruit_person']:
-                        return task, 'zhengbing'
-                    else:
-                        return task, 'saodang'
-                if task['recruit_person']:
+        if self.taskManagers.get_data('state'):
+            task = self.sort_tasks()
+            if task == None:
+                return None, None
+            if task['going']:
+                if task['_step'] == 0:
+                    return task, 'chuzheng'
+                if task['_step'] == 1:
+                    return task, 'zhanbao'
+                if task['_step'] == 2:
+                    return task, 'chetui'
+                if task['_step'] == 3 and task['recruit_person']:
                     return task, 'zhengbing'
-                time.sleep(5)
-            return None, None
+                else:
+                    return task, 'chuzheng'
+            if task['mopping_up']:
+                if task['_step'] == 0:
+                    return task, 'saodang'
+                if task['_step'] == 1:
+                    return task, 'zhanbao'
+                if task['_step'] == 2:
+                    return task, 'chetui'
+                if task['_step'] == 3 and task['recruit_person']:
+                    return task, 'zhengbing'
+                else:
+                    return task, 'saodang'
+            if task['recruit_person']:
+                return task, 'zhengbing'
+        return None, None
     def loop(self):
         self.devices()
         while 1:
@@ -157,22 +154,21 @@ class Stzb:
                 if res['simulator'] != globalConfig['Simulator']['url'] or self.device is None:
                     self.devices(res['simulator'])
                 task, fn = self.get_next_task()
-                print(task, fn)
+                st_logger.info('next task: %s %s', task, fn)
                 if task is None or fn is None:
+                    time.sleep(1)
                     continue
                 result = self.run(task, fn)
                 print(result)
                 self.task_updata(task, result)
-            time.sleep(3)
+            time.sleep(2)
 
     def run(self, task, command):
-        print('command', command)
-        print('task', task)
         method = getattr(self, command, None)
         if method is not None:
             return method(task)
         else:
-            raise AttributeError(f"Command '{command}' is not a valid method of {self.__class__.__name__}")
+            st_logger.error(f"Command '{command}' is not a valid method of {self.__class__.__name__}")
 
     def zhengbing(self, instance):
         #  {"type": ZhengBing, "await_time": 0 | 1-Max}

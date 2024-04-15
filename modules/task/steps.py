@@ -1,7 +1,7 @@
 import time
 
 from modules.task.setups import *
-
+from modules.logs.logs import st_logger
 
 class Origin:
     # 接收实例配置，但是不修改实例的任何属性，只读
@@ -31,31 +31,28 @@ class ZhengBing(Origin):
             fn.verifyOcr(img)
             if fn.verifyTxt():
                 self._step = index
-        print('征兵一个判断图循环用时:', time.time() - start_time)
+        st_logger.info(self.__class__.__name__ + '  init_step:' + str(self._step))
 
     def run(self):
         click_budui.x = self.instance['team'] * 200
         self.tasks_result['type'] = self.__class__.__name__
-        # 先截一张图，看下当前的图出现元素有哪些，跳转到对应的位置，并继续下一步
-        # 看下主页活动在不在，然后看下在不在势力，接着查看 征兵按钮，接着 查看 进度条页面，接着识别确认征兵
-        # 添加实例的下一次运行时间校验
         self.verifySteps()
         start_time = time.time()
-        print(self._step, '初始化 self._step')
         while self._step < len(self.exec_step):
-            print(self._step, 'self._step')
+            st_logger.info('execute step:' + str(self._step))
             img = self.devices.getScreenshots()
             task_instance = self.exec_step[self._step]
             task_instance.verifyOcr(img)
             res = task_instance.run(self.devices, self.instance)
-            print('函数运行结果', res, '当前运行的函数', task_instance)
+            st_logger.info('execute step result:' + str(res))
             if res == False:
                 continue
             self.tasks_result.update(res)
             if not res['next']:
+                start_time = time.time()
                 break
             self._step += 1
-            if time.time() - start_time > 60:
+            if time.time() - start_time > 20:
                 raise TimeoutError('征兵超时')
         self.ret_main()
         return self.tasks_result

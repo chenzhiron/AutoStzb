@@ -1,5 +1,5 @@
 from st import stzb
-from modules.web.web import *
+from modules.web.web import start_web
 import threading
 
 if __name__ == '__main__':

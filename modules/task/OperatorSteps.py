@@ -2,7 +2,7 @@ import time
 
 import numpy as np
 from modules.ocr.main import ocrDefault
-from modules.utils.utils import calculate_max_timestamp, get_current_date
+from modules.utils.utils import calculate_max_timestamp
 
 
 # 方法 run()
