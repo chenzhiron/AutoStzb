@@ -3,6 +3,7 @@ import os
 import copy
 import functools
 import threading
+import time
 
 from pywebio.output import put_scope, use_scope, put_collapse,put_button, put_text
 from pywebio_battery import put_logbox, logbox_append
@@ -101,9 +102,10 @@ class Web(WebConfig):
         # 日志记录
         t = threading.Thread(target=log_thread)
         register_thread(t)
-        t.start()
+        
         # 用户访问 web 时，开启单独线程处理，必须使用 defer_call 用户关闭会话后，自动把输出log进程结束 
         # https://pywebio.readthedocs.io/zh-cn/latest/guide.html#thread-in-server-mode
+        log_status = True
         @defer_call
         def clearlog():
             log_status = False
@@ -119,12 +121,12 @@ class Web(WebConfig):
         put_scope('content', [
                     put_scope('navigation_bar', []),
                     put_scope('menu_bar', []),
-                    put_scope('log_bar', [put_logbox('log', height='100%')])
+                    put_scope('log_bar', [put_logbox('log', height=800)])
         ])
         self.render_navigation_bar()
-        
+        t.start()
 
-ui = Web()   
+ui = Web()
 
 # 日志输出函数
 def log_thread():
@@ -132,6 +134,7 @@ def log_thread():
         while log_status:
             if len(ui.logs) > 0:
                 logbox_append('log', ui.logs.pop(0))
+            time.sleep(0.05)
     except Exception as e:
         print(e)
     print('thread end')

@@ -154,10 +154,10 @@ class Stzb:
                 if res['simulator'] != globalConfig['Simulator']['url'] or self.device is None:
                     self.devices(res['simulator'])
                 task, fn = self.get_next_task()
-                st_logger.info('next task: %s %s', task, fn)
                 if task is None or fn is None:
                     time.sleep(1)
                     continue
+                st_logger.info('next task: %s %s', task, fn)
                 result = self.run(task, fn)
                 print(result)
                 self.task_updata(task, result)

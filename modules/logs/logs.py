@@ -27,8 +27,7 @@ class CustomHandler(logging.Handler):
                 extra_info += "\n\tTraceback:\n{}".format(trace)
 
             message = self.format(record) + extra_info
-            self.ui.add_log(message)
-        
+        self.ui.add_log(message + '\n')
 
 def setup_custom_logger(name):
     handler = CustomHandler()
