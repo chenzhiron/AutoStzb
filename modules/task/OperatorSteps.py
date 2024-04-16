@@ -141,12 +141,14 @@ class InputOperatorSteps(OperatorSteps):
 
 # 土地坐标
 class GotoOperatorSteps(OperatorSteps):
-    def __init__(self, input_value, area, txt, x, y):
+    def __init__(self, input_value, area, txt, x, y, key):
         self.input_value = input_value
+        self.key = key
         super().__init__(area, txt, x, y)
     
     def dispatch(self, device, v):
-        left, top, right, bottom = (985,400,1540,812)
+        input_area = [(985,400,1540,812),(1120,400,1540,812)]
+        left, top, right, bottom = input_area[self.key]
         new_img = device.getScreenshots()
         ocr_res = ocrDefault(new_img[top:bottom, left:right])
         try:

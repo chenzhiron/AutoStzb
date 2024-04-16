@@ -12,8 +12,6 @@ os.environ['PATH'] += adbpath
 
 def send_get_request(url):
     try:
-        start_time = time.time()
-        # 发送GET请求
         response = requests.get(url)
         # 检查响应状态码
         if response.status_code == 200:
@@ -34,7 +32,6 @@ def send_get_request(url):
             # 重塑数组以匹配图像的宽度和高度
             img_array = img_array.reshape(900, 1600, 3)
             
-            print("请求成功，响应时间：", time.time() - start_time)
             return img_array
         else:
             print("请求失败，状态码：", response.status_code)
@@ -55,7 +52,6 @@ class Devices:
         self.screenshots_thread.start()
         self.d = u2.connect(simulator)
         print(self.d.info)
-        time.sleep(3)
         self.url = 'http://127.0.0.1:53516/screenshot?width=1600&height=900'
 
     def getScreenshots(self):
@@ -68,7 +64,7 @@ class Devices:
         for v in points_list:
             x1, y1, x2, y2 = v
             self.d.swipe(x1, y1, x2, y2, steps=3)
-        time.sleep(0.5)
+        time.sleep(0.3)
     def operateInput(self, txt):
         self.d.clear_text()
         self.d.send_keys(txt)

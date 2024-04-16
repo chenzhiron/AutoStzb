@@ -25,6 +25,7 @@ config_file_path = os.path.join(current_dir_path, 'config.json')
 print(config_file_path)
 
 log_status = True
+offset = 0
 
 class WebConfig:
     def __init__(self):
@@ -36,7 +37,8 @@ class WebConfig:
         self.logs = []
     def add_log(self, msg):
         if len(self.logs) > 500:
-            self.logs = self.logs[400:]
+            self.logs = self.logs[450:]
+            offset = 0
         self.logs.append(msg)
 
 class Web(WebConfig):
@@ -107,7 +109,7 @@ class Web(WebConfig):
               if len(updata['battle_info']) > 0:
                   updata['battle_info'].reverse()
                   for v in updata['battle_info']:
-                    put_image(v)
+                    put_image(v, width='100%')
 
     def render(self):
         # 日志记录
@@ -166,8 +168,9 @@ ui = Web()
 def log_thread():
     try:
         while log_status:
-            if len(ui.logs) > 0:
-                logbox_append('log', ui.logs.pop(0))
+            if len(ui.logs) > 0 and offset < len(ui.logs):
+                logbox_append('log', ui.logs[offset])
+                offset += 1
             time.sleep(0.05)
     except Exception as e:
         print(e)

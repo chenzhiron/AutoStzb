@@ -31,7 +31,7 @@ style = """
     width: 80px;
   }}
   #{p}navigation_bar {{
-    width: 150px;
+    width: 110px;
     margin: 0 10px;
   }}
   #{p}content {{
@@ -45,9 +45,7 @@ style = """
     width: 800px;
   }}
   #{p}log_bar {{
-    padding: 20px;
     background-color: #f7f7f7;
-    margin: 10px 10px 0 10px;
   }}
   #{p}img_show {{
     flex:1;
