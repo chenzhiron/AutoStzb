@@ -13,7 +13,8 @@ class OptionExplain:
                 new_value = False
         origin_controller[self] = new_value
         origin[self.name] = new_value
-        print('origin', origin_controller, origin)
+        print('origin_controller', origin_controller)
+        print('origin', origin)
 
         
 team = OptionExplain(
@@ -23,13 +24,6 @@ team = OptionExplain(
     'options',
     options=[1,2,3,4,5])
 
-skip_await = OptionExplain(
-    'skip_await',
-    '跳过等待',
-    [],
-    'bool'
-)
-
 state = OptionExplain(
     'state',
     '状态',
@@ -37,16 +31,10 @@ state = OptionExplain(
     'bool'
 )
 
-explain = OptionExplain(
-    'explain',
-    '主城第二队队伍大营名字',
-    '',
-    'str'
-)
 
 await_time = OptionExplain(
     'await_time',
-    '征兵等待时间',
+    '下一次行动延迟时间',
     0,
     'int'
 )
@@ -92,20 +80,6 @@ mopping_up = OptionExplain(
     'bool'
 )
 
-delay = OptionExplain(
-    'delay',
-    '延迟',
-    0,
-    'int'
-)
-
-draw_txt = OptionExplain(
-    'draw_txt',
-    '平局',
-    '',
-    'str'
-)
-
 residue_troops_person = OptionExplain(
     'residue_troops_person',
     '部队剩余比例',
@@ -120,11 +94,16 @@ residue_troops_enemy = OptionExplain(
     'int'
 )
 
+simulator = OptionExplain(
+    'simulator',
+    '模拟器配置',
+    '',
+    'str'
+)
+
 propall = {
     'team': team,
-    'skip_await': skip_await,
     'state': state,
-    'explain': explain,
     'await_time': await_time,
     'next_run_time': next_run_time,
     'x': x,
@@ -132,8 +111,7 @@ propall = {
     'recruit_person': recruit_person,
     'going': going,
     'mopping_up': mopping_up,
-    'delay': delay,
-    'draw_txt': draw_txt,
     'residue_troops_person': residue_troops_person,
-    'residue_troops_enemy': residue_troops_enemy
+    'residue_troops_enemy': residue_troops_enemy,
+    'simulator': simulator
 }

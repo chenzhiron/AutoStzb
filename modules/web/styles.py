@@ -1,6 +1,6 @@
 import sass
 
-prefix = 'pywebio-scope-'
+p = prefix = 'pywebio-scope-'
 
 style = """
   .pywebio {{
@@ -10,33 +10,65 @@ style = """
   .footer {{
     display: none;
   }}
-  #{prefix}top {{
+  #{p}top {{
     display:flex;
     height: 50px;
     line-height: 50px;
   }}
-  #{prefix}state  {{
+  #{p}state  {{
     flex: 1;
     * {{
       display:inline-block;
     }}
   }}
-  #{prefix}title {{
+  #{p}title {{
     flex: 3;
   }}
-  #{prefix}content {{
+  #{p}main {{
     display: flex;
   }}
-  #{prefix}menu_bar {{
-    margin-left: 20px;
+  #{p}module_bar {{
+    width: 80px;
   }}
-  #{prefix}log_bar {{
+  #{p}navigation_bar {{
+    width: 150px;
+    margin: 0 10px;
+  }}
+  #{p}content {{
     flex: 1;
+    margin: 0 20px;
+    padding: 10px;
+    text-align: center;
+    display: flex;
+  }}
+  #{p}menu_bar {{
+    width: 800px;
+  }}
+  #{p}log_bar {{
     padding: 20px;
     background-color: #f7f7f7;
-    height: calc(100vh - 61px);
     margin: 10px 10px 0 10px;
   }}
-""".format(prefix=prefix)
+  #{p}img_show {{
+    flex:1;
+    padding: 10px;
+    text-align: center;
+      img {{
+        margin: 5px;
+        width: 100%;
+      }}
+  }}
+
+
+
+  .btn-primary {{
+    color: #000;
+    background-color: #fff;
+    border: None;
+  }}
+  details {{
+    border: none;
+  }}
+""".format(p=p)
 style = sass.compile(string=style)
 print('res:', style)

@@ -5,9 +5,7 @@
     {
       "id": 1,
       "team": 1,
-      "skip_await": false,
       "state": false,
-      "explain": "",
       "x": "",
       "y": "",
       "recruit_person": false,
@@ -16,17 +14,14 @@
       "await_time": 0,
       "next_run_time": "2024-01-01 00:00:00",
       "delay": 0,
-      "draw_txt": "",
       "residue_troops_person": 0.5,
       "residue_troops_enemy": 0.5,
-      "steps": 0
+      "battle_info": []
     },
     {
       "id": 2,
       "team": 2,
-      "skip_await": false,
       "state": false,
-      "explain": "",
       "x": "",
       "y": "",
       "recruit_person": false,
@@ -35,17 +30,14 @@
       "await_time": 0,
       "next_run_time": "2024-01-01 00:00:00",
       "delay": 0,
-      "draw_txt": "",
       "residue_troops_person": 0.5,
       "residue_troops_enemy": 0.5,
-      "steps": 0
+      "battle_info": []
     },
     {
       "id": 3,
       "team": 3,
-      "skip_await": false,
       "state": false,
-      "explain": "",
       "x": "",
       "y": "",
       "recruit_person": false,
@@ -54,17 +46,14 @@
       "await_time": 0,
       "next_run_time": "2024-01-01 00:00:00",
       "delay": 0,
-      "draw_txt": "",
       "residue_troops_person": 0.5,
       "residue_troops_enemy": 0.5,
-      "steps": 0
+      "battle_info": []
     },
     {
       "id": 4,
       "team": 4,
-      "skip_await": false,
       "state": false,
-      "explain": "",
       "x": "",
       "y": "",
       "recruit_person": false,
@@ -73,17 +62,14 @@
       "await_time": 0,
       "next_run_time": "2024-01-01 00:00:00",
       "delay": 0,
-      "draw_txt": "",
       "residue_troops_person": 0.5,
       "residue_troops_enemy": 0.5,
-      "steps": 0
+      "battle_info": []
     },
     {
       "id": 5,
       "team": 5,
-      "skip_await": false,
       "state": false,
-      "explain": "",
       "x": "",
       "y": "",
       "recruit_person": false,
@@ -92,10 +78,9 @@
       "await_time": 0,
       "next_run_time": "2024-01-01 00:00:00",
       "delay": 0,
-      "draw_txt": "",
       "residue_troops_person": 0.5,
       "residue_troops_enemy": 0.5,
-      "steps": 0
+      "battle_info": []
     }
   ]
 }

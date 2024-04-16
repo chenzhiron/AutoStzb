@@ -5,12 +5,12 @@ import functools
 import threading
 import time
 
-from pywebio.output import put_scope, use_scope, put_collapse,put_button, put_text
+from pywebio.output import put_scope, use_scope, put_collapse,put_button, put_text, clear, put_image
 from pywebio_battery import put_logbox, logbox_append
 from pywebio import start_server, config
 from pywebio.session import set_env, register_thread, defer_call
 
-from modules.web.components.Option import OptionPage
+from modules.web.components.Option import *
 from modules.web.components.prop_all import *
 from modules.web.styles import style
 
@@ -55,33 +55,18 @@ class Web(WebConfig):
                     v.update(value)
         else:
             self.data[key] = value
-    @use_scope('menu_bar', clear=True)
-    def render_memu_bar(self, updata):
-          OptionPage([updata, {
-                    team: updata['team'],
-                    skip_await: updata['skip_await'],
-                    state: updata['state'],
-                    explain: updata['explain'],
-                    x: updata['x'],
-                    y: updata['y'],
-                    recruit_person:updata['recruit_person'],
-                    going: updata['going'],
-                    mopping_up: updata['mopping_up'],
-                    await_time: updata['await_time'],
-                    next_run_time: updata['next_run_time'],
-                    delay: updata['delay'],
-                    draw_txt: updata['draw_txt'],
-                    residue_troops_person: updata['residue_troops_person'],
-                    residue_troops_enemy: updata['residue_troops_enemy']
-                }]).dispatch()
-          
+    def clear_area(self, area_lists=['navigation_bar', 'content']):
+        for v in area_lists:
+            clear(v)
+
     @use_scope('navigation_bar', clear=True)
     def render_navigation_bar(self):
+        self.clear_area()
         tasks_render = []
         for v in self.data['task']:
-            tasks_render.append(put_button('队伍', onclick= functools.partial(self.render_memu_bar, updata = v)))
-        put_collapse('任务', tasks_render)
-    
+            tasks_render.append(put_button('主城部队', onclick= functools.partial(self.render_memu_bar, updata = v)))
+        put_collapse('队伍', tasks_render)
+
     def change_state(self, state):
         self.data['state'] = state
         self.render_state()
@@ -93,10 +78,36 @@ class Web(WebConfig):
             put_button('启动', onclick= functools.partial(self.change_state, state = 1))
         if self.data['state'] == 1:
             put_button('停止', onclick= functools.partial(self.change_state, state = 0))
+    
+    @use_scope('content', clear=True)
+    def render_log(self):
+        self.clear_area()
+        put_scope('log_bar', [put_logbox('log', height=700)])
 
-    @use_scope('title', clear=True)
-    def render_title(self, title):
-        put_text(title)
+
+    @use_scope('content', clear=True)
+    def render_memu_bar(self, updata):
+          with use_scope('menu_bar', clear=True):
+            OptionPage([updata, {
+                        team: updata['team'],
+                        state: updata['state'],
+                        next_run_time: updata['next_run_time'],
+                        x: updata['x'],
+                        y: updata['y'],
+                        recruit_person:updata['recruit_person'],
+                        going: updata['going'],
+                        mopping_up: updata['mopping_up'],
+                        await_time: updata['await_time'],
+                        residue_troops_person: updata['residue_troops_person'],
+                        residue_troops_enemy: updata['residue_troops_enemy']
+                    }]).dispatch()
+            
+          with use_scope('img_show', clear=True):
+              put_text('战报记录')
+              if len(updata['battle_info']) > 0:
+                  updata['battle_info'].reverse()
+                  for v in updata['battle_info']:
+                    put_image(v)
 
     def render(self):
         # 日志记录
@@ -113,18 +124,41 @@ class Web(WebConfig):
         set_env(title="AutoStzb", output_max_width='100%')
         config(css_style=style)
         put_scope('top', [
-                            put_scope('state', []),
-                            put_scope('title', [])
+                            put_scope('state', [])
                             ])
         self.render_state()
-        self.render_title('主页')
-        put_scope('content', [
+        put_scope('main', [
+                    put_scope('module_bar', []),
                     put_scope('navigation_bar', []),
-                    put_scope('menu_bar', []),
-                    put_scope('log_bar', [put_logbox('log', height=800)])
+                    put_scope('content', []),
         ])
-        self.render_navigation_bar()
+        self.render_module_bar()
         t.start()
+    
+    @use_scope('navigation_bar', clear=True)
+    def manager(self):
+        self.clear_area()
+        put_button('模拟器配置', onclick=self.render_manager_simulator)
+
+    @use_scope('content', clear=True)
+    def render_manager_simulator(self):
+        with use_scope('menu_bar', clear=True):
+            key = propall['simulator']
+            Option([key.display_name], Component(key.name, self.data[key.name],
+                                                key.option_type, functools.partial(
+                                                    key.on_change_event,
+                                                        origin=self.data,
+                                                        origin_controller={key:self.data[key.name]}
+                                                        ))
+                ).options
+
+
+    def render_module_bar(self):
+        with use_scope('module_bar', clear=True):
+            put_button('日志', onclick=self.render_log)
+            put_button('管理', onclick=self.manager)
+            put_button('功能', onclick=self.render_navigation_bar)
+
 
 ui = Web()
 

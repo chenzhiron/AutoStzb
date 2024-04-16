@@ -1,5 +1,6 @@
 import datetime
-
+from io import BytesIO
+from PIL import Image
 
 def calculate_max_timestamp(time_list):
     try:
@@ -19,3 +20,13 @@ def calculate_max_timestamp(time_list):
         return max(timestamp_list)
     except Exception as e:
         return None
+
+def img_bytes_like(v):
+   # 将NumPy数组转换为PIL Image对象
+    img = Image.fromarray(v)
+
+    # 将图像编码为JPEG格式的bytes-like object
+    with BytesIO() as f:
+        img.save(f, format='JPEG')
+        img_bytes = f.getvalue()
+    return img_bytes
