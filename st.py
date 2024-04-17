@@ -37,6 +37,7 @@ class Stzb:
 
         elif execute_result['type'] == 'ZhanBao':
             task['_step'] = execute_result['_step']
+            task['battle_info'].append(execute_result['_battle_info'])
             # 出征
             if task['going'] and task['_step'] == 3:
                 task['x'].pop(0)

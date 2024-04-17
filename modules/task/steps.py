@@ -2,7 +2,7 @@ import time
 
 from modules.task.setups import *
 from modules.logs.logs import st_logger
-
+from modules.utils.utils import img_bytes_like
 class Origin:
     # 接收实例配置，但是不修改实例的任何属性，只读
     def __init__(self, device, instance):
@@ -39,12 +39,11 @@ class ZhengBing(Origin):
         self.verifySteps()
         start_time = time.time()
         while self._step < len(self.exec_step):
-            st_logger.info('execute step:' + str(self._step))
+            st_logger.info('execute step:' + str(self._step) + self.__class__.__name__)
             img = self.devices.getScreenshots()
             task_instance = self.exec_step[self._step]
             task_instance.verifyOcr(img)
             res = task_instance.run(self.devices, self.instance)
-            st_logger.info('execute step result:' + str(res))
             if res == False:
                 continue
             self.tasks_result.update(res)
@@ -67,12 +66,13 @@ class ChuZheng(Origin):
         click_land_x.input_value = instance['x'][0]
         click_land_y.input_value = instance['y'][0]
         click_going_lists.x = instance['team'] * 220 - 60 + 220
+
     def run(self):
         self.tasks_result['_step'] = 1
         self.tasks_result['type'] = self.__class__.__name__
         start_time = time.time()
         while self._step < len(self.exec_step):
-            print(self._step, 'self._step')
+            st_logger.info('execute step:' + str(self._step) + self.__class__.__name__)
             img = self.devices.getScreenshots()
             task_instance = self.exec_step[self._step]
             task_instance.verifyOcr(img)
@@ -100,7 +100,7 @@ class ZhanBao(Origin):
         self.tasks_result['type'] = self.__class__.__name__
         start_time = time.time()
         while self._step < len(self.exec_step):
-            print(self._step, 'self._step')
+            st_logger.info('execute step:' + str(self._step) + self.__class__.__name__)
             img = self.devices.getScreenshots()
             task_instance = self.exec_step[self._step]
             task_instance.verifyOcr(img)
@@ -113,6 +113,7 @@ class ZhanBao(Origin):
             self._step += 1
             if time.time() - start_time > 60:
                 raise TimeoutError('战报超时')
+        self.tasks_result['_battle_info'] = img_bytes_like(self.devices.getScreenshots())
         if self.tasks_result['_list_status'] == '胜' or self.tasks_result['_list_status'] == '败':
             self.tasks_result['_step'] = 3
             self.ret_main()
@@ -126,7 +127,7 @@ class ZhanBao(Origin):
             else:
                 self.tasks_result['_info_all'] = False
                 self.tasks_result['_step'] = 2
-            print('person_status', person_status, 'enemy_statue', enemy_statue)
+            st_logger.info('person_status:' + str(person_status) + '  enemy_statue:' + str(enemy_statue))
         return self.tasks_result
 
 class SaoDang(Origin):
@@ -144,7 +145,7 @@ class SaoDang(Origin):
         self.tasks_result['type'] = self.__class__.__name__
         start_time = time.time()
         while self._step < len(self.exec_step):
-            print(self._step, 'self._step')
+            st_logger.info('execute step:' + str(self._step) + self.__class__.__name__)
             img = self.devices.getScreenshots()
             task_instance = self.exec_step[self._step]
             task_instance.verifyOcr(img)
@@ -170,7 +171,7 @@ class PingJuChetui(Origin):
         self.tasks_result['type'] = self.__class__.__name__
         start_time = time.time()
         while self._step < len(self.exec_step):
-            print(self._step, 'self._step')
+            st_logger.info('execute step:' + str(self._step) + self.__class__.__name__)
             img = self.devices.getScreenshots()
             task_instance = self.exec_step[self._step]
             task_instance.verifyOcr(img)
