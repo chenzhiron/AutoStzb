@@ -147,7 +147,6 @@ class Stzb:
                 return task, 'zhengbing'
         return None, None
     def loop(self):
-        self.devices()
         while 1:
             res = self.taskManagers.get_data()
             if res['state'] == 1:

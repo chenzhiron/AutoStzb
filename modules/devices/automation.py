@@ -1,7 +1,6 @@
 #!/usr/local/bin/python -u
 
 import subprocess
-import webbrowser
 import argparse
 
 adb_command = ['adb']
@@ -28,6 +27,7 @@ def run_adb(args, pipe_output=True):
     else:
         args = adb_command + args
 
+    print('args', args)
     output = None
     if pipe_output:
         output = subprocess.PIPE
@@ -40,8 +40,9 @@ def run_adb(args, pipe_output=True):
 def locate_apk_path():
     return_code, output, _ = run_adb(["shell", "pm", "path", "ink.mol.droidcast_raw"])
     if return_code or output == "":
-        raise RuntimeError("Locating apk failure, have you installed the app successfully?")
-
+       return_code2, output2, _2 =  run_adb(['shell', 'install', './toolkit/adb/DroidCast_raw-release-1.1.apk'])
+       print(return_code2, output2, _2)
+        
     prefix = "package:"
     postfix = ".apk"
     begin_index = output.index(prefix, 0)
@@ -50,49 +51,32 @@ def locate_apk_path():
     return "CLASSPATH=" + output[begin_index + len(prefix):(end_index + len(postfix))].strip()
 
 
-def open_browser():
-    url = 'http://localhost:%d/preview' % args_in.port
-    webbrowser.open_new(url)
 
+# def identify_device(simulator):
+#     return_code, output, _ = run_adb(["devices"])
+#     if return_code:
+#         raise RuntimeError("Fail to find devices")
+#     else:
+#         print(output)
+#         device_serial_no = args_in.device_serial
+#         devices_info = str(output)
+#         device_count = devices_info.count('device') - 1
 
-def identify_device():
-    return_code, output, _ = run_adb(["devices"])
-    if return_code:
-        raise RuntimeError("Fail to find devices")
-    else:
-        print(output)
-        device_serial_no = args_in.device_serial
-        devices_info = str(output)
-        device_count = devices_info.count('device') - 1
+#         if device_count < 1:
+#             raise RuntimeError("Fail to find devices")
 
-        if device_count < 1:
-            raise RuntimeError("Fail to find devices")
-
-        if device_count > 1 and not device_serial_no:
-            raise RuntimeError("Please specify the serial number of target device you want to use ('-s serial_number').")
-
-
-def print_url():
-    return_code, output, _ = run_adb(["shell", "ip route | awk '/wlan*/{ print $9 }'| tr -d '\n'"])
-    print("\n>>> Share the url 'http://%s:%d/preview' to see the live screen! <<<\n" % (output, args_in.port))
-
-
-def handler(signum, frame):
-    print('\n>>> Signal caught: ', signum)
-    return_code, _, _ = run_adb(["forward", "--remove", "tcp:%d" % args_in.port])
-    print(">>> adb unforward tcp:%d " % args_in.port, return_code)
+#         if device_count > 1 and not device_serial_no:
+#             raise RuntimeError("Please specify the serial number of target device you want to use ('-s serial_number').")
 
 
 def automate(simulator):
     try:
         return_code, _, _ = run_adb(['connect', simulator])
-        identify_device()
+        # identify_device(simulator)
         class_path = locate_apk_path()
 
         return_code, _, _ = run_adb(["forward", "tcp:%d" % args_in.port, "tcp:%d" % args_in.port])
         print(">>> adb forward tcp:%d " % args_in.port, return_code)
-
-        print_url()
 
         arguments = ["shell", class_path, "app_process", "/", "ink.mol.droidcast_raw.Main", "--port=%d" % args_in.port]
 

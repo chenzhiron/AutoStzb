@@ -6,5 +6,5 @@
 **/__pycache__/
 **/__pycache__/*
 .venv
-toolkit/*
-!toolkit/adb
+toolkit
+!toolkit/adb/*

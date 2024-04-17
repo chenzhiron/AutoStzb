@@ -55,7 +55,6 @@ class Devices:
         self.screenshots_thread.start()
         self.d = u2.connect(simulator)
         print(self.d.info)
-        time.sleep(3)
         self.url = 'http://127.0.0.1:53516/screenshot?width=1600&height=900'
 
     def getScreenshots(self):
