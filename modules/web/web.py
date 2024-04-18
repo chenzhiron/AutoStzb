@@ -111,6 +111,7 @@ class Web(WebConfig):
                   for v in updata['battle_info']:
                     put_image(v, width='100%')
 
+    config(css_style=style)
     def render(self):
         # 日志记录
         t = threading.Thread(target=log_thread)
@@ -124,7 +125,6 @@ class Web(WebConfig):
             log_status = False
 
         set_env(title="AutoStzb", output_max_width='100%')
-        config(css_style=style)
         put_scope('top', [
                             put_scope('state', [])
                             ])
