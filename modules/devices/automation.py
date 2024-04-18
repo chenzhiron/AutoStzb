@@ -2,8 +2,16 @@
 
 import subprocess
 import argparse
+import os
 
-adb_command = ['adb']
+adb_command = ''
+res = os.environ['PATH'].split(';')
+adb_path = os.path.normpath('AutoStzb\\toolkit\\adb\\adb.exe')
+for v in res:
+    if adb_path in os.path.normpath(v):
+        print(v,'result')
+        adb_command = [os.path.normpath(v)]
+        break
 
 parser = argparse.ArgumentParser(
     description='Automation script to activate capturing screenshot of Android device')
@@ -71,6 +79,8 @@ def locate_apk_path():
 
 def automate(simulator):
     try:
+        print('start screenshot')
+        print(">>> adb connect %s" % simulator)
         return_code, _, _ = run_adb(['connect', simulator])
         # identify_device(simulator)
         class_path = locate_apk_path()

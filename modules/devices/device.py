@@ -7,8 +7,6 @@ import numpy as np
 import requests
 from modules.devices.automation import automate
 
-adbpath = os.path.join(os.getcwd(), 'toolkit', 'adb')
-os.environ['PATH'] += adbpath
 
 def send_get_request(url):
     try:
@@ -51,6 +49,7 @@ class Devices:
         self.screenshots_thread.setDaemon(True)
         self.screenshots_thread.start()
         self.d = u2.connect(simulator)
+        time.sleep(2)
         print(self.d.info)
         self.url = 'http://127.0.0.1:53516/screenshot?width=1600&height=900'
 
