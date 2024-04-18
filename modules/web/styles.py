@@ -69,4 +69,3 @@ style = """
   }}
 """.format(p=p)
 style = sass.compile(string=style)
-print('res:', style)

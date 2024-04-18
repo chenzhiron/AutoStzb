@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import copy
 import functools
@@ -22,7 +23,6 @@ current_dir_path = os.path.dirname(current_file_path)
 # 拼接config.yaml的路径
 config_file_path = os.path.join(current_dir_path, 'config.json')
 
-print(config_file_path)
 
 log_status = True
 offset = 0

@@ -13,8 +13,6 @@ class OptionExplain:
                 new_value = False
         origin_controller[self] = new_value
         origin[self.name] = new_value
-        print('origin_controller', origin_controller)
-        print('origin', origin)
 
         
 team = OptionExplain(
