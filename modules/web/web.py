@@ -1,15 +1,20 @@
 import json
-import logging
 import os
 import copy
 import functools
 import threading
 import time
 
+from flask import session
 from pywebio.output import put_scope, use_scope, put_collapse,put_button, put_text, clear, put_image
 from pywebio_battery import put_logbox, logbox_append
 from pywebio import start_server, config
-from pywebio.session import set_env, register_thread, defer_call
+from pywebio.session import set_env, ThreadBasedSession, eval_js
+
+from functools import wraps
+from typing import Callable
+from uuid import uuid4
+import logging
 
 from modules.web.components.Option import *
 from modules.web.components.prop_all import *
@@ -24,9 +29,6 @@ current_dir_path = os.path.dirname(current_file_path)
 config_file_path = os.path.join(current_dir_path, 'config.json')
 
 
-log_status = True
-offset = 0
-
 class WebConfig:
     def __init__(self):
         self.data = None
@@ -37,9 +39,40 @@ class WebConfig:
         self.logs = []
     def add_log(self, msg):
         if len(self.logs) > 500:
-            self.logs = self.logs[450:]
-            offset = 0
+            self.logs = self.logs[300:]
         self.logs.append(msg)
+    def get_log(self):
+        return self.logs
+    
+sessions = []
+
+def for_all_sessions(func: Callable) -> Callable:
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        for session in sessions:
+            func_id = str(uuid4())
+            def inner(_):
+                func(*args, **kwargs)
+
+            session.callbacks[func_id] = (inner, False)
+            session.callback_mq.put({"task_id": func_id, "data": None})
+
+    return wrapper
+
+
+def register_session():
+    sessions.append(ThreadBasedSession.get_current_session())
+
+@for_all_sessions
+def send_message(msg):
+    res = eval_js("""
+                document.getElementById('pywebio-scope-log_bar')
+                  """)
+    ui.add_log(msg)
+    if res:
+        logbox_append('log', ui.get_log()[-1])
+
 
 class Web(WebConfig):
 
@@ -57,6 +90,7 @@ class Web(WebConfig):
                     v.update(value)
         else:
             self.data[key] = value
+
     def clear_area(self, area_lists=['navigation_bar', 'content']):
         for v in area_lists:
             clear(v)
@@ -80,11 +114,13 @@ class Web(WebConfig):
             put_button('启动', onclick= functools.partial(self.change_state, state = 1))
         if self.data['state'] == 1:
             put_button('停止', onclick= functools.partial(self.change_state, state = 0))
-    
+
     @use_scope('content', clear=True)
     def render_log(self):
         self.clear_area()
         put_scope('log_bar', [put_logbox('log', height=700)])
+        for v in self.get_log():
+            logbox_append('log', v)
 
 
     @use_scope('content', clear=True)
@@ -109,20 +145,11 @@ class Web(WebConfig):
               if len(updata['battle_info']) > 0:
                   updata['battle_info'].reverse()
                   for v in updata['battle_info']:
-                    put_image(v, width='100%')
+                    put_image(v)
 
     config(css_style=style)
     def render(self):
-        # 日志记录
-        t = threading.Thread(target=log_thread)
-        register_thread(t)
-        
-        # 用户访问 web 时，开启单独线程处理，必须使用 defer_call 用户关闭会话后，自动把输出log进程结束 
-        # https://pywebio.readthedocs.io/zh-cn/latest/guide.html#thread-in-server-mode
-        log_status = True
-        @defer_call
-        def clearlog():
-            log_status = False
+        register_session()
 
         set_env(title="AutoStzb", output_max_width='100%')
         put_scope('top', [
@@ -135,7 +162,6 @@ class Web(WebConfig):
                     put_scope('content', []),
         ])
         self.render_module_bar()
-        t.start()
     
     @use_scope('navigation_bar', clear=True)
     def manager(self):
@@ -164,19 +190,7 @@ class Web(WebConfig):
 
 ui = Web()
 
-# 日志输出函数
-def log_thread():
-    try:
-        while log_status:
-            if len(ui.logs) > 0 and offset < len(ui.logs):
-                logbox_append('log', ui.logs[offset])
-                offset += 1
-            time.sleep(0.05)
-    except Exception as e:
-        print(e)
-    print('thread end')
-
-def start_web():
+def start_web(): 
     start_server(ui.render, port=9091, debug=True)
 
 if __name__ == '__main__':
