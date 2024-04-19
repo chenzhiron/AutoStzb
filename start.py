@@ -16,7 +16,6 @@ adb_path = os.path.join(script_dir, adb_relative_path)
 
 # 设置环境变量，将adb命令所在目录添加到PATH中
 os.environ['PATH'] = f"{adb_path};{os.environ['PATH']}"
-print(os.environ['PATH'])
 
 from st import stzb
 from modules.web.web import start_web

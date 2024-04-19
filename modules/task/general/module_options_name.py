@@ -1,29 +1,18 @@
-start_name = '开始游戏'
-
-saodang = '扫荡'
-
-chuzheng = '出证'
-
-biaoji = '标记'
-
-shili = '势力'
-
-zhaomu = '招募'
-
-zhengbing = '证兵'
-
-require_zhengbing = '确认证兵'
-zhengbing_satisfy = '证兵已满'
-queding = '确定'
-
-person_battle = '个人战报'
-battle_bf2 = '人战报'
-battle_info_txt = '战报'
-
-battle_details = '战报详情'
-
-going_list_txt = '请选择部队'
-
+active_name = '活动'
+search_name = '搜索'
 retreat_name = '撤退'
+queding_name = '确定'
 
-battle_site_name = '战斗地点'
+saodang_name = '扫荡'
+
+chuzheng_name = '出证'
+going_list_txt_name = '请选择部队'
+
+moving_name = '跳转'
+screen_name = '筛选'
+shili_name = '势力'
+
+zhengbing_name = '证兵'
+
+require_zhengbing_name = '确认证兵'
+zhengbing_number_name = '征兵数量'
