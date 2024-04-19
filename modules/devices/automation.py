@@ -62,21 +62,21 @@ def locate_apk_path():
 
 
 
-def identify_device(simulator):
-    return_code, output, _ = run_adb(["devices"])
-    if return_code:
-        raise RuntimeError("Fail to find devices")
-    else:
-        print(output)
-        device_serial_no = args_in.device_serial
-        devices_info = str(output)
-        device_count = devices_info.count('device') - 1
+# def identify_device(simulator):
+#     return_code, output, _ = run_adb(["devices"])
+#     if return_code:
+#         raise RuntimeError("Fail to find devices")
+#     else:
+#         print(output)
+#         device_serial_no = args_in.device_serial
+#         devices_info = str(output)
+#         device_count = devices_info.count('device') - 1
 
-        if device_count < 1:
-            raise RuntimeError("Fail to find devices")
+#         if device_count < 1:
+#             raise RuntimeError("Fail to find devices")
 
-        if device_count > 1 and not device_serial_no:
-            raise RuntimeError("Please specify the serial number of target device you want to use ('-s serial_number').")
+#         if device_count > 1 and not device_serial_no:
+#             raise RuntimeError("Please specify the serial number of target device you want to use ('-s serial_number').")
 
 
 def automate(simulator):
@@ -85,7 +85,7 @@ def automate(simulator):
         print(">>> adb connect %s" % simulator)
         return_code, _, _ = run_adb(['connect', simulator])
         print(return_code, _, _)
-        identify_device(simulator)
+        # identify_device(simulator)
         class_path = locate_apk_path()
 
         return_code, _, _ = run_adb(["forward", "tcp:%d" % args_in.port, "tcp:%d" % args_in.port])
