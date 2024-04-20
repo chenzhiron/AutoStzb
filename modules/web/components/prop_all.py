@@ -96,7 +96,7 @@ simulator = OptionExplain(
     'simulator',
     ['模拟器配置', '选择要链接的模拟器，如果不确定自己要的是哪一个模拟器，可以进入 toolkit/adb 目录下，运行 cmd, 执行 adb devices,找到需要的模拟器，同时请注意，有一些模拟器并不支持或者等待适配中，目前推荐的是 夜神模拟器'],
     '',
-    'options'
+    'str'
 )
 
 outset = OptionExplain(
