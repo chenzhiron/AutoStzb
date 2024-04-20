@@ -127,14 +127,14 @@ class Web(WebConfig):
     def render_memu_bar(self, updata):
           with use_scope('menu_bar', clear=True):
             OptionPage([updata, {
-                        team: updata['team'],
                         state: updata['state'],
+                        team: updata['team'],
                         next_run_time: updata['next_run_time'],
-                        x: updata['x'],
-                        y: updata['y'],
                         recruit_person:updata['recruit_person'],
                         going: updata['going'],
                         mopping_up: updata['mopping_up'],
+                        x: updata['x'],
+                        y: updata['y'],
                         await_time: updata['await_time'],
                         residue_troops_person: updata['residue_troops_person'],
                         residue_troops_enemy: updata['residue_troops_enemy']
@@ -172,7 +172,7 @@ class Web(WebConfig):
     def render_manager_simulator(self):
         with use_scope('menu_bar', clear=True):
             key = propall['simulator']
-            Option([key.display_name], Component(key.name, self.data[key.name],
+            Option(key.display_name, Component(key.name, self.data[key.name],
                                                 key.option_type, functools.partial(
                                                     key.on_change_event,
                                                         origin=self.data,
@@ -191,7 +191,7 @@ class Web(WebConfig):
 ui = Web()
 
 def start_web(): 
-    start_server(ui.render, port=9091, debug=True)
+    start_server(ui.render, port=9091, debug=True, cdn=False)
 
 if __name__ == '__main__':
     start_web()

@@ -60,9 +60,23 @@ style = """
     padding: 10px;
     text-align: center;
     display: flex;
+    overflow: auto;
   }}
   #{p}menu_bar {{
     flex:1;
+    background-color: rgba(247, 247, 247,.7);
+     > div {{
+        aligin-items: center;
+        margin-bottom: 20px;
+        p:not(:first-child) {{
+          font-size:13px;
+          margin:0;
+        }}
+        .form-group {{
+          margin: 0 auto;
+          width: 80%;
+        }}
+     }}
   }}
   #{p}log_bar {{
     background-color: #f7f7f7;
@@ -86,6 +100,9 @@ style = """
   }}
   details {{
     border: none;
+  }}
+  .form-group label{{
+    margin-bottom:15px;
   }}
 """.format(p=p)
 style = sass.compile(string=style)

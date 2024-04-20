@@ -42,7 +42,7 @@ class Option:
     def dispatch(self):
         self.options = put_row(
             [
-                put_column(list(map(lambda v: put_text(v), self.explain))),
+                put_column(list(map(lambda v: put_text(v), self.explain)), size='20px').style('font-size: 15px;'),
                 self.component.controller
             ]
            )
@@ -56,7 +56,7 @@ class OptionPage:
     def dispatch(self):
         for key, values in self.datalists.items():
             Option(
-                [key.display_name], Component(key.name, values, key.option_type,
+                key.display_name, Component(key.name, values, key.option_type,
                                                   event=functools.partial(
                                                       key.on_change_event,
                                                       origin_controller=self.datalists,
