@@ -191,7 +191,7 @@ class Web(WebConfig):
 ui = Web()
 
 def start_web(): 
-    start_server(ui.render, port=9091, debug=True, cdn=False)
+    start_server(ui.render, port=9091, debug=True)
 
 if __name__ == '__main__':
     start_web()
