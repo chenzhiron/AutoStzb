@@ -17,7 +17,7 @@ class OptionExplain:
         
 team = OptionExplain(
     'team',
-    ['部队','主城选择的部队，其中主城要求5个编队全开并且配置武将',],
+    ['部队','选择出征的部队'],
     1,
     'options',
     options=[1,2,3,4,5])
@@ -96,8 +96,24 @@ simulator = OptionExplain(
     'simulator',
     ['模拟器配置', '选择要链接的模拟器，如果不确定自己要的是哪一个模拟器，可以进入 toolkit/adb 目录下，运行 cmd, 执行 adb devices,找到需要的模拟器，同时请注意，有一些模拟器并不支持或者等待适配中，目前推荐的是 夜神模拟器'],
     '',
+    'options'
+)
+
+outset = OptionExplain(
+    'outset',
+    ['出发基点', '如果在野外要塞出发则填写野外要塞名字，主城不填'],
+    '',
     'str'
 )
+
+standby_max = OptionExplain(
+    'standby_max',
+    ['部队总数','选择要出征的要塞/主城当前已放置的部队总数数量'],
+    5,
+    'options',
+    [1,2,3,4,5]
+)
+
 
 propall = {
     'team': team,
@@ -111,5 +127,7 @@ propall = {
     'mopping_up': mopping_up,
     'residue_troops_person': residue_troops_person,
     'residue_troops_enemy': residue_troops_enemy,
-    'simulator': simulator
+    'simulator': simulator,
+    "standby_max": standby_max,
+    "outset": outset        
 }

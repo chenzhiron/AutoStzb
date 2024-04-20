@@ -128,8 +128,10 @@ class Web(WebConfig):
           with use_scope('menu_bar', clear=True):
             OptionPage([updata, {
                         state: updata['state'],
-                        team: updata['team'],
                         next_run_time: updata['next_run_time'],
+                        team: updata['team'],
+                        standby_max: updata['standby_max'],
+                        outset: updata['outset'],
                         recruit_person:updata['recruit_person'],
                         going: updata['going'],
                         mopping_up: updata['mopping_up'],

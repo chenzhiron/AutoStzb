@@ -16,7 +16,9 @@
       "delay": 0,
       "residue_troops_person": 0.5,
       "residue_troops_enemy": 0.5,
-      "battle_info": []
+      "battle_info": [],
+      "outset": "",
+      "standby_max": 5
     },
     {
       "id": 2,
@@ -32,7 +34,9 @@
       "delay": 0,
       "residue_troops_person": 0.5,
       "residue_troops_enemy": 0.5,
-      "battle_info": []
+      "battle_info": [],
+      "outset": "",
+      "standby_max": 5
     },
     {
       "id": 3,
@@ -48,7 +52,9 @@
       "delay": 0,
       "residue_troops_person": 0.5,
       "residue_troops_enemy": 0.5,
-      "battle_info": []
+      "battle_info": [],
+      "outset": "",
+      "standby_max": 5
     },
     {
       "id": 4,
@@ -64,7 +70,9 @@
       "delay": 0,
       "residue_troops_person": 0.5,
       "residue_troops_enemy": 0.5,
-      "battle_info": []
+      "battle_info": [],
+      "outset": "",
+      "standby_max": 5
     },
     {
       "id": 5,
@@ -80,7 +88,9 @@
       "delay": 0,
       "residue_troops_person": 0.5,
       "residue_troops_enemy": 0.5,
-      "battle_info": []
+      "battle_info": [],
+      "outset": "",
+      "standby_max": 5
     }
   ]
 }
