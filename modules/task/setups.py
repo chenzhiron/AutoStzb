@@ -13,7 +13,7 @@ click_empty = EntryOperatorSteps(None, '', address_empty[0], address_empty[1])
 verfiy_main = VerifyOperatorSteps(huodon_area, active_name, 410, 800)
 
 # 点击部队
-click_budui = VerifyOperatorSteps(shili_area, shili_name, jizun_duiwu[0], jizun_duiwu[1])
+click_budui = ActionOperatorSteps([112,165,270,815], [800, 780, 800,200], '', jizun_duiwu[0], jizun_duiwu[1])
 
 # 点击征兵
 click_zhengbing = VerifyOperatorSteps(zhengbing_area, zhengbing_name, zhengbing_area[0], zhengbing_area[1])
@@ -83,3 +83,6 @@ click_go_require = VerifyOperatorSteps(click_go_require_area, queding_name, 980,
 click_state_info = ChetuitOperatorSteps(click_state_info_area, '', 800, 450)
 click_chetui = VerifyOperatorSteps(click_chetui_area, retreat_name, 1515,390)
 click_chetui_require = VerifyOperatorSteps(click_chetui_require_area, retreat_name, 1430,822)
+
+#  选择出发的地址
+search_going = SearchOperatorSteps([1165,95,1450,400], '',[1311,390, 1311,81], 1165, 95)

@@ -1,10 +1,11 @@
 import time
-
-import numpy as np
 from modules.ocr.main import ocrDefault
 from modules.utils.utils import calculate_max_timestamp
-
-
+import cv2
+import numpy as np
+import os
+current_dir = os.getcwd()
+print(current_dir, 'current_dir')
 # 方法 run()
 # 结果为True 返回格式: {key:value} or {}, 其中 key 为要修改的实例的属性， value 为本次修改的值
 # 结果为False 返回 False
@@ -57,6 +58,7 @@ class VerifyOperatorSteps(OperatorSteps):
 
     def run(self, device, instance):
         if self.verifyTxt():
+
             device.operateTap(self.x, self.y)
             print('x', self.x, 'y', self.y)
             return {
@@ -246,6 +248,7 @@ class ExtraOperatorSteps(OperatorSteps):
         if not self.verifyOcr(res):
            return False
         device.operateTap(self.offset_x + self.x, self.offset_y + self.y)
+        time.sleep(0.5)
         return {
                 'next': True
         }
@@ -291,3 +294,109 @@ class ChetuitOperatorSteps(OperatorSteps):
         return {
             "next": True
         }
+class SearchOperatorSteps(OperatorSteps):
+    def __init__(self, area, txt, draw_area, x=0, y=0):
+        super().__init__(area, txt, x, y)
+        self.draw_area = draw_area
+    
+    def verifyOcr(self, source):
+        print(self.area, 'area')
+        left, top, right, bottom = self.area
+        res = ocrDefault(source[top:bottom, left:right])
+        self.ocr_txt = res
+        return self.ocr_txt
+
+    def verifyTxt(self):
+        return False
+    
+    def ocr_reg(self):
+         try:
+            processed_data = []
+            for item in self.ocr_txt[0]:
+                points, label_confidence = item
+                label, _ = label_confidence
+                # Assuming the points are [top_left, top_right, bottom_right, bottom_left]
+                l = points[0][0]
+                t = points[0][1]
+                r = points[2][0]
+                b = points[2][1]
+                processed_item = [(l + r) / 2, (t + b) / 2, label]
+                processed_data.append(processed_item)
+            for v in processed_data:
+                if v[2] == self.txt:
+                    self.offset_x = v[0]
+                    self.offset_y = v[1]
+                    return True
+            return False
+         except Exception as e:
+            print(e)
+            return False
+
+    def search_main(self, device):
+        left, top, right, bottom = self.area
+        relative_path = 'modules\imgs\main.png'
+        full_path = os.path.join(current_dir, relative_path)
+        print(full_path)
+        target_img = cv2.imread(full_path, cv2.IMREAD_GRAYSCALE)
+        res = device.getScreenshots()[top:bottom, left:right]
+        cv2.imwrite('output.png', res)
+        search_img = cv2.cvtColor(res, cv2.COLOR_BGR2GRAY)
+
+        result = cv2.matchTemplate(search_img, target_img, cv2.TM_CCOEFF_NORMED)
+            # 设置阈值
+        threshold = 0.95
+        loc = np.where(result >= threshold)
+        
+        # 获取匹配结果的位置
+        for pt in zip(*loc[::-1]):
+            # 计算矩形框的坐标
+            top_left = pt
+            bottom_right = (top_left[0] + target_img.shape[1], top_left[1] + target_img.shape[0])
+            self.offset_x = bottom_right[0]
+            self.offset_y = bottom_right[1]
+            return True
+        return False
+    def run(self, device, instance):
+         if self.txt == '':
+             if self.search_main(device):
+                device.operateTap(int(self.offset_x) + self.x, int(self.offset_y) + self.y)
+                return {
+                    'next': True
+                }
+             return False
+         if self.ocr_reg():
+            device.operateTap(self.offset_x + self.x, self.offset_y + self.y)
+            return {
+                'next': True
+            }
+         device.oprtateDrag(self.draw_area)
+         return False
+
+class ActionOperatorSteps(OperatorSteps):
+    def __init__(self, area,draw_area, txt, x=0, y=0):
+        super().__init__(area, txt, x, y)
+        self.draw_area = draw_area
+        
+    def verifyOcr(self, source):
+        print(self.area, 'area')
+        left, top, right, bottom = self.area
+        res = ocrDefault(source[top:bottom, left:right])
+        self.ocr_txt = res
+        return self.ocr_txt
+    
+    def verifyTxt(self):
+        return False
+    
+    def run(self, device, instance):
+        self.swipeOperator = SearchOperatorSteps(self.area, self.txt, [])
+        self.swipeOperator.ocr_txt = self.ocr_txt
+        if self.swipeOperator.ocr_reg():
+            ly = self.area[1]
+            offset_y = self.swipeOperator.offset_y
+            device.operateTap(self.x * instance['team'], ly + offset_y + 100)
+            return {
+                'next': True
+            }
+        device.oprtateDrag(self.draw_area)
+        time.sleep(0.5)
+        return False

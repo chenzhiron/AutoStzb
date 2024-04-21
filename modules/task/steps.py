@@ -3,6 +3,7 @@ import time
 from modules.task.setups import *
 from modules.logs.logs import st_logger
 from modules.utils.utils import img_bytes_like
+from modules.task.general.option_verify_area import address_execute_list
 class Origin:
     # 接收实例配置，但是不修改实例的任何属性，只读
     def __init__(self, device, instance):
@@ -22,7 +23,7 @@ class ZhengBing(Origin):
         super().__init__(device, instance)
         self.exec_step = [verfiy_main, click_budui, click_zhengbing, swipe_zhengbing,
                           zhengbing_max_time, click_zhengbing_sure, click_zhengbing_require]
-        
+        click_budui.txt = instance['outset']
 
     def verifySteps(self):
         start_time = time.time()
@@ -34,7 +35,6 @@ class ZhengBing(Origin):
         st_logger.info(self.__class__.__name__ + '  init_step:' + str(self._step))
 
     def run(self):
-        click_budui.x = self.instance['team'] * 200
         self.tasks_result['type'] = self.__class__.__name__
         self.verifySteps()
         start_time = time.time()
@@ -62,10 +62,13 @@ class ChuZheng(Origin):
         super().__init__(device, instance)
         # 前置识图进入跳转页面
         self.exec_step = [click_big_land, click_land_x, click_land_y, click_land_require, click_land_center,
-                          click_sign_land_chuzheng, click_going_lists, going_max_time, click_chuzheng]
+                          click_sign_land_chuzheng, search_going, click_going_lists, going_max_time, click_chuzheng]
         click_land_x.input_value = instance['x'][0]
         click_land_y.input_value = instance['y'][0]
-        click_going_lists.x = instance['team'] * 220 - 60 + 220
+        search_going.txt = instance['outset']
+        sum = instance['standby_max']
+        current_team = instance['team']
+        click_going_lists.y = address_execute_list[sum-1][current_team-1][0]
 
     def run(self):
         self.tasks_result['_step'] = 1
@@ -135,10 +138,13 @@ class SaoDang(Origin):
         super().__init__(device, instance)
         # 前置识图进入跳转页面
         self.exec_step = [click_big_land, click_land_x, click_land_y, click_land_require, click_land_center,
-                        click_sign_land_saodang, click_going_lists, going_max_time, click_saodang]
+                        click_sign_land_saodang, search_going, click_going_lists, going_max_time, click_saodang]
         click_land_x.input_value = instance['x'][0]
         click_land_y.input_value = instance['y'][0]
-        click_going_lists.x = instance['team'] * 220 - 60 + 220
+        search_going.txt = instance['outset']
+        sum = instance['standby_max']
+        current_team = instance['team']
+        click_going_lists.y = address_execute_list[sum-1][current_team-1][0]
 
     def run(self):
         self.tasks_result['_step'] = 1
