@@ -1,9 +1,13 @@
+import os
+import sys
+sys.path.append(os.getcwd())
+
 import time
 from datetime import timedelta, datetime
-from config.config import globalConfig
 from modules.task.steps import *
 from modules.web.web import ui
 from modules.logs.logs import st_logger
+from config.config import globalConfig
 
 class Stzb:
     def __init__(self):
@@ -97,26 +101,24 @@ class Stzb:
 
     def sort_tasks(self):
         stData = self.taskManagers.get_data()
-        if stData['state']:
-            filtered_data = []
-            for v in stData['task']:
-                if v.get('_step') == None:
-                    v['_step'] = 0
-                if v['state']:
-                    filtered_data.append(v)
-                    if len(v['x']) > 0 and type(v['x']) != list:
-                        v['x'] = v['x'].split(',')
-                    if len(v['y']) > 0 and type(v['y']) != list:
-                        v['y'] = v['y'].split(',')
-            if len(filtered_data) == 0:
-                return None
-            filtered_data.sort(key=lambda x: x['next_run_time'])
-            current_task_tims = filtered_data[0]['next_run_time']
-            if self.wait_until(current_task_tims):
-                return filtered_data[0]
-            else:
-                return None
-        return None
+        filtered_data = []
+        for v in stData['task']:
+            if v.get('_step') == None:
+                v['_step'] = 0
+            if v['state']:
+                filtered_data.append(v)
+                if len(v['x']) > 0 and type(v['x']) != list:
+                    v['x'] = v['x'].split(',')
+                if len(v['y']) > 0 and type(v['y']) != list:
+                    v['y'] = v['y'].split(',')
+        if len(filtered_data) == 0:
+            return None
+        filtered_data.sort(key=lambda x: x['next_run_time'])
+        current_task_tims = filtered_data[0]['next_run_time']
+        if self.wait_until(current_task_tims):
+            return filtered_data[0]
+        else:
+            return None
     def get_next_task(self):
         if self.taskManagers.get_data('state'):
             task = self.sort_tasks()
@@ -150,18 +152,16 @@ class Stzb:
     def loop(self):
         while 1:
             res = self.taskManagers.get_data()
-            if res['state'] == 1:
-                if res['simulator'] != globalConfig['Simulator']['url'] or self.device is None:
-                    self.devices(res['simulator'])
-                task, fn = self.get_next_task()
-                if task is None or fn is None:
-                    time.sleep(1)
-                    continue
-                st_logger.info('next task: %s %s', task, fn)
-                result = self.run(task, fn)
-                print(result)
-                self.task_updata(task, result)
-            time.sleep(2)
+            if res['simulator'] != globalConfig['Simulator']['url'] or self.device is None:
+                self.devices(res['simulator'])
+            task, fn = self.get_next_task()
+            if task is None or fn is None:
+                time.sleep(1)
+                continue
+            st_logger.info('next task: %s %s', task, fn)
+            result = self.run(task, fn)
+            print(result)
+            self.task_updata(task, result)
 
     def run(self, task, command):
         method = getattr(self, command, None)
@@ -184,7 +184,7 @@ class Stzb:
         return SaoDang(device=self.device, instance=instance).run()
 
 
-stzb = Stzb()
-# if __name__ == '__main__':
-#     stzb = Stzb()
-#     stzb.loop()
+# stzb = Stzb()
+if __name__ == '__main__':
+    stzb = Stzb()
+    stzb.loop()

@@ -3,8 +3,6 @@ import traceback
 
 class CustomHandler(logging.Handler):
     def __init__(self):
-        from modules.web.web import send_message
-        self.send_message = send_message
         logging.Handler.__init__(self)
     def emit(self, record):
         if record.levelno < logging.ERROR:  # 将条件改回原来的逻辑
@@ -27,8 +25,8 @@ class CustomHandler(logging.Handler):
                 extra_info += "\n\tTraceback:\n{}".format(trace)
 
             message = self.format(record=record) + extra_info
-        self.send_message(message + '\r\n')
-
+        print(message)
+        
 def setup_custom_logger(name):
     handler = CustomHandler()
     logger = logging.getLogger(name)
