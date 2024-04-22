@@ -132,7 +132,7 @@ class InputOperatorSteps(OperatorSteps):
     def run(self, device, instance):
         if self.verifyTxt():
             device.operateTap(self.x, self.y)
-            time.sleep(0.5)
+            time.sleep(float(instance['screen_await']))
             print(self.input_value)
             device.operateInput(self.input_value)
             device.operateTap(400, 400)
@@ -148,7 +148,7 @@ class GotoOperatorSteps(OperatorSteps):
         self.key = key
         super().__init__(area, txt, x, y)
     
-    def dispatch(self, device, v):
+    def dispatch(self, device, instance, v):
         input_area = [(985,400,1540,812),(1120,400,1540,812)]
         left, top, right, bottom = input_area[self.key]
         new_img = device.getScreenshots()
@@ -169,13 +169,13 @@ class GotoOperatorSteps(OperatorSteps):
                 if v[0] == '删除':
                     for i in range(4):
                         device.operateTap(left + v[1], top + v[2])
-                        time.sleep(0.3)
+                        time.sleep(float(instance['screen_await']))
                     break
             for v in self.input_value:
                 for n in processed_data:
                     if n[0] == v:
                         device.operateTap(left + n[1], top + n[2])
-                        time.sleep(0.3)
+                        time.sleep(float(instance['screen_await']))
                         break
         except Exception as e:
             print('dispath error', e)
@@ -186,8 +186,8 @@ class GotoOperatorSteps(OperatorSteps):
     def run(self, device, instance):
         if self.verifyTxt():
             device.operateTap(self.x, self.y)
-            time.sleep(0.5)
-            self.dispatch(device, self.input_value)
+            time.sleep(float(instance['screen_await']))
+            self.dispatch(device,instance, self.input_value)
             # while not 
                 # self.dispatch(device, self.input_value)
             device.operateTap(400, 400)
@@ -248,7 +248,6 @@ class ExtraOperatorSteps(OperatorSteps):
         if not self.verifyOcr(res):
            return False
         device.operateTap(self.offset_x + self.x, self.offset_y + self.y)
-        time.sleep(0.5)
         return {
                 'next': True
         }

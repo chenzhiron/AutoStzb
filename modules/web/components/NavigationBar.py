@@ -25,3 +25,12 @@ class NavigationBar:
                                                       origin_controller={key:self.data[key.name]}
                                                       ))
               ).options
+          screen_await = propall['screen_await']
+          Option(screen_await.display_name, Component(screen_await.name, self.data[screen_await.name],
+                                              screen_await.option_type,args=screen_await.options,
+                                                event=functools.partial(
+                                                  screen_await.on_change_event,
+                                                      origin=self.data,
+                                                      origin_controller={screen_await:self.data[screen_await.name]}
+                                                      ))
+              ).options

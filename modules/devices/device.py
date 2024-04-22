@@ -53,9 +53,10 @@ def running_screenshot(simulator):
 
 class Devices:
     def __init__(self, config) -> None:
-        simulator = config['Simulator']['url']
+        simulator = config['Simulator']
         print('simulator', simulator)
         adb.connect(simulator)
+        self.screen_await = config['screen_await']
         # self.screenshots_thread = threading.Thread(target=running_screenshot,args=(simulator,))
         # self.screenshots_thread.setDaemon(True)
         # self.screenshots_thread.start()
@@ -65,8 +66,8 @@ class Devices:
         self.url = 'http://127.0.0.1:53516/preview?width=1600&height=900'
 
     def getScreenshots(self):
+        time.sleep(self.screen_await)
         imgs = self.d.screenshot()
-        # imgs.save('./1.png')
         res = np.array(imgs)
         return res
         return send_get_request(self.url)

@@ -113,7 +113,13 @@ standby_max = OptionExplain(
     'options',
     [1,2,3,4,5]
 )
-
+screen_await = OptionExplain(
+    'screen_await',
+    ['截图间隔时间','截图间隔时间。单位(秒)'],
+    0.3,
+    'options',
+    [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]
+)
 
 propall = {
     'team': team,
@@ -129,5 +135,6 @@ propall = {
     'residue_troops_enemy': residue_troops_enemy,
     'simulator': simulator,
     "standby_max": standby_max,
-    "outset": outset        
+    "outset": outset,
+    "screen_await": screen_await
 }

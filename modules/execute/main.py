@@ -7,17 +7,14 @@ from datetime import timedelta, datetime
 from modules.task.steps import *
 from modules.web.web import ui
 from modules.logs.logs import st_logger
-from config.config import globalConfig
 
 class Stzb:
     def __init__(self):
         self.device = None
         self.taskManagers = ui
 
-    def devices(self, simulator=None):
+    def devices(self, globalConfig):
         from modules.devices.device import Devices
-        if simulator != None:
-            globalConfig['Simulator']['url'] = simulator
         self.device = Devices(globalConfig)
         return self.device
     
@@ -120,40 +117,38 @@ class Stzb:
         else:
             return None
     def get_next_task(self):
-        if self.taskManagers.get_data('state'):
-            task = self.sort_tasks()
-            if task == None:
-                return None, None
-            if task['going']:
-                if task['_step'] == 0:
-                    return task, 'chuzheng'
-                if task['_step'] == 1:
-                    return task, 'zhanbao'
-                if task['_step'] == 2:
-                    return task, 'chetui'
-                if task['_step'] == 3 and task['recruit_person']:
-                    return task, 'zhengbing'
-                else:
-                    return task, 'chuzheng'
-            if task['mopping_up']:
-                if task['_step'] == 0:
-                    return task, 'saodang'
-                if task['_step'] == 1:
-                    return task, 'zhanbao'
-                if task['_step'] == 2:
-                    return task, 'chetui'
-                if task['_step'] == 3 and task['recruit_person']:
-                    return task, 'zhengbing'
-                else:
-                    return task, 'saodang'
-            if task['recruit_person']:
+        task = self.sort_tasks()
+        if task == None:
+            return None, None
+        if task['going']:
+            if task['_step'] == 0:
+                return task, 'chuzheng'
+            if task['_step'] == 1:
+                return task, 'zhanbao'
+            if task['_step'] == 2:
+                return task, 'chetui'
+            if task['_step'] == 3 and task['recruit_person']:
                 return task, 'zhengbing'
-        return None, None
+            else:
+                return task, 'chuzheng'
+        if task['mopping_up']:
+            if task['_step'] == 0:
+                return task, 'saodang'
+            if task['_step'] == 1:
+                return task, 'zhanbao'
+            if task['_step'] == 2:
+                return task, 'chetui'
+            if task['_step'] == 3 and task['recruit_person']:
+                return task, 'zhengbing'
+            else:
+                return task, 'saodang'
+        if task['recruit_person']:
+            return task, 'zhengbing'
     def loop(self):
         while 1:
             res = self.taskManagers.get_data()
-            if res['simulator'] != globalConfig['Simulator']['url'] or self.device is None:
-                self.devices(res['simulator'])
+            if self.device == None:
+                self.devices(res)
             task, fn = self.get_next_task()
             if task is None or fn is None:
                 time.sleep(1)
