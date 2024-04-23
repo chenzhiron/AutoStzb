@@ -25,6 +25,7 @@ class Web(WebConfig, Entry, MemuBar, NavigationBar, Log, State):
         if key == 'task':
             for v in self.data['task']:
                 if v['id'] == keyid:
+                    value.pop('state')
                     v.update(value)
         else:
             self.data[key] = value
