@@ -53,7 +53,7 @@ def running_screenshot(simulator):
 
 class Devices:
     def __init__(self, config) -> None:
-        simulator = config['Simulator']
+        simulator = config['simulator']
         print('simulator', simulator)
         adb.connect(simulator)
         self.screen_await = config['screen_await']

@@ -1,5 +1,6 @@
 import copy
 import subprocess
+
 from pywebio import start_server
 
 from modules.web.components.Option import *
@@ -9,7 +10,6 @@ from modules.web.components.NavigationBar import NavigationBar
 from modules.web.components.Log import Log
 from modules.web.components.State import State
 from modules.web.components.Entry import Entry
-
 from modules.web.components.web_config import WebConfig
 
 class Web(WebConfig, Entry, MemuBar, NavigationBar, Log, State):

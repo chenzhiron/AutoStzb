@@ -24,12 +24,12 @@ class State:
   def change_state(self, state):
     self.data['state'] = state
     self.render_state()
-    if self.data['state'] == 1 and self.process == None:
-        self.run_shell(python_command + ' ' + execute_path, output_func=self.send_message, encoding='utf8')
-    if self.data['state'] == 0 and self.process != None:
-        self.process.kill()
-        self.process.stdout.close()
-        self.process = None
+    # if self.data['state'] == 1 and self.process == None:
+    #     self.run_shell(python_command + ' ' + execute_path, output_func=self.send_message, encoding='utf8')
+    # if self.data['state'] == 0 and self.process != None:
+    #     self.process.kill()
+    #     self.process.stdout.close()
+    #     self.process = None
   
   @use_scope('state', clear=True)
   def render_state(self):

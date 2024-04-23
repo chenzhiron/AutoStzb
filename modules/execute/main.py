@@ -1,19 +1,17 @@
 import os
-import sys
-sys.path.append(os.getcwd())
 
 import time
 from datetime import timedelta, datetime
 from modules.task.steps import *
-from modules.web.web import ui
 from modules.logs.logs import st_logger
 
 class Stzb:
     def __init__(self):
         self.device = None
-        self.taskManagers = ui
+        self.simulation = None
 
     def devices(self, globalConfig):
+        self.simulation = globalConfig['simulation']
         from modules.devices.device import Devices
         self.device = Devices(globalConfig)
         return self.device
@@ -145,18 +143,22 @@ class Stzb:
         if task['recruit_person']:
             return task, 'zhengbing'
     def loop(self):
+        from modules.web.web import ui
+        self.taskManagers = ui
         while 1:
             res = self.taskManagers.get_data()
-            if self.device == None:
-                self.devices(res)
-            task, fn = self.get_next_task()
-            if task is None or fn is None:
-                time.sleep(1)
-                continue
-            st_logger.info('next task: %s %s', task, fn)
-            result = self.run(task, fn)
-            print(result)
-            self.task_updata(task, result)
+            if res['state']:
+                if res['simulation'] != self.simulation:
+                    self.devices(res)
+                task, fn = self.get_next_task()
+                if task is None or fn is None:
+                    time.sleep(1)
+                    continue
+                st_logger.info('next task: %s %s', task, fn)
+                result = self.run(task, fn)
+                print(result)
+                self.task_updata(task, result)
+            time.sleep(1)
 
     def run(self, task, command):
         method = getattr(self, command, None)
@@ -179,7 +181,7 @@ class Stzb:
         return SaoDang(device=self.device, instance=instance).run()
 
 
-# stzb = Stzb()
-if __name__ == '__main__':
-    stzb = Stzb()
-    stzb.loop()
+stzb = Stzb()
+# if __name__ == '__main__':
+#     stzb = Stzb()
+#     stzb.loop()

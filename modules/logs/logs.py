@@ -5,6 +5,7 @@ class CustomHandler(logging.Handler):
     def __init__(self):
         logging.Handler.__init__(self)
     def emit(self, record):
+        from modules.web.web import ui
         if record.levelno < logging.ERROR:  # 将条件改回原来的逻辑
             # Use a simpler format for messages below ERROR level
             simple_format = '%(asctime)s - %(levelname)s - %(message)s'
@@ -25,7 +26,8 @@ class CustomHandler(logging.Handler):
                 extra_info += "\n\tTraceback:\n{}".format(trace)
 
             message = self.format(record=record) + extra_info
-        print(message)
+        ui.send_message(message)
+        # print(message)
         
 def setup_custom_logger(name):
     handler = CustomHandler()
