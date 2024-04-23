@@ -11,7 +11,7 @@ class Stzb:
         self.simulation = None
 
     def devices(self, globalConfig):
-        self.simulation = globalConfig['simulation']
+        self.simulation = globalConfig['simulator']
         from modules.devices.device import Devices
         self.device = Devices(globalConfig)
         return self.device
@@ -117,7 +117,7 @@ class Stzb:
     def get_next_task(self):
         task = self.sort_tasks()
         if task == None:
-            return None, None
+            return (None, None)
         if task['going']:
             if task['_step'] == 0:
                 return task, 'chuzheng'
@@ -142,14 +142,15 @@ class Stzb:
                 return task, 'saodang'
         if task['recruit_person']:
             return task, 'zhengbing'
+        return None, None
     def loop(self):
         from modules.web.web import ui
         self.taskManagers = ui
         while 1:
             res = self.taskManagers.get_data()
             if res['state']:
-                if res['simulation'] != self.simulation:
-                    self.devices(res)
+                if res['simulator'] != self.simulation:
+                    self.devices(globalConfig=res) 
                 task, fn = self.get_next_task()
                 if task is None or fn is None:
                     time.sleep(1)

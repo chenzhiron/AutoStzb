@@ -132,7 +132,7 @@ class InputOperatorSteps(OperatorSteps):
     def run(self, device, instance):
         if self.verifyTxt():
             device.operateTap(self.x, self.y)
-            time.sleep(float(instance['screen_await']))
+            time.sleep(float(0.3))
             print(self.input_value)
             device.operateInput(self.input_value)
             device.operateTap(400, 400)
@@ -169,13 +169,13 @@ class GotoOperatorSteps(OperatorSteps):
                 if v[0] == '删除':
                     for i in range(4):
                         device.operateTap(left + v[1], top + v[2])
-                        time.sleep(float(instance['screen_await']))
+                        time.sleep(float(0.3))
                     break
             for v in self.input_value:
                 for n in processed_data:
                     if n[0] == v:
                         device.operateTap(left + n[1], top + n[2])
-                        time.sleep(float(instance['screen_await']))
+                        time.sleep(float(0.3))
                         break
         except Exception as e:
             print('dispath error', e)
@@ -186,7 +186,7 @@ class GotoOperatorSteps(OperatorSteps):
     def run(self, device, instance):
         if self.verifyTxt():
             device.operateTap(self.x, self.y)
-            time.sleep(float(instance['screen_await']))
+            time.sleep(float(0.3))
             self.dispatch(device,instance, self.input_value)
             # while not 
                 # self.dispatch(device, self.input_value)
