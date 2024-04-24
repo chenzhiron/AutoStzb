@@ -97,6 +97,10 @@ class Stzb:
     def sort_tasks(self):
         stData = self.taskManagers.get_data()
         filtered_data = []
+        if stData['feat_sum']:
+            return {
+                'feat_sum': True
+            }
         for v in stData['task']:
             if v.get('_step') == None:
                 v['_step'] = 0
@@ -118,6 +122,8 @@ class Stzb:
         task = self.sort_tasks()
         if task == None:
             return (None, None)
+        if task['feat_sum']:
+            return task, 'feat_statis'
         if task['going']:
             if task['_step'] == 0:
                 return task, 'chuzheng'
@@ -180,7 +186,8 @@ class Stzb:
         return PingJuChetui(device=self.device, instance=instance).run()
     def saodang(self, instance):
         return SaoDang(device=self.device, instance=instance).run()
-
+    def feat_statis(self, instance):
+        return FeatStatis(device=self.device, instance=instance).run()
 
 stzb = Stzb()
 # if __name__ == '__main__':

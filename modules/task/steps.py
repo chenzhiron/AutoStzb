@@ -1,8 +1,7 @@
 import time
-
 from modules.task.setups import *
 from modules.logs.logs import st_logger
-from modules.utils.utils import img_bytes_like
+from modules.utils.utils import img_bytes_like, export_xlsx
 from modules.task.general.option_verify_area import address_execute_list
 class Origin:
     # 接收实例配置，但是不修改实例的任何属性，只读
@@ -192,3 +191,19 @@ class PingJuChetui(Origin):
                 raise TimeoutError('平局撤退超时')
         self.ret_main()
         return self.tasks_result
+
+class FeatStatis(Origin):
+    def __init__(self, device, instance):
+        super().__init__(device, instance)
+        self.exec_step = [FeatOperatorSteps]
+
+    def run(self, devices, instance):
+        self.tasks_result['type'] = self.__class__.__name__
+        while 1:
+            res = self.run(self.exec_step[0], devices, instance)
+            self.tasks_result.update(res)
+            # 此处处理数据
+            
+            export_xlsx(export_xlsx, '武勋统计表')
+            return self.tasks_result
+            

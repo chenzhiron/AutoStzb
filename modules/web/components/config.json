@@ -2,6 +2,7 @@
   "state": 0,
   "simulator": "127.0.0.1:16384",
   "screen_await": 0.3,
+  "feat_sum": false,
   "task": [
     {
       "id": 1,

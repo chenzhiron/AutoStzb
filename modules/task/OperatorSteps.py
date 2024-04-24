@@ -399,3 +399,19 @@ class ActionOperatorSteps(OperatorSteps):
         device.oprtateDrag(self.draw_area)
         time.sleep(0.5)
         return False
+    
+class FeatOperatorSteps(OperatorSteps):
+    def __init__(self, area, txt, x=0, y=0):
+        super().__init__(area, txt, x, y)
+    
+    def verifyOcr(self, source):
+        print(self.area, 'area')
+        left, top, right, bottom = self.area
+        res = ocrDefault(source[top:bottom, left:right])
+        self.ocr_txt = res
+        return self.ocr_txt
+    
+    def verifyTxt(self):
+        return False
+    def run(self, device, instance):
+        pass

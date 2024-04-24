@@ -35,7 +35,7 @@ class Entry:
       with use_scope('module_bar', clear=True):
           put_button('日志', onclick=self.render_log)
           put_button('管理', onclick=self.manager)
-          put_button('功能', onclick=self.render_navigation_bar)
+          put_button('功能', onclick=self.render_func_bar)
   
   def clear_area(self, area_lists=['navigation_bar', 'content']):
     for v in area_lists:

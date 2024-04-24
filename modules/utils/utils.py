@@ -2,6 +2,7 @@ import datetime
 from io import BytesIO
 from PIL import Image
 import numpy as np
+import pandas as pd
 def calculate_max_timestamp(time_list):
     try:
         timestamp_list = []
@@ -34,3 +35,7 @@ def img_bytes_like(img):
         # 保存图像为JPEG格式
         rgb_img.save(f, format='JPEG')
         return f.getvalue()
+
+def export_xlsx(data, fileName, filePath=None):
+    df = pd.DataFrame(data)
+    df.to_excel(filePath if filePath is not None else '' + fileName +'.xlsx', index=False)

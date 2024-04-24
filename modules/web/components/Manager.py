@@ -5,7 +5,7 @@ from modules.web.components.Option import *
 from modules.web.components.prop_all import *
 
 
-class NavigationBar:
+class Manager:
   def __init__(self):
     pass
 

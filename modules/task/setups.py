@@ -86,3 +86,5 @@ click_chetui_require = VerifyOperatorSteps(click_chetui_require_area, retreat_na
 
 #  选择出发的地址
 search_going = SearchOperatorSteps([1165,95,1450,400], '',[1311,390, 1311,81], 1165, 95)
+
+feat_statis = FeatOperatorSteps(None, '', 0, 0)

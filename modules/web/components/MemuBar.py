@@ -9,13 +9,13 @@ class MemuBar:
     def __init__(self):
         pass
     @use_scope('navigation_bar', clear=True)
-    def render_navigation_bar(self):
+    def render_func_bar(self):
         self.clear_area()
         tasks_render = []
         for v in self.data['task']:
             tasks_render.append(put_button('主城部队', onclick= functools.partial(self.render_memu_bar, updata = v)))
         put_collapse('队伍', tasks_render)
-
+        put_collapse('同盟', [put_button('武勋统计', onclick=self.render_feat)])
     @use_scope('content', clear=True)
     def render_memu_bar(self, updata):
           with use_scope('menu_bar', clear=True):
@@ -41,3 +41,14 @@ class MemuBar:
                   updata['battle_info'].reverse()
                   for v in updata['battle_info']:
                     put_image(v)
+    @use_scope('content', clear=True)
+    def render_feat(self):
+        with use_scope('feat_sum', clear=True):
+            feat_sum = propall['feat_sum']
+            Option(feat_sum.display_name, Component(feat_sum.name, self.data[feat_sum.name],
+                                                feat_sum.option_type, functools.partial(
+                                                    feat_sum.on_change_event,
+                                                        origin=self.data,
+                                                        origin_controller={feat_sum:self.data[feat_sum.name]}
+                                                        ))
+                ).options
