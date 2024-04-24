@@ -39,3 +39,7 @@ def img_bytes_like(img):
 def export_xlsx(data, fileName, filePath=None):
     df = pd.DataFrame(data)
     df.to_excel(filePath if filePath is not None else '' + fileName +'.xlsx', index=False)
+
+def fill_black(img, area):
+    img[area[1]:area[3], area[0]:area[2]] = [0, 0, 0]
+    return img

@@ -414,4 +414,6 @@ class FeatOperatorSteps(OperatorSteps):
     def verifyTxt(self):
         return False
     def run(self, device, instance):
+         # 基于用户名字添加偏移，避免滚动出现漏失
+         
         pass
