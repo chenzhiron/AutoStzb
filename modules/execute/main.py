@@ -18,6 +18,9 @@ class Stzb:
     
     # 对于任务函数，通过记录上一次执行的函数来计算下一次执行的函数任务
     def task_updata(self, task, execute_result):
+        if execute_result['type'] == 'FeatOperatorSteps':
+            self.taskManagers.set_data('feat_sum', False)
+            return
         if execute_result['type'] == 'ChuZheng':
             task['next_run_time'] = (datetime.now() + timedelta(seconds=execute_result['_speed_time'])).strftime("%Y-%m-%d %H:%M:%S")
             task['x'] = ','.join(task['x'])
@@ -25,7 +28,7 @@ class Stzb:
             task['_speed_time'] = execute_result['_speed_time']
             task['_step'] = execute_result['_step']
             self.taskManagers.set_data('task', task, task['id'])
-
+            return
         elif execute_result['type'] == 'SaoDang':
             task['next_run_time'] = (datetime.now() + timedelta(seconds=execute_result['_speed_time'])).strftime("%Y-%m-%d %H:%M:%S")
             task['x'] = ','.join(task['x'])
@@ -33,6 +36,7 @@ class Stzb:
             task['_speed_time'] = execute_result['_speed_time']
             task['_step'] = execute_result['_step']
             self.taskManagers.set_data('task', task, task['id'])
+            return
 
         elif execute_result['type'] == 'ZhanBao':
             task['_step'] = execute_result['_step']
@@ -58,7 +62,7 @@ class Stzb:
             else:
                 task['next_run_time'] = (datetime.now() + timedelta(seconds=task['_speed_time'])).strftime("%Y-%m-%d %H:%M:%S")
             self.taskManagers.set_data('task', task, task['id'])
-
+            return
         elif execute_result['type'] == 'ZhengBing':
             if execute_result['await_time'] != 0 :
                 if execute_result['await_time'] < 300:
@@ -71,11 +75,12 @@ class Stzb:
                 if not task['going'] and not task['mopping_up']:
                     task['recruit_person'] = False
                 self.taskManagers.set_data('task', task, task['id'])
-
+            return
         elif execute_result['type'] == 'PingJuChetui':
             task['_step'] = execute_result['_step']
             task['next_run_time'] = (datetime.now() + timedelta(seconds=task['_speed_time'])).strftime("%Y-%m-%d %H:%M:%S")
             self.taskManagers.set_data('task', task, task['id'])
+            return
     def wait_until(self, future):
         # 如果future是字符串类型，尝试将其解析为datetime对象
         if isinstance(future, str):

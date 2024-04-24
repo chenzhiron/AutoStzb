@@ -28,6 +28,8 @@ class Web(WebConfig, Entry, MemuBar, Manager, Log, State):
                     value.pop('state')
                     v.update(value)
         else:
+            if type(value) == list and len(value) == 0:
+                value = []
             self.data[key] = value
 
     def run_shell(self, cmd: str, output_func, encoding='utf8') -> int:

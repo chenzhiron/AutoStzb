@@ -195,15 +195,11 @@ class PingJuChetui(Origin):
 class FeatStatis(Origin):
     def __init__(self, device, instance):
         super().__init__(device, instance)
-        self.exec_step = [FeatOperatorSteps]
+        self.exec_step = feat_statis
 
-    def run(self, devices, instance):
+    def run(self):
         self.tasks_result['type'] = self.__class__.__name__
-        while 1:
-            res = self.run(self.exec_step[0], devices, instance)
-            self.tasks_result.update(res)
-            # 此处处理数据
-            
-            export_xlsx(export_xlsx, '武勋统计表')
-            return self.tasks_result
+        res = self.exec_step.run(self.devices, self.instance)
+        export_xlsx(res, '武勋统计表')
+        return self.tasks_result
             

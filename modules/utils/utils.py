@@ -36,7 +36,7 @@ def img_bytes_like(img):
         rgb_img.save(f, format='JPEG')
         return f.getvalue()
 
-def export_xlsx(data, fileName, filePath=None):
+def export_xlsx(data, fileName='统计表', filePath=None):
     df = pd.DataFrame(data)
     df.to_excel(filePath if filePath is not None else '' + fileName +'.xlsx', index=False)
 

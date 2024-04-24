@@ -1,3 +1,4 @@
+import math
 import time
 from modules.ocr.main import ocrDefault
 from modules.utils.utils import calculate_max_timestamp
@@ -403,17 +404,53 @@ class ActionOperatorSteps(OperatorSteps):
 class FeatOperatorSteps(OperatorSteps):
     def __init__(self, area, txt, x=0, y=0):
         super().__init__(area, txt, x, y)
-    
-    def verifyOcr(self, source):
-        print(self.area, 'area')
-        left, top, right, bottom = self.area
-        res = ocrDefault(source[top:bottom, left:right])
-        self.ocr_txt = res
-        return self.ocr_txt
-    
-    def verifyTxt(self):
-        return False
+        self.data = {
+            '名字': [],
+            '武勋': [],
+            '势力': []
+        }
+        self.t = 260  #开始位置
+        self.b = 763  #结束位置
+        self.c = self.b - self.t # 可移动的距离
+        self.y = 1550  #移动的x基准
+
+    def img_ocr(self, device):
+        sources=device.getScreenshots()
+        img = sources[230:757,131:310]
+        ress = ocrDefault(img)
+        for item in ress[0]:
+            points, label_confidence = item
+            label, _ = label_confidence
+            self.data['名字'].append(label)
+            # Assuming the points are [top_left, top_right, bottom_right, bottom_left]
+            t = points[0][1]
+            b = points[2][1]
+            feat_img = device.getScreenshots()[230 + int(t) - 10: 230+int(b) + 10,565:740]
+            feat = ocrDefault(feat_img)
+            try:
+                for v in feat[0]:
+                    points, label_confidence = v
+                    label, _ = label_confidence
+                    self.data['武勋'].append(label)
+            except Exception as e:
+                self.data['武勋'].append(0)
+            power_img = ocrDefault(device.getScreenshots()[230 + int(t) - 10: 230+int(b) + 10,744:925])
+            try:
+                for v in power_img[0]:
+                    points, label_confidence = v
+                    label, _ = label_confidence
+                    self.data['势力'].append(label)
+            except Exception as e:
+                self.data['势力'].append(0)
     def run(self, device, instance):
          # 基于用户名字添加偏移，避免滚动出现漏失
-         
-        pass
+        self.max = 16
+        self.sum = math.ceil((self.max-6) / 6)  # 移动次数
+        self.offset_x = int(self.c / ((self.max-6)/6))  #当次移动距离
+        self.img_ocr(device)
+        for v in range(self.sum):
+            device.oprtateDrag([self.y, self.t + (self.offset_x * v), self.y, self.t + (self.offset_x * (v + 1))])
+            time.sleep(0.5)
+            self.img_ocr(device)
+        self.img_ocr(device)
+        return self.data
