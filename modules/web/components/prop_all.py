@@ -121,11 +121,24 @@ screen_await = OptionExplain(
     [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]
 )
 
-feat_sum = OptionExplain(
-    'feat_sum',
+feat = OptionExplain(
+    'state',
     ['同盟日常统计', '记录武勋增长和势力,进入同盟武勋页面','tip: 游戏名可能会有误差，不保证100%'],
     [],
     'bool'
+)
+feat_sum = OptionExplain(
+    'feat_sum',
+    ['小组人数','同盟/团队总人数'],
+    1,
+    'int'
+)
+feat_type = OptionExplain(
+    'types',
+    ['位置', '同盟/团队'],
+    '团队',
+    'options',
+    ['同盟', '团队']
 )
 propall = {
     'team': team,
@@ -143,5 +156,7 @@ propall = {
     "standby_max": standby_max,
     "outset": outset,
     "screen_await": screen_await,
-    "feat_sum": feat_sum
+    "feat": feat,
+    "feat_sum": feat_sum,
+    "feat_type": feat_type
 }

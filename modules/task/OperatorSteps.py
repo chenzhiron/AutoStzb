@@ -444,9 +444,10 @@ class FeatOperatorSteps(OperatorSteps):
                 self.data['势力'].append(0)
     def run(self, device, instance):
          # 基于用户名字添加偏移，避免滚动出现漏失
-        self.max = 16
-        self.sum = math.ceil((self.max-6) / 6)  # 移动次数
-        self.offset_x = int(self.c / ((self.max-6)/6))  #当次移动距离
+        self.max = instance['feat_sum']
+        self.offset_num = 6 if instance['types'] == '团队' else 5
+        self.sum = math.ceil((self.max - self.offset_num) / self.offset_num)  # 移动次数
+        self.offset_x = int(self.c / ((self.max-self.offset_num)/self.offset_num))  #当次移动距离
         self.img_ocr(device)
         for v in range(self.sum):
             device.oprtateDrag([self.y, self.t + (self.offset_x * v), self.y, self.t + (self.offset_x * (v + 1))])

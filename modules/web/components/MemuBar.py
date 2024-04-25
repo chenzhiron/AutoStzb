@@ -43,12 +43,30 @@ class MemuBar:
                     put_image(v)
     @use_scope('content', clear=True)
     def render_feat(self):
-        with use_scope('feat_sum', clear=True):
+        with use_scope('feat', clear=True):
+            data = self.data["feat"]
+            feat = propall['feat']
+            Option(feat.display_name, Component(feat.name, data[feat.name],
+                                                feat.option_type, functools.partial(
+                                                    feat.on_change_event,
+                                                        origin=self.data,
+                                                        origin_controller={feat:data[feat.name]}
+                                                        ))
+                ).options
             feat_sum = propall['feat_sum']
-            Option(feat_sum.display_name, Component(feat_sum.name, self.data[feat_sum.name],
+            Option(feat_sum.display_name, Component(feat_sum.name, data[feat_sum.name],
                                                 feat_sum.option_type, functools.partial(
                                                     feat_sum.on_change_event,
                                                         origin=self.data,
-                                                        origin_controller={feat_sum:self.data[feat_sum.name]}
+                                                        origin_controller={feat_sum:data[feat_sum.name]}
+                                                        )))
+            feat_type = propall['feat_type']
+            Option(feat_type.display_name, Component(feat_type.name, data[feat_type.name],
+                                                feat_type.option_type,
+                                                  functools.partial(
+                                                    feat_type.on_change_event,
+                                                        origin=self.data,
+                                                        origin_controller={feat_type:data[feat_type.name]},
+                                                        ),
+                                                         args=feat_type.options
                                                         ))
-                ).options

@@ -19,7 +19,8 @@ class Stzb:
     # 对于任务函数，通过记录上一次执行的函数来计算下一次执行的函数任务
     def task_updata(self, task, execute_result):
         if execute_result['type'] == 'FeatOperatorSteps':
-            self.taskManagers.set_data('feat_sum', False)
+            task['state'] = False
+            self.taskManagers.set_data('feat', task)
             return
         if execute_result['type'] == 'ChuZheng':
             task['next_run_time'] = (datetime.now() + timedelta(seconds=execute_result['_speed_time'])).strftime("%Y-%m-%d %H:%M:%S")
@@ -102,9 +103,10 @@ class Stzb:
     def sort_tasks(self):
         stData = self.taskManagers.get_data()
         filtered_data = []
-        if stData['feat_sum']:
+        if stData['feat']['state']:
             return {
-                'feat_sum': True
+                "feat_sum": True,
+                "instance": stData['feat']
             }
         for v in stData['task']:
             if v.get('_step') == None:
@@ -128,7 +130,7 @@ class Stzb:
         if task == None:
             return (None, None)
         if task['feat_sum']:
-            return task, 'feat_statis'
+            return task['instance'], 'feat_statis'
         if task['going']:
             if task['_step'] == 0:
                 return task, 'chuzheng'
