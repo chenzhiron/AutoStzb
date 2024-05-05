@@ -3,38 +3,21 @@
 import subprocess
 import argparse
 import os
+import time
 
 adb_command = ''
 res = os.environ['PATH'].split(';')
-adb_path = os.path.normpath('AutoStzb\\toolkit\\adb\\adb.exe')
+adb_path = os.path.normpath('toolkit\\adb\\adb.exe')
 for v in res:
     if adb_path in os.path.normpath(v):
         print(v,'result')
         adb_command = [os.path.normpath(v)]
         break
-
-parser = argparse.ArgumentParser(
-    description='Automation script to activate capturing screenshot of Android device')
-parser.add_argument('-s', '--serial', dest='device_serial',
-                    help='Device serial number (adb -s option)')
-parser.add_argument(
-    '-p',
-    '--port',
-    dest='port',
-    nargs='?',
-    const=53516,
-    type=int,
-    default=53516,
-    help='Port number to be connected, by default it\'s 53516')
-args_in = parser.parse_args()
-
-
-def run_adb(args, pipe_output=True):
-    if args_in.device_serial:
-        args = adb_command + ['-s', args_in.device_serial] + args
     else:
-        args = adb_command + args
+        adb_command = ['adb']
 
+def run_adb(device_serial, args, pipe_output=True):
+    args = adb_command + ['-s', device_serial] + args
     print('args', args)
     output = None
     if pipe_output:
@@ -45,12 +28,13 @@ def run_adb(args, pipe_output=True):
     return process.returncode, stdout, stderr
 
 
-def locate_apk_path():
-    return_code, output, _ = run_adb(["shell", "pm", "path", "ink.mol.droidcast_raw"])
+def locate_apk_path(simulator):
+    return_code, output, _ = run_adb(simulator,["shell", "pm", "path", "ink.mol.droidcast_raw"])
     if return_code or output == "":
-       return_code2, output2, _2 =  run_adb(['shell', 'install', './toolkit/adb/DroidCast_raw-release-1.1.apk'])
-       print(return_code2, output2, _2)
-        
+       return_code2 =  run_adb(simulator,['install', './toolkit/adb/DroidCast_raw-release-1.1.apk'])
+       print(return_code2)
+    time.sleep(1)
+    return_code, output, _ = run_adb(simulator,["shell", "pm", "path", "ink.mol.droidcast_raw"])
     prefix = "package:"
     postfix = ".apk"
     begin_index = output.index(prefix, 0)
@@ -79,22 +63,22 @@ def locate_apk_path():
 
 def automate(simulator):
     try:
-        print('start screenshot')
+        print('start screenshot server')
         print(">>> adb connect %s" % simulator)
-        return_code, _, _ = run_adb(['connect', simulator])
+        
+        return_code, _, _ = run_adb(simulator, ['connect', simulator])
+        print(return_code, _, _)
         # identify_device(simulator)
-        class_path = locate_apk_path()
+        class_path = locate_apk_path(simulator)
 
-        return_code, _, _ = run_adb(["forward", "tcp:%d" % args_in.port, "tcp:%d" % args_in.port])
-        print(">>> adb forward tcp:%d " % args_in.port, return_code)
+        return_code, _, _ = run_adb(simulator, ["forward", "tcp:53516", "tcp:53516"])
+        print(">>> adb forward tcp:53516", return_code)
 
-        arguments = ["shell", class_path, "app_process", "/", "ink.mol.droidcast_raw.Main", "--port=%d" % args_in.port]
-
-        run_adb(arguments, pipe_output=False)
-
+        arguments = ["shell", class_path, "app_process", "/", "ink.mol.droidcast_raw.Main", "--port=53516"]
+        run_adb(simulator, arguments, pipe_output=False)
     except Exception as e:
         print(e)
 
 
 if __name__ == "__main__":
-    automate()
+    automate('127.0.0.1:62025')

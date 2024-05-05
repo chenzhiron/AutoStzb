@@ -17,12 +17,12 @@ ocr = PaddleOCR(lang="ch",
                 rec_model_dir=ocr_rec,
                 cls_model_dir=ocr_cls,
                 rec_char_dict_path=ocr_keys,
-                show_log=False,
+                show_log=True,
                 )
 
 
 def ocrDefault(sources):
-    result = ocr.ocr(sources, cls=False)
+    result = ocr.ocr(sources, cls=False, inv=True)
     return result
 
     # for idx in range(len(result)):

@@ -3,11 +3,10 @@ import traceback
 
 class CustomHandler(logging.Handler):
     def __init__(self):
-        from modules.web.web import ui
-        self.ui = ui
         logging.Handler.__init__(self)
     def emit(self, record):
-        if record.levelno < logging.ERROR:
+        from modules.web.web import ui
+        if record.levelno < logging.ERROR:  # 将条件改回原来的逻辑
             # Use a simpler format for messages below ERROR level
             simple_format = '%(asctime)s - %(levelname)s - %(message)s'
             formatter = logging.Formatter(simple_format)
@@ -26,9 +25,10 @@ class CustomHandler(logging.Handler):
                 trace = traceback.format_exc()
                 extra_info += "\n\tTraceback:\n{}".format(trace)
 
-            message = self.format(record) + extra_info
-        self.ui.add_log(message + '\n')
-
+            message = self.format(record=record) + extra_info
+        ui.send_message(message)
+        # print(message)
+        
 def setup_custom_logger(name):
     handler = CustomHandler()
     logger = logging.getLogger(name)
