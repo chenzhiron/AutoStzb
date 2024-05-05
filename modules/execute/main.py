@@ -129,8 +129,11 @@ class Stzb:
         task = self.sort_tasks()
         if task == None:
             return (None, None)
-        if task['feat_sum']:
-            return task['instance'], 'feat_statis'
+        try:
+            if task['feat_sum']:
+                return task['instance'], 'feat_statis'
+        except Exception as e:
+            pass
         if task['going']:
             if task['_step'] == 0:
                 return task, 'chuzheng'

@@ -172,12 +172,24 @@ class GotoOperatorSteps(OperatorSteps):
                         device.operateTap(left + v[1], top + v[2])
                         time.sleep(float(0.3))
                     break
+            click_tabs_lists = [
+                [(1360,600),
+                 (1045,450),(1145,450),(1260,450),
+                 (1045,555),(1145,555),(1260,555),
+                 (1045,665),(1145,665),(1260,665),
+                ],
+                [(1485,600),
+                 (1180,450),(1280,450),(1375,450),
+                 (1180,555),(1280,555),(1375,555),
+                 (1180,665),(1280,665),(1375,665),
+                ]
+                ]
             for v in self.input_value:
-                for n in processed_data:
-                    if n[0] == v:
-                        device.operateTap(left + n[1], top + n[2])
-                        time.sleep(float(0.3))
-                        break
+                device.operateTap(
+                    click_tabs_lists[int(self.key)][int(v)][0],
+                    click_tabs_lists[int(self.key)][int(v)][1]
+                    )
+                time.sleep(0.3)
         except Exception as e:
             print('dispath error', e)
             return False
@@ -357,20 +369,22 @@ class SearchOperatorSteps(OperatorSteps):
             return True
         return False
     def run(self, device, instance):
-         if self.txt == '':
+        img = device.getScreenshots()
+        self.verifyOcr(img)
+        if self.txt == '':
              if self.search_main(device):
                 device.operateTap(int(self.offset_x) + self.x, int(self.offset_y) + self.y)
                 return {
                     'next': True
                 }
              return False
-         if self.ocr_reg():
+        if self.ocr_reg():
             device.operateTap(self.offset_x + self.x, self.offset_y + self.y)
             return {
                 'next': True
             }
-         device.oprtateDrag(self.draw_area)
-         return False
+        device.oprtateDrag(self.draw_area)
+        return False
 
 class ActionOperatorSteps(OperatorSteps):
     def __init__(self, area,draw_area, txt, x=0, y=0):
