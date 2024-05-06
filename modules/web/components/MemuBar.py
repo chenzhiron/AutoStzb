@@ -11,62 +11,47 @@ class MemuBar:
     @use_scope('navigation_bar', clear=True)
     def render_func_bar(self):
         self.clear_area()
-        tasks_render = []
-        for v in self.data['task']:
-            tasks_render.append(put_button('主城部队', onclick= functools.partial(self.render_memu_bar, updata = v)))
-        put_collapse('队伍', tasks_render)
-        put_collapse('同盟', [put_button('武勋统计', onclick=self.render_feat)])
+        put_collapse('队伍', [put_button(f'主城部队{i}', onclick=functools.partial(self.render_memu_bar, keys=f'troop{i}')) for i in range(1, 6)])
+        put_collapse('同盟', [put_button('武勋统计', onclick=functools.partial(self.render_feat, keys='feat'))])
+
     @use_scope('content', clear=True)
-    def render_memu_bar(self, updata):
+    def render_memu_bar(self, keys):
           with use_scope('menu_bar', clear=True):
-            OptionPage([updata, {
-                        state: updata['state'],
-                        next_run_time: updata['next_run_time'],
-                        team: updata['team'],
-                        standby_max: updata['standby_max'],
-                        outset: updata['outset'],
-                        recruit_person:updata['recruit_person'],
-                        going: updata['going'],
-                        mopping_up: updata['mopping_up'],
-                        x: updata['x'],
-                        y: updata['y'],
-                        await_time: updata['await_time'],
-                        residue_troops_person: updata['residue_troops_person'],
-                        residue_troops_enemy: updata['residue_troops_enemy']
-                    }]).dispatch()
+            current_data = self.conf_data.get_key_data(keys)
+            OptionPage(current_data).dispatch()
             
           with use_scope('img_show', clear=True):
               put_text('战报记录')
-              if len(updata['battle_info']) > 0:
-                  updata['battle_info'].reverse()
-                  for v in updata['battle_info']:
+              if len(current_data['battle_info']) > 0:
+                  current_data['battle_info'].reverse()
+                  for v in current_data['battle_info']:
                     put_image(v)
     @use_scope('content', clear=True)
-    def render_feat(self):
+    def render_feat(self, keys):
         with use_scope('feat', clear=True):
-            data = self.data["feat"]
+            current_data = self.conf_data.get_key_data(keys)
             feat = propall['feat']
-            Option(feat.display_name, Component(feat.name, data[feat.name],
+            Option(feat.display_name, Component(feat.name, current_data[feat.name],
                                                 feat.option_type, functools.partial(
                                                     feat.on_change_event,
-                                                        origin=self.data,
-                                                        origin_controller={feat:data[feat.name]}
+                                                        origin=current_data,
+                                                        keyss=feat.name
                                                         ))
                 ).options
             feat_sum = propall['feat_sum']
-            Option(feat_sum.display_name, Component(feat_sum.name, data[feat_sum.name],
+            Option(feat_sum.display_name, Component(feat_sum.name, current_data[feat_sum.name],
                                                 feat_sum.option_type, functools.partial(
                                                     feat_sum.on_change_event,
-                                                        origin=self.data,
-                                                        origin_controller={feat_sum:data[feat_sum.name]}
+                                                        origin=current_data,
+                                                        keyss=feat_sum.name
                                                         )))
             feat_type = propall['feat_type']
-            Option(feat_type.display_name, Component(feat_type.name, data[feat_type.name],
+            Option(feat_type.display_name, Component(feat_type.name, current_data[feat_type.name],
                                                 feat_type.option_type,
                                                   functools.partial(
                                                     feat_type.on_change_event,
-                                                        origin=self.data,
-                                                        origin_controller={feat_type:data[feat_type.name]},
+                                                        origin=current_data,
+                                                        keyss=feat_type.name
                                                         ),
                                                          args=feat_type.options
                                                         ))

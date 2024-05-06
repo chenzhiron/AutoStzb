@@ -1,7 +1,6 @@
 import os
 
 import json
-import copy
 current_file_path = os.path.abspath(__file__)
 
 # 获取当前文件所在的目录
@@ -15,6 +14,10 @@ class Conf:
         with open(config_file_path, 'r', encoding='utf-8') as load_f:
             self.conf = json.load(load_f)
         self.sort_task = []
+    def get_key_data(self, k):
+        if self.conf.get(k):
+            return self.conf[k]
+        return None
     def get_data(self):
         return self.conf
     def set_key_data(self, k, v):

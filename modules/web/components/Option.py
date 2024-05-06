@@ -3,6 +3,8 @@ import functools
 from pywebio.output import put_column, put_text, put_row
 from pywebio.pin import put_input, put_checkbox, put_select, pin_on_change
 
+from modules.web.components.prop_all import propall
+
 class Component:
     def __init__(self, key, value, types, event, args=None) -> None:
         self.key = key
@@ -46,24 +48,25 @@ class Option:
                 self.component.controller
             ]
            )
+    def render(self):
+        self.options
 
 
 class OptionPage:
     def __init__(self, datalists) -> None:
-        self.origin_data = datalists[0]
-        self.datalists = datalists[1]
+        self.data = datalists
         
     def dispatch(self):
-        for key, values in self.datalists.items():
+        for key, values in self.data.items():
+            if key == 'battle_info':
+                continue
+            prop_component = propall[key]
             Option(
-                key.display_name, Component(key.name, values, key.option_type,
-                                                  event=functools.partial(
-                                                      key.on_change_event,
-                                                      origin_controller=self.datalists,
-                                                      origin=self.origin_data
-                                                    ), 
-                                            args=key.options)
-                                        ).options
+                prop_component.display_name, 
+                Component(prop_component.name, values, prop_component.option_type,
+                          event=functools.partial(prop_component.on_change_event, origin=self.data,keyss=key),
+                          args=prop_component.options)
+                                        ).render()
 
 # 示例
 #   OptionPage({

@@ -3,8 +3,12 @@ from pywebio.output import put_scope, use_scope, put_button, clear
 from pywebio import  config
 from pywebio.session import set_env, register_thread
 
-from modules.web.styles import style
-
+from modules.web.components.styles import style
+# from modules.execute.main import stzb
+# self.execute_thread = threading.Thread(target=stzb.loop)
+# self.execute_thread.setDaemon(True)
+# self.execute_thread.start()
+# register_thread(self.execute_thread)
 class Entry:
   def __init__(self) -> None:
     pass
@@ -23,11 +27,7 @@ class Entry:
                   put_scope('content', []),
       ])
       self.render_module_bar()
-      from modules.execute.main import stzb
-      self.execute_thread = threading.Thread(target=stzb.loop)
-      self.execute_thread.setDaemon(True)
-      self.execute_thread.start()
-      register_thread(self.execute_thread)
+     
         
 
 

@@ -5,14 +5,13 @@ class OptionExplain:
         self.value = value
         self.option_type = option_type
         self.options = options
-    def on_change_event(self, new_value, origin, origin_controller):
+    def on_change_event(self, new_value, origin, keyss):
         if type(new_value) is list:
             if len(new_value) == 1:
                 new_value = True
             else:
                 new_value = False
-        origin_controller[self] = new_value
-        origin[self.name] = new_value
+        origin[keyss] = new_value
 
         
 team = OptionExplain(
@@ -113,6 +112,12 @@ standby_max = OptionExplain(
     'options',
     [1,2,3,4,5]
 )
+delay = OptionExplain(
+    'delay',
+    ['延迟时间','下一次行动延迟。单位(秒)'],
+    0,
+    'int'
+)
 screen_await = OptionExplain(
     'screen_await',
     ['截图间隔时间','截图间隔时间。单位(秒)'],
@@ -147,6 +152,7 @@ propall = {
     'next_run_time': next_run_time,
     'x': x,
     'y': y,
+    "delay": delay,
     'recruit_person': recruit_person,
     'going': going,
     'mopping_up': mopping_up,

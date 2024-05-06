@@ -1,1 +1,1 @@
-from conf import conf
+from modules.manager.conf import conf
