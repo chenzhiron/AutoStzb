@@ -4,19 +4,28 @@ import time
 from datetime import timedelta, datetime
 from modules.task.steps import *
 from modules.logs.logs import st_logger
-
+from modules.manager.main import conf
+from modules.devices.device import Devices
 class Stzb:
     def __init__(self):
         self.device = None
-        self.simulation = None
+        self.simulation = getattr(conf.get_key_data('simulator'), 'value', None)
 
-    def devices(self, globalConfig):
-        self.simulation = globalConfig['simulator']
-        from modules.devices.device import Devices
-        self.device = Devices(globalConfig)
+    def initDevices(self):
+        simulator_val = getattr(conf.get_key_data('simulator'), 'value', None)
+        screen_await_val = getattr(conf.get_key_data('screen_await','value', 0.3))
+        if self.device is None:
+            self.device = Devices({
+                "simulator": simulator_val,
+                "screen_await": screen_await_val
+            })
+        if self.simulation is not simulator_val:
+            self.device = Devices({
+                "simulator": simulator_val,
+                "screen_await": screen_await_val
+            })
         return self.device
     
-    # 对于任务函数，通过记录上一次执行的函数来计算下一次执行的函数任务
     def task_updata(self, task, execute_result):
         if execute_result['type'] == 'FeatOperatorSteps':
             task['state'] = False
@@ -101,30 +110,39 @@ class Stzb:
         return datetime.now() >= future
 
     def sort_tasks(self):
-        stData = self.taskManagers.get_data()
         filtered_data = []
-        if stData['feat']['state']:
-            return {
-                "feat_sum": True,
-                "instance": stData['feat']
-            }
-        for v in stData['task']:
-            if v.get('_step') == None:
-                v['_step'] = 0
-            if v['state']:
-                filtered_data.append(v)
-                if len(v['x']) > 0 and type(v['x']) != list:
-                    v['x'] = v['x'].split(',')
-                if len(v['y']) > 0 and type(v['y']) != list:
-                    v['y'] = v['y'].split(',')
-        if len(filtered_data) == 0:
-            return None
-        filtered_data.sort(key=lambda x: x['next_run_time'])
-        current_task_tims = filtered_data[0]['next_run_time']
-        if self.wait_until(current_task_tims):
-            return filtered_data[0]
-        else:
-            return None
+        execute_key = ['feat', 'troop1', 'troop2', 'troop3', 'troop4', 'troop5']
+        task_data = conf.get_data()
+        for key, value in task_data.items():
+            if key not in execute_key:
+                continue
+            if value['state']:
+                filtered_data.append({key:value})
+            
+        # stData = self.taskManagers.get_data()
+        # filtered_data = []
+        # if stData['feat']['state']:
+        #     return {
+        #         "feat_sum": True,
+        #         "instance": stData['feat']
+        #     }
+        # for v in stData['task']:
+        #     if v.get('_step') == None:
+        #         v['_step'] = 0
+        #     if v['state']:
+        #         filtered_data.append(v)
+        #         if len(v['x']) > 0 and type(v['x']) != list:
+        #             v['x'] = v['x'].split(',')
+        #         if len(v['y']) > 0 and type(v['y']) != list:
+        #             v['y'] = v['y'].split(',')
+        # if len(filtered_data) == 0:
+        #     return None
+        # filtered_data.sort(key=lambda x: x['next_run_time'])
+        # current_task_tims = filtered_data[0]['next_run_time']
+        # if self.wait_until(current_task_tims):
+        #     return filtered_data[0]
+        # else:
+        #     return None
     def get_next_task(self):
         task = self.sort_tasks()
         if task == None:
@@ -160,13 +178,10 @@ class Stzb:
             return task, 'zhengbing'
         return None, None
     def loop(self):
-        from modules.web.web import ui
-        self.taskManagers = ui
         while 1:
-            res = self.taskManagers.get_data()
-            if res['state']:
-                if res['simulator'] != self.simulation:
-                    self.devices(globalConfig=res) 
+            res = getattr(conf.get_key_data('state'), 'value', None)
+            if res:
+                self.initDevices() 
                 task, fn = self.get_next_task()
                 if task is None or fn is None:
                     time.sleep(1)
