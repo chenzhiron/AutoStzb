@@ -3,6 +3,7 @@ from modules.task.setups import *
 from modules.logs.logs import st_logger
 from modules.utils.utils import img_bytes_like, export_xlsx
 from modules.task.general.option_verify_area import address_execute_list
+from modules.manager.main import conf
 class Origin:
     # 接收实例配置，但是不修改实例的任何属性，只读
     def __init__(self, device, instance):
@@ -193,8 +194,8 @@ class PingJuChetui(Origin):
         return self.tasks_result
 
 class FeatStatis(Origin):
-    def __init__(self, device, instance):
-        super().__init__(device, instance)
+    def __init__(self, device):
+        super().__init__(device)
         self.exec_step = feat_statis
 
     def run(self):

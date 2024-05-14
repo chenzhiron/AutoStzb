@@ -38,7 +38,7 @@ await_time = OptionExplain(
 
 next_run_time = OptionExplain(
     'next_run_time',
-    ['下一次运行时间', '自动计算的值，不需要更改'],
+    ['下一次运行时间', '自动计算的值，一般不需要手动更改', '如果需要更改，请按照格式修改'],
     '2024-01-01 00:00:00',
     'str'
 )
@@ -93,7 +93,7 @@ residue_troops_enemy = OptionExplain(
 
 simulator = OptionExplain(
     'simulator',
-    ['模拟器配置', '选择要链接的模拟器，如果不确定自己要的是哪一个模拟器，可以进入 toolkit/adb 目录下，运行 cmd, 执行 adb devices,找到需要的模拟器，同时请注意，有一些模拟器并不支持或者等待适配中，目前推荐的是 夜神模拟器'],
+    ['模拟器配置', '选择要链接的模拟器，如果不确定自己要的是哪一个模拟器，可以进入 toolkit/adb 目录下，运行 cmd, 执行 adb devices,找到需要的模拟器，同时请注意，有一些模拟器并不支持或者等待适配中'],
     '',
     'str'
 )

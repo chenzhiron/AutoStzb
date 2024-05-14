@@ -55,3 +55,6 @@ class MemuBar:
                                                         ),
                                                          args=feat_type.options
                                                         ))
+            next_run_time = propall['next_run_time']
+            Option(next_run_time.display_name, Component(next_run_time.name, current_data[next_run_time.name],
+                                                      await_time.option_type,functools.partial(next_run_time.on_change_event, origin=current_data,keyss=next_run_time.name)))
