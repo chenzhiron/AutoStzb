@@ -8,7 +8,7 @@ class Origin:
     # 接收实例配置，但是不修改实例的任何属性，只读
     def __init__(self, device, instance):
         self.devices = device
-        self.instance = instance
+        self.instance = conf.get_key_data(instance)
         self._step = 0
         self.tasks_result = {
             'type': None
@@ -194,8 +194,8 @@ class PingJuChetui(Origin):
         return self.tasks_result
 
 class FeatStatis(Origin):
-    def __init__(self, device):
-        super().__init__(device)
+    def __init__(self, device, conf_key):
+        super().__init__(device, conf_key)
         self.exec_step = feat_statis
 
     def run(self):

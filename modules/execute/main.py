@@ -83,7 +83,7 @@ class Stzb:
             return method()
         
     def feat(self):
-        return FeatStatis(device=self.device).run()
+        return FeatStatis(self.device, 'feat').run()
     def troo1(self):
         pass
     def troop2(self):
