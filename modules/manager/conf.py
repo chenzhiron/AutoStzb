@@ -15,6 +15,7 @@ class Conf:
             self.conf = json.load(load_f)
         self.sort_task = []
     def get_key_data(self, k):
+        print('key', k)
         if self.conf.get(k):
             return self.conf[k]
         return None
@@ -23,7 +24,7 @@ class Conf:
     def set_key_data(self, k, v):
         if self.conf.get(k):
             self.conf[k] = v
-        return self.config[k]
+        return self.conf[k]
     
 conf = Conf()
 

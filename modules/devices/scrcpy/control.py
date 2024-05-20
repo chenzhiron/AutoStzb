@@ -3,8 +3,7 @@ import socket
 import struct
 from time import sleep
 
-import scrcpy
-from scrcpy import const
+from modules.devices.scrcpy.const import *
 
 
 def inject(control_type: int):
@@ -33,21 +32,21 @@ class ControlSender:
     def __init__(self, parent):
         self.parent = parent
 
-    @inject(const.TYPE_INJECT_KEYCODE)
+    @inject(TYPE_INJECT_KEYCODE)
     def keycode(
-        self, keycode: int, action: int = const.ACTION_DOWN, repeat: int = 0
+        self, keycode: int, action: int = ACTION_DOWN, repeat: int = 0
     ) -> bytes:
         """
         Send keycode to device
 
         Args:
-            keycode: const.KEYCODE_*
+            keycode: KEYCODE_*
             action: ACTION_DOWN | ACTION_UP
             repeat: repeat count
         """
         return struct.pack(">Biii", action, keycode, repeat, 0)
 
-    @inject(const.TYPE_INJECT_TEXT)
+    @inject(TYPE_INJECT_TEXT)
     def text(self, text: str) -> bytes:
         """
         Send text to device
@@ -59,9 +58,9 @@ class ControlSender:
         buffer = text.encode("utf-8")
         return struct.pack(">i", len(buffer)) + buffer
 
-    @inject(const.TYPE_INJECT_TOUCH_EVENT)
+    @inject(TYPE_INJECT_TOUCH_EVENT)
     def touch(
-        self, x: int, y: int, action: int = const.ACTION_DOWN, touch_id: int = -1
+        self, x: int, y: int, action: int = ACTION_DOWN, touch_id: int = -1
     ) -> bytes:
         """
         Touch screen
@@ -85,7 +84,7 @@ class ControlSender:
             1,
         )
 
-    @inject(const.TYPE_INJECT_SCROLL_EVENT)
+    @inject(TYPE_INJECT_SCROLL_EVENT)
     def scroll(self, x: int, y: int, h: int, v: int) -> bytes:
         """
         Scroll screen
@@ -108,8 +107,8 @@ class ControlSender:
             int(v),
         )
 
-    @inject(const.TYPE_BACK_OR_SCREEN_ON)
-    def back_or_turn_screen_on(self, action: int = const.ACTION_DOWN) -> bytes:
+    @inject(TYPE_BACK_OR_SCREEN_ON)
+    def back_or_turn_screen_on(self, action: int = ACTION_DOWN) -> bytes:
         """
         If the screen is off, it is turned on only on ACTION_DOWN
 
@@ -118,21 +117,21 @@ class ControlSender:
         """
         return struct.pack(">B", action)
 
-    @inject(const.TYPE_EXPAND_NOTIFICATION_PANEL)
+    @inject(TYPE_EXPAND_NOTIFICATION_PANEL)
     def expand_notification_panel(self) -> bytes:
         """
         Expand notification panel
         """
         return b""
 
-    @inject(const.TYPE_EXPAND_SETTINGS_PANEL)
+    @inject(TYPE_EXPAND_SETTINGS_PANEL)
     def expand_settings_panel(self) -> bytes:
         """
         Expand settings panel
         """
         return b""
 
-    @inject(const.TYPE_COLLAPSE_PANELS)
+    @inject(TYPE_COLLAPSE_PANELS)
     def collapse_panels(self) -> bytes:
         """
         Collapse all panels
@@ -157,7 +156,7 @@ class ControlSender:
             s.setblocking(True)
 
             # Read package
-            package = struct.pack(">B", const.TYPE_GET_CLIPBOARD)
+            package = struct.pack(">B", TYPE_GET_CLIPBOARD)
             s.send(package)
             (code,) = struct.unpack(">B", s.recv(1))
             assert code == 0
@@ -165,7 +164,7 @@ class ControlSender:
 
             return s.recv(length).decode("utf-8")
 
-    @inject(const.TYPE_SET_CLIPBOARD)
+    @inject(TYPE_SET_CLIPBOARD)
     def set_clipboard(self, text: str, paste: bool = False) -> bytes:
         """
         Set clipboard
@@ -177,8 +176,8 @@ class ControlSender:
         buffer = text.encode("utf-8")
         return struct.pack(">?i", paste, len(buffer)) + buffer
 
-    @inject(const.TYPE_SET_SCREEN_POWER_MODE)
-    def set_screen_power_mode(self, mode: int = scrcpy.POWER_MODE_NORMAL) -> bytes:
+    @inject(TYPE_SET_SCREEN_POWER_MODE)
+    def set_screen_power_mode(self, mode: int = POWER_MODE_NORMAL) -> bytes:
         """
         Set screen power mode
 
@@ -187,7 +186,7 @@ class ControlSender:
         """
         return struct.pack(">b", mode)
 
-    @inject(const.TYPE_ROTATE_DEVICE)
+    @inject(TYPE_ROTATE_DEVICE)
     def rotate_device(self) -> bytes:
         """
         Rotate device
@@ -216,7 +215,7 @@ class ControlSender:
         :return:
         """
 
-        self.touch(start_x, start_y, const.ACTION_DOWN)
+        self.touch(start_x, start_y, ACTION_DOWN)
         next_x = start_x
         next_y = start_y
 
@@ -247,9 +246,9 @@ class ControlSender:
                 if next_y > end_y:
                     next_y = end_y
 
-            self.touch(next_x, next_y, const.ACTION_MOVE)
+            self.touch(next_x, next_y, ACTION_MOVE)
 
             if next_x == end_x and next_y == end_y:
-                self.touch(next_x, next_y, const.ACTION_UP)
+                self.touch(next_x, next_y, ACTION_UP)
                 break
             sleep(move_steps_delay)

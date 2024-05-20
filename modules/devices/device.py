@@ -4,24 +4,16 @@ from adbutils import adb
 import uiautomator2 as u2
 import numpy as np
 from modules.devices.automation import DroidCast
-
-class Devices:
+from modules.devices.scrcpy.scrcpy import Scrcpy
+class Devices(Scrcpy):
     def __init__(self, config) -> None:
-        super().__init__()
-        simulator = config['simulator']
-        print('simulator', simulator)
-        adb.connect(simulator)
+        self.simulator = config['simulator']
         self.screen_await = config['screen_await']
-        self.d = u2.connect(simulator)
-        # self.url = 'http://127.0.0.1:53516/preview?width=1600&height=900'
-        self.url = ''
-
-
-    def getScreenshots(self):
-        time.sleep(self.screen_await)
-        imgs = self.d.screenshot()
-        res = np.array(imgs)
-        return res
+        print('simulator', self.simulator)
+        adb.connect(self.simulator)
+        super().__init__()
+        self.run()
+        self.d = u2.connect(self.simulator)
     
     def operateTap(self, x, y):
         self.d.click(x, y)

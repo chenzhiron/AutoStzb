@@ -9,7 +9,7 @@ from modules.devices.device import Devices
 class Stzb:
     def __init__(self):
         self.device = None
-        self.simulation = getattr(conf.get_key_data('simulator'), 'value', None)
+        self.simulator = None
 
     def initDevices(self):
         simulator_val = getattr(conf.get_key_data('simulator'), 'value', None)
@@ -19,12 +19,15 @@ class Stzb:
                 "simulator": simulator_val,
                 "screen_await": screen_await_val
             })
-        if self.simulation is not simulator_val:
+            self.simulator = simulator_val
+            return self.device
+        
+        if self.simulator is not simulator_val:
             self.device = Devices({
                 "simulator": simulator_val,
                 "screen_await": screen_await_val
             })
-        return self.device
+            return self.device
     
     def wait_until(self, future):
         # 如果future是字符串类型，尝试将其解析为datetime对象
@@ -73,8 +76,8 @@ class Stzb:
                     time.sleep(1)
                     continue
                 st_logger.info('next task: %s %s', fnMane, fnObj)
-                result = self.run(fnMane)
-                print(result)
+                self.run(fnMane)
+                print('任务结束', time.time())
             time.sleep(1)
 
     def run(self, fnMane):
@@ -83,7 +86,8 @@ class Stzb:
             return method()
         
     def feat(self):
-        return FeatStatis(self.device, 'feat').run()
+        pass
+        # return FeatStatis(self.device, 'feat').run()
     def troo1(self):
         pass
     def troop2(self):
