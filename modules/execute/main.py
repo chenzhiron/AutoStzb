@@ -12,8 +12,8 @@ class Stzb:
         self.simulator = None
 
     def initDevices(self):
-        simulator_val = getattr(conf.get_key_data('simulator'), 'value', None)
-        screen_await_val = getattr(conf.get_key_data('screen_await','value', 0.3))
+        simulator_val = conf.get_key_data('simulator')['value']
+        screen_await_val = conf.get_key_data('screen_await')['value']
         if self.device is None:
             self.device = Devices({
                 "simulator": simulator_val,
@@ -42,6 +42,9 @@ class Stzb:
 
         # 返回是否已经到达或超过future时间
         return datetime.now() >= future
+    def get_next_run_time(self, item):
+        nested_dict = item.get(list(item.keys())[0], {})
+        return nested_dict.get('next_run_time', '')
 
     def sort_tasks(self):
         filtered_data = []
@@ -52,10 +55,10 @@ class Stzb:
                 continue
             if value['state']:
                 filtered_data.append({key:value})
-        if len(filtered_data) is 0:
+        if len(filtered_data) == 0:
             return None
-        filtered_data.sort(key=lambda x: x['next_run_time'])
-        current_task_times = filtered_data[0]['next_run_time']
+        filtered_data.sort(key=self.get_next_run_time)
+        current_task_times = filtered_data[0][list(filtered_data[0].keys())[0]]['next_run_time']
         if self.wait_until(current_task_times):
             return filtered_data[0]
         return None
@@ -68,7 +71,7 @@ class Stzb:
     
     def loop(self):
         while 1:
-            res = getattr(conf.get_key_data('state'), 'value', None)
+            res = conf.get_key_data('state')['value']
             if res:
                 self.initDevices() 
                 fnMane, fnObj = self.get_next_task()

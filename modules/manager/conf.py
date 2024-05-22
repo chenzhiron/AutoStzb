@@ -14,9 +14,9 @@ class Conf:
         with open(config_file_path, 'r', encoding='utf-8') as load_f:
             self.conf = json.load(load_f)
         self.sort_task = []
+        print(self.conf['state'])
     def get_key_data(self, k):
-        print('key', k)
-        if self.conf.get(k):
+        if self.conf.__contains__(k):
             return self.conf[k]
         return None
     def get_data(self):
