@@ -58,7 +58,7 @@ class OptionPage:
         
     def dispatch(self):
         for key, values in self.data.items():
-            if key == 'battle_info':
+            if key == 'battle_info' or key == 'steps':
                 continue
             prop_component = propall[key]
             Option(
@@ -67,18 +67,3 @@ class OptionPage:
                           event=functools.partial(prop_component.on_change_event, origin=self.data,keyss=key),
                           args=prop_component.options)
                                         ).render()
-
-# 示例
-#   OptionPage({
-#         team: 1,
-#         skip_await: False,
-#         state: False,
-#         explain: '',
-#         await_time: 0,
-#         next_run_time: '2024-01-01 00:00:00',
-#         mopping_up: False,
-#         delay: 0,
-#         draw_txt: '',
-#         residue_troops_person: 0.5,
-#         residue_troops_enemy: 0.5
-#     }).dispatch()

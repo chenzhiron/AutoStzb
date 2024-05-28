@@ -12,7 +12,8 @@
     "state": false,
     "feat_sum": 0,
     "types": "团队",
-    "next_run_time": "2024-01-01 00:00:00"
+    "next_run_time": "2024-01-01 00:00:00",
+    "steps": 0
   },
   "troop1": {
     "team": 1,
@@ -29,7 +30,8 @@
     "residue_troops_enemy": 0.5,
     "battle_info": [],
     "outset": "",
-    "standby_max": 5
+    "standby_max": 5,
+    "steps": 0
   },
   "troop2": {
     "team": 2,
@@ -46,7 +48,8 @@
     "residue_troops_enemy": 0.5,
     "battle_info": [],
     "outset": "",
-    "standby_max": 5
+    "standby_max": 5,
+    "steps": 0
   },
   "troop3": {
     "team": 3,
@@ -63,9 +66,9 @@
     "residue_troops_enemy": 0.5,
     "battle_info": [],
     "outset": "",
-    "standby_max": 5
-  }
-  ,
+    "standby_max": 5,
+    "steps": 0
+  },
   "troop4": {
     "team": 4,
     "state": false,
@@ -81,7 +84,8 @@
     "residue_troops_enemy": 0.5,
     "battle_info": [],
     "outset": "",
-    "standby_max": 5
+    "standby_max": 5,
+    "steps": 0
   }
   ,
   "troop5": {
@@ -99,6 +103,7 @@
     "residue_troops_enemy": 0.5,
     "battle_info": [],
     "outset": "",
-    "standby_max": 5
+    "standby_max": 5,
+    "steps": 0
   }
 }

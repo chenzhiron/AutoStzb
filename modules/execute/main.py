@@ -1,11 +1,9 @@
-import os
-
 import time
-from datetime import timedelta, datetime
 from modules.task.steps import *
 from modules.logs.logs import st_logger
 from modules.manager.main import conf
 from modules.devices.device import Devices
+from modules.utils.utils import wait_until
 class Stzb:
     def __init__(self):
         self.device = None
@@ -29,19 +27,7 @@ class Stzb:
             })
             return self.device
     
-    def wait_until(self, future):
-        # 如果future是字符串类型，尝试将其解析为datetime对象
-        if isinstance(future, str):
-            try:
-                future = datetime.fromisoformat(future)
-            except ValueError:
-                raise ValueError("future string is not in the correct format")
-
-        # 在future上增加1秒
-        future += timedelta(seconds=1)
-
-        # 返回是否已经到达或超过future时间
-        return datetime.now() >= future
+ 
     def get_next_run_time(self, item):
         nested_dict = item.get(list(item.keys())[0], {})
         return nested_dict.get('next_run_time', '')
@@ -59,7 +45,7 @@ class Stzb:
             return None
         filtered_data.sort(key=self.get_next_run_time)
         current_task_times = filtered_data[0][list(filtered_data[0].keys())[0]]['next_run_time']
-        if self.wait_until(current_task_times):
+        if wait_until(current_task_times):
             return filtered_data[0]
         return None
     

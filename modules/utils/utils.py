@@ -1,7 +1,7 @@
 import datetime
 from io import BytesIO
 from PIL import Image
-import numpy as np
+from datetime import timedelta, datetime
 import pandas as pd
 def calculate_max_timestamp(time_list):
     try:
@@ -43,3 +43,17 @@ def export_xlsx(data, fileName='统计表', filePath=None):
 def fill_black(img, area):
     img[area[1]:area[3], area[0]:area[2]] = [0, 0, 0]
     return img
+
+def wait_until(future):
+    # 如果future是字符串类型，尝试将其解析为datetime对象
+    if isinstance(future, str):
+        try:
+            future = datetime.fromisoformat(future)
+        except ValueError:
+            raise ValueError("future string is not in the correct format")
+
+    # 在future上增加1秒
+    future += timedelta(seconds=1)
+
+    # 返回是否已经到达或超过future时间
+    return datetime.now() >= future
