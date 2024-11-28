@@ -1,0 +1,16 @@
+.webio-tabs {
+  margin-top: 0 !important;
+}
+
+.form-check-input {
+  position: relative !important;
+  margin: 0 !important;
+}
+
+details {
+  border:none;
+}
+
+.markdown-body p {
+  margin-bottom: 0 !important;
+}
