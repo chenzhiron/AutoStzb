@@ -1,6 +1,6 @@
-from modules.web.modules import Private, Team, overview, StLog
+from .Team.main import Team
+from .private.main import Private
+from .overview import OverViewView
 
 private = Private()
 team = Team()
-stlog = StLog()
-overview.update_log_instance(stlog)

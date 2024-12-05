@@ -1,3 +1,4 @@
 from modules.web.main import server
 
-server()
+if __name__=='__main__':
+  server()

@@ -1,8 +1,8 @@
-from .sweep_area import SweepArea
 from pywebio.output import use_scope,put_collapse,put_text
 
-from ...props.main import sweep_props
+from .sweep import SweepArea, SweepProp
 
+sweep_props = [SweepProp('1'),SweepProp('2'),SweepProp('3'),SweepProp('4'),SweepProp('5')]
 sweeps = SweepArea(sweep_props)
 
 class Private:
