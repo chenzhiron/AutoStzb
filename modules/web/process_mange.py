@@ -12,9 +12,10 @@ class ProcessManage:
     self.st_log_queue = ShareData.manager.Queue()
     self.log = []
     self.log_thread = None
+    self.log_thread_stop_flag = False
 
   def log_thread_fn(self):
-    while 1:
+    while not self.log_thread_stop_flag:
       try:
         v = self.st_log_queue.get(timeout=1)
       except Empty:
@@ -27,9 +28,11 @@ class ProcessManage:
     if self.state:
       self.st_thread.kill()
       self.st_thread = None
-      if self.log_thread.is_alive():
-         self.log_thread.join(1)
+      if self.log_thread and self.log_thread.is_alive():
+            self.log_thread_stop_flag = True  # 设置退出标志
+            self.log_thread.join(1)
       print('process exit')
+      print('log_thread states:', self.log_thread.is_alive() )
 
   def start(self):
     self.st_thread = multiprocessing.Process(
@@ -39,7 +42,8 @@ class ProcessManage:
       )
     print('st_thread:', self.st_thread)
     self.st_thread.start()
-    
+
+    self.log_thread_stop_flag = False
     self.log_thread = Thread(None, target=self.log_thread_fn)
     self.log_thread.start()
    
