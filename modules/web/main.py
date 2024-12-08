@@ -1,15 +1,19 @@
 from pywebio.platform.tornado import start_server
-from pywebio.output import put_scope, use_scope, put_scrollable, put_column, put_text, put_button,put_collapse
-from pywebio.session import set_env
+from pywebio.output import put_scope, use_scope, put_column, put_text, put_button,put_collapse
+from pywebio.session import set_env, get_current_session
 from pywebio import config
+
+from modules.task import StDispatch
 
 from .function import private
 from .process_mange import ProcessManage
 from .setting import ShareData
 
+
+stdispath = StDispatch()
+
 def server():
   ShareData.init()
-  
   web = app().render
   
   start_server(web, port=10965, auto_open_webbrowser=True, static_dir='./modules/web/static')
@@ -17,8 +21,11 @@ def server():
 class app:
   def __init__(self):
     self.st = ProcessManage.get_manager()
+    stdispath.update_pm(self.st)
+    stdispath.start()
 
   def render(self):
+    stdispath.register()
     config(css_file='./static/style.css')
     self.set_config()
     self.init_scope()
@@ -27,11 +34,6 @@ class app:
       self.render_process_btn()
       self.render_team()
       private.render()
-   
-    while 1:
-      if len(self.st.log) > 0:
-        with use_scope('function_area',clear=True):
-          put_scrollable(self.st.log.pop(0))
 
   def set_config(self):
     set_env(output_max_width='100%')
