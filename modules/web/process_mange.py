@@ -1,7 +1,7 @@
-import multiprocessing
+from multiprocessing import Process,Manager
 from queue import Empty
 from ..log import set_handle
-from .setting import ShareData
+# from .setting import ShareData
 from threading import Thread
   
 class ProcessManage:
@@ -9,7 +9,7 @@ class ProcessManage:
 
   def __init__(self):
     self.st_thread = None
-    self.st_log_queue = ShareData.manager.Queue()
+    self.st_log_queue = Manager().Queue()
     self.log = []
     self.log_thread = None
     self.log_thread_stop_flag = False
@@ -21,7 +21,6 @@ class ProcessManage:
       except Empty:
         continue
   
-      print(v)
       self.log.append(v)
 
   def stop(self):
@@ -34,11 +33,12 @@ class ProcessManage:
       print('process exit')
       print('log_thread states:', self.log_thread.is_alive() )
 
-  def start(self):
-    self.st_thread = multiprocessing.Process(
+  def start(self, teamprop):
+    print(type(teamprop))
+    self.st_thread = Process(
       None,
       target=ProcessManage.run_st,
-      args=(self.st_log_queue,)
+      args=(self.st_log_queue, teamprop)
       )
     print('st_thread:', self.st_thread)
     self.st_thread.start()
@@ -52,10 +52,10 @@ class ProcessManage:
   def state(self) -> bool:
         return self.alive
 
-  def run_st(q):
+  def run_st(q,teamprop):
     from st import St
     set_handle(q.put)
-    St().loop()
+    St(teamprop).loop()
   
   @property
   def alive(self) -> bool:

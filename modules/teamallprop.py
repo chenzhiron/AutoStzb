@@ -1,37 +1,38 @@
-class StTeamAllProp:
-    def __init__(self):
-        self.data = {}
-    def initialize(self):
-        self.data["besiegemain"] = {
-          "state": False
-        }
-        self.data["basiegedestory"] = {
-            "state": False
-        }
-        self.data["exploit"] = {
-          "state": False
-        }
-        self.data["enemymain"] = {
-          "state": False
-        }
-        self.data["battledestory"] = {
-          "state": False
-        }
-        self.data["myfight"] = {
-          "state": False
-        }
-    def updatecheckbox(self, obj, k, v):
-        if len(v) == 0:
-          v = False
-        else:
-          v = True
-        self.data[obj][k] = v
-    def update(self, obj, k, v):
-        self.data[obj][k] = v
-    
-    def __repr__(self):
-        return f"StTeamAllProp(data={self.data})"
+from multiprocessing import Manager
 
-stteamprop = StTeamAllProp()
-stteamprop.initialize()
-print(stteamprop)
+#打城主力
+besiegemain_state = 'besiegemain_state_state'
+#打城拆迁
+basiegedestory_state = 'basiegedestory_state'
+#武勋
+exploit_state = 'exploit_state'
+#敌军主力
+enemymain_state = 'enemymain_state'
+#战场翻地/拆除
+battledestory_state = 'battledestory_state'
+#我方出战/防守
+myfight_state = 'myfight_state'
+
+def stTeamPropManger():
+    data = Manager().dict({
+        besiegemain_state: False,
+        basiegedestory_state: False,
+        exploit_state: False,
+        enemymain_state: False,
+        battledestory_state: False,
+        myfight_state: False,  
+    })
+    return data
+
+def updatecheckbox(obj, k, v):
+    if len(v) == 0:
+      result = False
+    else:
+      result = True
+    
+    obj[k] = result
+
+def update(obj, k, v):
+    obj[k] = v
+
+stteamprop = stTeamPropManger()

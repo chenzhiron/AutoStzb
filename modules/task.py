@@ -21,7 +21,7 @@ class StDispatch:
       if self.pm != None and self.last_len != len(self.pm.log):
         log_message = self.pm.log.pop(0)
         try:
-          run_js("let d = document.getElementById('pywebio-scope-function_area'); let v = d.innerHTML; d.innerHTML=`v"+str(log_message) + '\n`')
+          run_js("let d = document.getElementById('pywebio-scope-log_area'); let v = d.innerHTML; d.innerHTML=`v"+str(log_message) + '\n`')
         except SessionNotFoundException:
           print(get_current_session())
       time.sleep(0.5)

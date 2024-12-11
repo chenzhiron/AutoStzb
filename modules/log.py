@@ -4,5 +4,4 @@ def set_handle(fn):
   f = fn
 
 def info(v):
-   v = 'info: v' + v
    f(v)
