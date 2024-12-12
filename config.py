@@ -1,3 +1,1 @@
-config = {
-  "version": "1.0.0"
-}
+config = {"version": "1.0.0"}

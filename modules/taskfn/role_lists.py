@@ -1,9 +1,9 @@
 import time
 import numpy as np
-from ..ocr.main import ocr_format_val
-from ..utils import reg_card
-from ..devices.main import Devices
-from .tasks_utils import battle_time
+from modules.ocr.main import ocr_format_val
+from modules.utils import reg_card
+from modules.devices.main import Devices
+from modules.taskfn.tasks_utils import battle_time
 
 def role_lists(img, filtered_lines):
 		state = False
@@ -50,7 +50,7 @@ def loopinfo2(d,img):
 			return (True,[])
 		state, resarr, end_time = role_lists(img, filtered_lines)
 		return (state,resarr, end_time)
- 
+
 def siege_main2(d, end_time):
 	rr = []
 	while True:

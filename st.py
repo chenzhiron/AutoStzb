@@ -4,46 +4,56 @@ import json
 from modules.log import info
 from modules.static.propname import *
 
+
 class St:
-  def __init__(self, teamprop):
-    self.teamdata = teamprop
-    self.handlesMap = {
-      besiegemain_state: self.siegebattles,
-      basiegedestory_state: self.siegebattles,
-      exploit_state: self.exploit,
-      # enemymain_state: self.en,
-      battledestory_state: self.fliplists,
-      # myfight_state: self.
-    }
-  def devices(self, config):
-    from modules.devices.main import Devices
-    d = Devices(config).d
-    return d
+    def __init__(self, teamprop):
+        self.teamdata = teamprop
+        self.handlesMap = {
+            besiegemain_state: self.siegebattles,
+            basiegedestory_state: self.siegebattles,
+            exploit_state: self.exploit,
+            # enemymain_state: self.en,
+            battledestory_state: self.fliplists,
+            ranking_state: self.ranking,
+            # myfight_state: self.
+        }
 
-  def exploit(self, d):
-    from modules.taskfn.exploit import Exploit
-    Exploit(d).execute()
+    def devices(self, config):
+        from modules.devices.main import Devices
 
-  def fliplists(self, d, endtime):
-    from modules.taskfn.flip_lists import FlipLists
-    FlipLists(d, endtime).execute()
-  
-  def ranking(self, d):
-    from modules.taskfn.ranking import Ranking
-    Ranking(d).execute()
+        d = Devices(config).d
+        return d
 
-  def rolelists(self,d):
-    from modules.taskfn.role_lists import role_lists
-    pass
+    def exploit(self, d, *args):
+        from modules.taskfn.exploit import Exploit
 
-  def siegebattles(self, d, endtime):
-    from modules.taskfn.siege_battles import SiegeBattles
-    SiegeBattles(d, endtime).execute()
-    
-  def loop(self):
-    while True:
-      for key, func in self.handlesMap.items():
-        if self.teamdata[key]:
-          d = self.devices(self.teamdata[simulator_address])
-          func(d,json.loads(json.dumps(self.teamdata)))
-      time.sleep(1)
+        Exploit(d).execute()
+
+    def fliplists(self, d, endtime):
+        from modules.taskfn.flip_lists import FlipLists
+
+        FlipLists(d, endtime).execute()
+
+    def ranking(self, d, *args):
+        from modules.taskfn.ranking import Ranking
+
+        Ranking(d).execute()
+
+    def rolelists(self, d, *args):
+        from modules.taskfn.role_lists import role_lists
+
+        pass
+
+    def siegebattles(self, d, endtime):
+        from modules.taskfn.siege_battles import SiegeBattles
+
+        SiegeBattles(d, endtime).execute()
+
+    def loop(self):
+        while True:
+            for key, func in self.handlesMap.items():
+                if self.teamdata[key]:
+                    d = self.devices(self.teamdata[simulator_address])
+                    func(d, self.teamdata)
+                    self.teamdata[key] = False
+            time.sleep(1)

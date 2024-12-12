@@ -1,9 +1,8 @@
-
 import numpy as np
-from ..ocr.main import ocr_format_val
-from ..utils import find_multiple_templates, pil_to_cv2, export_excel
-from ..devices.main import Devices
-from .tasks_utils import BaseTypeImg, battle_time
+from modules.ocr.main import ocr_format_val
+from modules.utils import find_multiple_templates, pil_to_cv2, export_excel
+from modules.devices.main import Devices
+from modules.taskfn.tasks_utils import BaseTypeImg, battle_time
 
 class FlipLists(BaseTypeImg):
 	def __init__(self, d, end_time):

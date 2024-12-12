@@ -1,10 +1,9 @@
 import numpy as np
 
-from ..devices.main import Devices
-from ..ocr.main import ocr_format_val
-from ..utils import export_excel, find_multiple_templates, pil_to_cv2
-from .tasks_utils import BaseTypeImg, battle_time
-
+from modules.devices.main import Devices
+from modules.ocr.main import ocr_format_val
+from modules.utils import export_excel, find_multiple_templates, pil_to_cv2
+from modules.taskfn.tasks_utils import BaseTypeImg, battle_time
 
 
 class SiegeBattles(BaseTypeImg):
@@ -37,10 +36,13 @@ class SiegeBattles(BaseTypeImg):
 			# 单次战斗数量
 			battles = ocr_format_val(np.array(self.screenshot.crop([1770, v + 195 + 130, 1830,  v + 195 + 200]))) or \
 				ocr_format_val(np.array(self.screenshot.crop([1770, v + 195 + 70, 1830,  v + 195 + 130])))
-			if battles == None:
+			try:
+				if battles == None:
+					battles = 1
+				else:
+					battles = int(battles) + 1
+			except ValueError:
 				battles = 1
-			else:
-				battles = int(battles) + 1
 			current.append(battles)
 
 			print('battles:',battles)
