@@ -1,17 +1,49 @@
-import threading
 import time
+import json
 
 from modules.log import info
+from modules.static.propname import *
 
 class St:
-  stop_event: threading.Event = None
-
   def __init__(self, teamprop):
     self.teamdata = teamprop
-    print(id(self.teamdata))
+    self.handlesMap = {
+      besiegemain_state: self.siegebattles,
+      basiegedestory_state: self.siegebattles,
+      exploit_state: self.exploit,
+      # enemymain_state: self.en,
+      battledestory_state: self.fliplists,
+      # myfight_state: self.
+    }
+  def devices(self, config):
+    from modules.devices.main import Devices
+    d = Devices(config).d
+    return d
+
+  def exploit(self, d):
+    from modules.taskfn.exploit import Exploit
+    Exploit(d).execute()
+
+  def fliplists(self, d, endtime):
+    from modules.taskfn.flip_lists import FlipLists
+    FlipLists(d, endtime).execute()
+  
+  def ranking(self, d):
+    from modules.taskfn.ranking import Ranking
+    Ranking(d).execute()
+
+  def rolelists(self,d):
+    from modules.taskfn.role_lists import role_lists
+    pass
+
+  def siegebattles(self, d, endtime):
+    from modules.taskfn.siege_battles import SiegeBattles
+    SiegeBattles(d, endtime).execute()
+    
   def loop(self):
-    i = 0;
-    while not self.stop_event:
-      i+=1
-      info(self.teamdata)
+    while True:
+      for key, func in self.handlesMap.items():
+        if self.teamdata[key]:
+          d = self.devices(self.teamdata[simulator_address])
+          func(d,json.loads(json.dumps(self.teamdata)))
       time.sleep(1)
