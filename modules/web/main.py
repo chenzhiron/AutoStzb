@@ -15,8 +15,8 @@ from modules.web.taskState import StDispatch
 from modules.static.propname import *
 from modules.allprop import allprops, update, updatecheckbox
 from modules.web.utils import def_lable_checkbox, explain_componet
-from .function import private
-from .process_mange import ProcessManage
+from modules.web.function import private
+from modules.web.process_mange import ProcessManage
 
 
 stdispath = StDispatch()
@@ -46,7 +46,7 @@ class app:
             self.render_process_btn()
             self.render_config()
             self.render_team()
-            # private.render()
+            private.render()
 
     def set_config(self):
         set_env(output_max_width="100%")
