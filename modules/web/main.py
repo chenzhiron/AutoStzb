@@ -8,13 +8,15 @@ from pywebio.output import (
     put_collapse,
 )
 from pywebio.session import set_env
-from pywebio.pin import pin_on_change, put_checkbox, put_input
 from pywebio import config
 
 from modules.web.taskState import StDispatch
 from modules.static.propname import *
-from modules.allprop import allprops, update, updatecheckbox
-from modules.web.utils import def_lable_checkbox, explain_componet
+from modules.allprop import allprops
+from modules.web.utils import (
+    render_checkbox,
+    render_input,
+)
 from modules.web.function import private
 from modules.web.process_mange import ProcessManage
 
@@ -89,13 +91,7 @@ class app:
 
     @use_scope("function_area", clear=True)
     def render_simulator(self):
-        explain_componet(
-            ["模拟器地址"],
-            put_input(simulator_address, value=allprops[simulator_address]),
-        )
-        pin_on_change(
-            simulator_address, onchange=lambda v: update(allprops, simulator_address, v)
-        )
+        render_input("模拟器地址", simulator_address, allprops)
 
     @use_scope("team", clear=True)
     def render_team(self):
@@ -114,116 +110,28 @@ class app:
 
     @use_scope("function_area", clear=True)
     def render_besiegemain(self):
-        explain_componet(
-            ["状态"],
-            def_lable_checkbox(
-                put_checkbox(
-                    besiegemain_state, options=[True], value=allprops[besiegemain_state]
-                )
-            ),
-        )
-        pin_on_change(
-            besiegemain_state,
-            onchange=lambda v: updatecheckbox(allprops, besiegemain_state, v),
-            clear=True,
-        )
+        render_checkbox("状态", besiegemain_state, allprops)
 
     @use_scope("function_area", clear=True)
     def render_basiegedestory(self):
-        explain_componet(
-            ["状态"],
-            def_lable_checkbox(
-                put_checkbox(
-                    basiegedestory_state,
-                    options=[True],
-                    value=allprops[basiegedestory_state],
-                )
-            ),
-        )
-        pin_on_change(
-            basiegedestory_state,
-            onchange=lambda v: updatecheckbox(allprops, basiegedestory_state, v),
-            clear=True,
-        )
+        render_checkbox("状态", basiegedestory_state, allprops)
 
     @use_scope("function_area", clear=True)
     def render_exploit(self):
-        explain_componet(
-            ["状态"],
-            def_lable_checkbox(
-                put_checkbox(
-                    exploit_state, options=[True], value=allprops[exploit_state]
-                )
-            ),
-        )
-        pin_on_change(
-            exploit_state,
-            onchange=lambda v: updatecheckbox(allprops, exploit_state, v),
-            clear=True,
-        )
+        render_checkbox("状态", exploit_state, allprops)
 
     @use_scope("function_area", clear=True)
     def render_rangking(self):
-        explain_componet(
-            ["状态"],
-            def_lable_checkbox(
-                put_checkbox(
-                    ranking_state, options=[True], value=allprops[ranking_state]
-                )
-            ),
-        )
-        pin_on_change(
-            ranking_state,
-            onchange=lambda v: updatecheckbox(allprops, ranking_state, v),
-            clear=True,
-        )
+        render_checkbox("状态", ranking_state, allprops)
 
     @use_scope("function_area", clear=True)
     def render_enemymain(self):
-        explain_componet(
-            ["状态"],
-            def_lable_checkbox(
-                put_checkbox(
-                    enemymain_state, options=[True], value=allprops[enemymain_state]
-                )
-            ),
-        )
-        pin_on_change(
-            enemymain_state,
-            onchange=lambda v: updatecheckbox(allprops, enemymain_state, v),
-            clear=True,
-        )
+        render_checkbox("状态", enemymain_state, allprops)
 
     @use_scope("function_area", clear=True)
     def render_battledestory(self):
-        explain_componet(
-            ["状态"],
-            def_lable_checkbox(
-                put_checkbox(
-                    battledestory_state,
-                    options=[True],
-                    value=allprops[battledestory_state],
-                )
-            ),
-        )
-        pin_on_change(
-            battledestory_state,
-            onchange=lambda v: updatecheckbox(allprops, battledestory_state, v),
-            clear=True,
-        )
+        render_checkbox("状态", battledestory_state, allprops)
 
     @use_scope("function_area", clear=True)
     def render_myfight(self):
-        explain_componet(
-            ["状态"],
-            def_lable_checkbox(
-                put_checkbox(
-                    myfight_state, options=[True], value=allprops[myfight_state]
-                )
-            ),
-        )
-        pin_on_change(
-            myfight_state,
-            onchange=lambda v: updatecheckbox(allprops, myfight_state, v),
-            clear=True,
-        )
+        render_checkbox("状态", myfight_state, allprops)
