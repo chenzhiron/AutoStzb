@@ -24,30 +24,30 @@ class St:
         d = Devices(config).d
         return d
 
-    def exploit(self, d, *args):
+    def exploit(self, d, config):
         from modules.taskfn.exploit import Exploit
 
         Exploit(d).execute()
 
-    def fliplists(self, d, endtime):
+    def fliplists(self, d, config):
         from modules.taskfn.flip_lists import FlipLists
 
-        FlipLists(d, endtime).execute()
+        FlipLists(d, config).execute()
 
-    def ranking(self, d, *args):
+    def ranking(self, d, config):
         from modules.taskfn.ranking import Ranking
 
         Ranking(d).execute()
 
-    def rolelists(self, d, *args):
+    def rolelists(self, d, config):
         from modules.taskfn.role_lists import role_lists
 
         pass
 
-    def siegebattles(self, d, endtime):
+    def siegebattles(self, d, config):
         from modules.taskfn.siege_battles import SiegeBattles
 
-        SiegeBattles(d, endtime).execute()
+        SiegeBattles(d, config).execute()
 
     def loop(self):
         while True:
