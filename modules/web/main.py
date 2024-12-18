@@ -50,7 +50,7 @@ class app:
             self.render_process_btn()
             self.render_config()
             self.render_team()
-            private.render()
+            # private.render()
 
     def set_config(self):
         set_env(output_max_width="100%")
