@@ -24,10 +24,10 @@ ocr_keys = os.path.join(
 # ocr_keys = globalConfig['Ocr']['keys']
 ocr = PaddleOCR(
     lang="ch",
-    det_model_dir=ocr_det,
-    rec_model_dir=ocr_rec,
-    cls_model_dir=ocr_cls,
-    rec_char_dict_path=ocr_keys,
+    # det_model_dir=ocr_det,
+    # rec_model_dir=ocr_rec,
+    # cls_model_dir=ocr_cls,
+    # rec_char_dict_path=ocr_keys,
     show_log=True,
     savefile=True
 )
