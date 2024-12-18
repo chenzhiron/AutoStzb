@@ -15,7 +15,9 @@ from modules.static.propname import *
 from modules.allprop import allprops
 from modules.web.utils import (
     render_checkbox,
+    render_datetime,
     render_input,
+    render_number,
 )
 from modules.web.function import private
 from modules.web.process_mange import ProcessManage
@@ -111,10 +113,12 @@ class app:
     @use_scope("function_area", clear=True)
     def render_besiegemain(self):
         render_checkbox("状态", besiegemain_state, allprops)
+        render_datetime("下一次运行时间", basiegedestory_endtime, allprops)
 
     @use_scope("function_area", clear=True)
     def render_basiegedestory(self):
         render_checkbox("状态", basiegedestory_state, allprops)
+        render_datetime("下一次运行时间", basiegedestory_endtime, allprops)
 
     @use_scope("function_area", clear=True)
     def render_exploit(self):
@@ -127,11 +131,18 @@ class app:
     @use_scope("function_area", clear=True)
     def render_enemymain(self):
         render_checkbox("状态", enemymain_state, allprops)
+        render_datetime("下一次运行时间", enemymain_next_time, allprops)
+        render_datetime("结束统计时间", enemymain_endtime, allprops)
 
     @use_scope("function_area", clear=True)
     def render_battledestory(self):
         render_checkbox("状态", battledestory_state, allprops)
+        render_datetime("下一次运行时间", battledestory_next_time, allprops)
+        render_number("等待多少分钟开启下一次扫描", battledestory_looptime, allprops)
+        render_datetime("结束统计时间", battledestory_endtime, allprops)
 
     @use_scope("function_area", clear=True)
     def render_myfight(self):
         render_checkbox("状态", myfight_state, allprops)
+        render_datetime("下一次运行时间", myfight_next_time, allprops)
+        render_datetime("结束统计时间", myfight_endtime, allprops)

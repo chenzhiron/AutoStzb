@@ -17,6 +17,7 @@ def stPropManger():
             battledestory_state: False,
             battledestory_next_time: "2024/12/16 12:00:00",
             battledestory_endtime: "2024/12/16 12:00:00",
+            battledestory_looptime: 60,
             myfight_state: False,
             myfight_next_time: "2024/12/16 12:00:00",
             myfight_endtime: "2024/12/16 12:00:00",
@@ -37,6 +38,6 @@ def updatecheckbox(obj, k, v):
 
 def update(obj, k, v):
     obj[k] = v
-
+    print('k-v:', obj[k])
 
 allprops = stPropManger()

@@ -1,3 +1,6 @@
+from datetime import datetime
+import pytz
+
 from pywebio.output import put_row, put_column, put_text
 from pywebio.pin import put_checkbox, pin_on_change, put_input
 
@@ -47,4 +50,30 @@ def render_input(explaintext, inputkey, allprops):
     )
     pin_on_change(
         inputkey, onchange=lambda v: update(allprops, inputkey, v), clear=True
+    )
+
+def formatdate(v):
+    v = datetime.fromisoformat(v).replace(tzinfo=pytz.UTC)
+    ts = v.timestamp()
+    return int(ts)
+
+
+def render_number(explaintext, inputkey, allprops):
+    explain_componet(
+        [explaintext],
+        put_input(inputkey, value=allprops[inputkey], type="number"),
+    )
+    pin_on_change(
+        inputkey, onchange=lambda v: update(allprops, inputkey, v), clear=True
+    )
+
+
+def render_datetime(explaintext, inputkey, allprops, formatfn=formatdate):
+
+    explain_componet(
+        [explaintext],
+        put_input(inputkey, value=allprops[inputkey], type="datetime-local"),
+    )
+    pin_on_change(
+        inputkey, onchange=lambda v: update(allprops, inputkey, formatfn(v)), clear=True
     )

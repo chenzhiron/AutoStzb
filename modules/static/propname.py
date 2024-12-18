@@ -18,6 +18,7 @@ enemymain_endtime = "enemymain_endtime"
 battledestory_state = "battledestory_state"
 battledestory_next_time = "battledestory_next_time"
 battledestory_endtime = "battledestory_endtime"
+battledestory_looptime = "battledestory_looptime"
 
 # 我方出战/防守
 myfight_state = "myfight_state"
