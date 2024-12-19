@@ -1,5 +1,4 @@
 import time
-import json
 
 from modules.log import info
 from modules.static.propname import *
@@ -28,16 +27,18 @@ class St:
         from modules.taskfn.exploit import Exploit
 
         Exploit(d).execute()
+        config[exploit_state] = False
 
     def fliplists(self, d, config):
         from modules.taskfn.flip_lists import FlipLists
-
-        FlipLists(d, config).execute()
+        end_time = config[battledestory_endtime]
+        FlipLists(d, end_time).execute()
+        config[battledestory_state] = False
 
     def ranking(self, d, config):
         from modules.taskfn.ranking import Ranking
-
         Ranking(d).execute()
+        config[ranking_state] = False
 
     def rolelists(self, d, config):
         from modules.taskfn.role_lists import role_lists
@@ -46,8 +47,9 @@ class St:
 
     def siegebattles(self, d, config):
         from modules.taskfn.siege_battles import SiegeBattles
-
-        SiegeBattles(d, config).execute()
+        end_time = config[battledestory_endtime]
+        SiegeBattles(d, end_time).execute()
+        config[besiegemain_state] = False
 
     def loop(self):
         while True:

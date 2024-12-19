@@ -9,9 +9,8 @@ from modules.static.propname import basiegedestory_endtime
 
 class SiegeBattles(BaseTypeImg):
 
-    def __init__(self, d, config):
+    def __init__(self, d, end_time):
         BaseTypeImg.__init__(self)
-        end_time = config[basiegedestory_endtime]
         self.d = d
         self.custom_end_time = end_time
         self.end_time = end_time
