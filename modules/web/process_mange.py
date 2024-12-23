@@ -2,7 +2,6 @@ from multiprocessing import Process, Manager
 from queue import Empty
 from modules.log import set_handle
 
-# from .setting import ShareData
 from threading import Thread
 
 
@@ -35,10 +34,9 @@ class ProcessManage:
             print("process exit")
             print("log_thread states:", self.log_thread.is_alive())
 
-    def start(self, teamprop):
-        print(type(teamprop))
+    def start(self):
         self.st_thread = Process(
-            None, target=ProcessManage.run_st, args=(self.st_log_queue, teamprop)
+            None, target=ProcessManage.run_st, args=(self.st_log_queue)
         )
         print("st_thread:", self.st_thread)
         self.st_thread.start()
@@ -51,11 +49,11 @@ class ProcessManage:
     def state(self) -> bool:
         return self.alive
 
-    def run_st(q, teamprop):
+    def run_st(q):
         from st import St
 
         set_handle(q.put)
-        St(teamprop).loop()
+        St().loop()
 
     @property
     def alive(self) -> bool:

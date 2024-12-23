@@ -15,7 +15,7 @@ class StDispatch:
         self.last_len = 0
         self.pm = None
         self.i = 0
-
+        
     def update_pm(self, pm):
         self.pm = pm
 
