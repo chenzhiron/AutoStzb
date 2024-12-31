@@ -4,8 +4,6 @@ import pytz
 from pywebio.output import put_row, put_column, put_text
 from pywebio.pin import put_checkbox, pin_on_change, put_input
 
-from modules.allprop import update, updatecheckbox
-
 
 def def_lable_checkbox(component):
     for v in component.spec["input"]["options"]:
@@ -29,7 +27,7 @@ def explain_componet(texts, component):
     ).style("margin-bottom:15px;")
 
 
-def render_checkbox(explaintext, checkboxkey, allprops):
+def render_checkbox(explaintext, checkboxkey, allprops, updatecheckbox):
     explain_componet(
         [explaintext],
         def_lable_checkbox(
@@ -43,14 +41,15 @@ def render_checkbox(explaintext, checkboxkey, allprops):
     )
 
 
-def render_input(explaintext, inputkey, allprops):
+def render_input(explaintext, inputkey, allprops, inputfn):
     explain_componet(
         [explaintext],
         put_input(inputkey, value=allprops[inputkey]),
     )
     pin_on_change(
-        inputkey, onchange=lambda v: update(allprops, inputkey, v), clear=True
+        inputkey, onchange=lambda v: inputfn(allprops, inputkey, v), clear=True
     )
+
 
 def formatdate(v):
     v = datetime.fromisoformat(v).replace(tzinfo=pytz.UTC)
@@ -58,22 +57,24 @@ def formatdate(v):
     return int(ts)
 
 
-def render_number(explaintext, inputkey, allprops):
+def render_number(explaintext, inputkey, allprops, numberfn):
     explain_componet(
         [explaintext],
         put_input(inputkey, value=allprops[inputkey], type="number"),
     )
     pin_on_change(
-        inputkey, onchange=lambda v: update(allprops, inputkey, v), clear=True
+        inputkey, onchange=lambda v: numberfn(allprops, inputkey, v), clear=True
     )
 
 
-def render_datetime(explaintext, inputkey, allprops, formatfn=formatdate):
+def render_datetime(explaintext, inputkey, allprops, datetimefn, formatfn=formatdate):
 
     explain_componet(
         [explaintext],
         put_input(inputkey, value=allprops[inputkey], type="datetime-local"),
     )
     pin_on_change(
-        inputkey, onchange=lambda v: update(allprops, inputkey, formatfn(v)), clear=True
+        inputkey,
+        onchange=lambda v: datetimefn(allprops, inputkey, formatfn(v)),
+        clear=True,
     )

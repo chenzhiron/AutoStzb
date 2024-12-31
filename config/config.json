@@ -1,0 +1,33 @@
+{
+    "simulator": {
+        "address": "127.0.0.1:7885"
+    },
+    "besiege": {
+        "state": false,
+        "nexttime": "2019-06-01 00:00:00"
+    },
+    "exploit": {
+        "state": false
+    },
+    "enemy": {
+        "state": false,
+        "nexttime": "2019-06-01 00:00:00",
+        "endtime": "2019-06-01 00:00:00",
+        "looptime": 60
+    },
+    "myfight": {
+        "state": false,
+        "nexttime": "2019-06-01 00:00:00",
+        "endtime": "2019-06-01 00:00:00",
+        "looptime": 0
+    },
+    "ranking": {
+        "state": false
+    },
+    "battledestory": {
+        "state": false,
+        "nexttime": "2019-06-01 00:00:00",
+        "endtime": "2019-06-01 00:00:00",
+        "looptime": 60
+    }
+}

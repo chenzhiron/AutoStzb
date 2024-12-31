@@ -13,16 +13,15 @@ from pywebio import config
 
 from modules.web.taskState import basic
 from modules.static.propname import *
-from modules.allprop import allprops
 from modules.web.utils import (
     render_checkbox,
     render_datetime,
     render_input,
     render_number,
 )
-from modules.web.function import private
-from modules.web.process_mange import ProcessManage
 
+# from modules.web.function import private
+from modules.web.process_mange import ProcessManage
 
 def server():
     web = app().render
@@ -34,6 +33,7 @@ def server():
 
 class app(basic):
     def __init__(self):
+        super().__init__()
         self.st = ProcessManage.get_manager()
 
     def render(self):
@@ -77,7 +77,7 @@ class app(basic):
         if state:
             self.st.stop()
         else:
-            self.st.start(allprops)
+            self.st.start()
 
     def anew_render(self):
         self.set_dispath_state(self.st.state)
@@ -89,15 +89,16 @@ class app(basic):
 
     @use_scope("function_area", clear=True)
     def render_simulator(self):
-        render_input("模拟器地址", simulator_address, allprops)
+        render_input(
+            "模拟器地址", "address", self.taskConfig["simulator"], self.update_input
+        )
 
     @use_scope("team", clear=True)
     def render_team(self):
         put_collapse(
             "同盟",
             [
-                put_text("打城主力").onclick(self.render_besiegemain),
-                put_text("打城拆迁").onclick(self.render_basiegedestory),
+                put_text("打城主力拆迁").onclick(self.render_besiege),
                 put_text("武勋").onclick(self.render_exploit),
                 put_text("排行榜数据").onclick(self.render_rangking),
                 put_text("敌军主力").onclick(self.render_enemymain),
@@ -106,39 +107,44 @@ class app(basic):
             ],
         )
 
+    # 主力跟拆迁一起统计，因为他们的配置和执行是一样的
     @use_scope("function_area", clear=True)
-    def render_besiegemain(self):
-        render_checkbox("状态", besiegemain_state, allprops)
-        render_datetime("下一次运行时间", basiegedestory_endtime, allprops)
-
-    @use_scope("function_area", clear=True)
-    def render_basiegedestory(self):
-        render_checkbox("状态", basiegedestory_state, allprops)
-        render_datetime("下一次运行时间", basiegedestory_endtime, allprops)
+    def render_besiege(self):
+        c_obj = self.taskConfig["besiege"]
+        render_checkbox("状态", "state", c_obj, self.update_checkbox)
+        render_datetime("下一次运行时间", "nexttime", c_obj, self.update_input)
 
     @use_scope("function_area", clear=True)
     def render_exploit(self):
-        render_checkbox("状态", exploit_state, allprops)
+        c_obj = self.taskConfig["exploit"]
+        render_checkbox("状态", "state", c_obj, self.update_checkbox)
 
     @use_scope("function_area", clear=True)
     def render_rangking(self):
-        render_checkbox("状态", ranking_state, allprops)
+        c_obj = self.taskConfig["ranking"]
+        render_checkbox("状态", "state", c_obj, self.update_checkbox)
 
     @use_scope("function_area", clear=True)
     def render_enemymain(self):
-        render_checkbox("状态", enemymain_state, allprops)
-        render_datetime("下一次运行时间", enemymain_next_time, allprops)
-        render_datetime("结束统计时间", enemymain_endtime, allprops)
+        c_obj = self.taskConfig["enemy"]
+        render_checkbox("状态", "state", c_obj, self.update_checkbox)
+        render_datetime("下一次运行时间", "nexttime", c_obj, self.update_input)
+        render_input("等待多少分钟开启下一次扫描", "looptime", c_obj, self.update_input)
+        render_datetime("结束统计时间", "endtime", c_obj, self.update_input)
 
     @use_scope("function_area", clear=True)
     def render_battledestory(self):
-        render_checkbox("状态", battledestory_state, allprops)
-        render_datetime("下一次运行时间", battledestory_next_time, allprops)
-        render_number("等待多少分钟开启下一次扫描", battledestory_looptime, allprops)
-        render_datetime("结束统计时间", battledestory_endtime, allprops)
+        c_obj = self.taskConfig["battledestory"]
+        render_checkbox("状态", "state", c_obj, self.update_checkbox)
+        render_datetime("下一次运行时间", "nexttime", c_obj, self.update_input)
+        render_number(
+            "等待多少分钟开启下一次扫描", "looptime", c_obj, self.update_input
+        )
+        render_datetime("结束统计时间", "endtime", c_obj, self.update_input)
 
     @use_scope("function_area", clear=True)
     def render_myfight(self):
-        render_checkbox("状态", myfight_state, allprops)
-        render_datetime("下一次运行时间", myfight_next_time, allprops)
-        render_datetime("结束统计时间", myfight_endtime, allprops)
+        c_obj = self.taskConfig["myfight"]
+        render_checkbox("状态", "state", c_obj, self.update_checkbox)
+        render_datetime("下一次运行时间", "nexttime", c_obj, self.update_input)
+        render_datetime("结束统计时间", "endtime", c_obj, self.update_input)
