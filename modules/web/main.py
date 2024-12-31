@@ -10,7 +10,8 @@ from pywebio.output import (
 from pywebio.session import set_env
 from pywebio import config
 
-from modules.web.taskState import StDispatch
+
+from modules.web.taskState import basic
 from modules.static.propname import *
 from modules.allprop import allprops
 from modules.web.utils import (
@@ -23,9 +24,6 @@ from modules.web.function import private
 from modules.web.process_mange import ProcessManage
 
 
-stdispath = StDispatch()
-
-
 def server():
     web = app().render
 
@@ -34,14 +32,12 @@ def server():
     )
 
 
-class app:
+class app(basic):
     def __init__(self):
         self.st = ProcessManage.get_manager()
-        stdispath.update_pm(self.st)
-        stdispath.start()
 
     def render(self):
-        stdispath.register()
+        self.initialze()
         config(css_file="./static/style.css")
         self.set_config()
         self.init_scope()

@@ -1,41 +1,119 @@
+from datetime import datetime
 import time
-from pywebio.session import register_thread, run_js, get_current_session
+from pywebio.output import put_code, use_scope
+from pywebio.session import register_thread
 from threading import Thread
-from pywebio.exceptions import SessionNotFoundException
+import json
+import os
+import time
 
 
-class TaskConfig:
-    def __init__(self, name):
-        self.name = name
+class TaskReadManager:
 
-
-class StDispatch:
     def __init__(self):
-        self.task_thraed = None
-        self.last_len = 0
-        self.pm = None
-        self.i = 0
+        # path ??
+        self.file_path = "config.json" 
+        self.last_mtime = None
+        self.cache = None
+        self.last_check = 0
+        self.refresh_interval = 1
+        self.taskConfig = {}
+        self.init_json()
 
-    def update_pm(self, pm):
-        self.pm = pm
+    def _load_json(self):
+        """内部方法：从文件加载 JSON 数据"""
+        with open(self.file_path, "r") as f:
+            return json.load(f)
 
-    def loop(self):
-        while True:
-            if self.pm != None and self.last_len != len(self.pm.log):
-                log_message = self.pm.log.pop(0)
-                try:
-                    run_js(
-                        "let d = document.getElementById('pywebio-scope-log_area'); let v = d.innerHTML; d.innerHTML=`"
-                        + str(log_message)
-                        + "\n`"
+    def init_json(self):
+        self.cache = self._load_json()
+        self.last_mtime = os.path.getmtime(self.file_path)
+        self.taskConfig = self.cache
+
+    def get_json_data(self):
+        """获取 JSON 数据，使用缓存"""
+        current_time = time.time()
+
+        # 控制检查频率
+        if current_time - self.last_check < self.refresh_interval:
+            return self.cache
+
+        self.last_check = current_time
+        mtime = os.path.getmtime(self.file_path)
+
+        # 如果文件没有修改，则返回缓存
+        if self.cache is not None and mtime == self.last_mtime:
+            return self.cache
+
+        # 文件被修改，重新加载
+        self.last_mtime = mtime
+        self.cache = self._load_json()
+        self.taskConfig = self.cache
+        return self.cache
+
+    def update_json_data(self):
+        """更新 JSON 数据并刷新文件"""
+        self.last_mtime = time.time()  # 模拟文件修改时间更新
+        with open(self.file_path, "w") as f:
+            json.dump(self.taskConfig, f, indent=4)
+
+    def get_next_task(self):
+        pass
+
+
+class TaskLoop(TaskReadManager):
+    loopthread = None
+
+    def __init__(self):
+        super().__init__()
+        self.padding = []
+        # self.execute = []
+        self.appinitialze()
+
+    def updatecheckbox(self, obj, k, v):
+        if len(v) == 0:
+            result = False
+        else:
+            result = True
+
+        obj[k] = result
+        self.update_json_data()
+
+    def update(self, obj, k, v):
+        obj[k] = v
+        print("k-v:", obj[k])
+        self.update_json_data()
+
+    def appinitialze(self):
+        if TaskLoop.loopthread is None:
+            TaskLoop.loopthread = Thread(None, target=self.eventloop)
+            TaskLoop.loopthread.setDaemon(True)
+            TaskLoop.loopthread.start()
+
+    def eventloop(self):
+        while 1:
+            self.padding = []
+            config = self.get_json_data()
+            for k, v in config.items():
+                statev = v.get("state", None)
+                if statev is None or not statev:
+                    continue
+                if k in self.padding:
+                    continue
+                self.padding.append(k)
+
+                self.padding.sort(
+                    key=lambda x: datetime.strptime(
+                        config[x]["nexttime"], "%Y/%m/%d %H:%M:%S"
                     )
-                except SessionNotFoundException:
-                    print(get_current_session())
-            time.sleep(0.5)
+                )
+            with use_scope("log_area", clear=True):
+                put_code(content=self.padding)
+            time.sleep(1)
 
-    def start(self):
-        self.task_thraed = Thread(None, target=self.loop)
-        self.task_thraed.start()
 
-    def register(self):
-        register_thread(self.task_thraed)
+class basic(TaskLoop):
+
+    def initialze(self):
+        super().__init__()
+        register_thread(self.loopthread)
