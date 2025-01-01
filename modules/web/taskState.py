@@ -12,7 +12,7 @@ class TaskReadManager:
 
     def __init__(self):
         # path ??
-        self.file_path = "config.json" 
+        self.file_path = "./config/config.json"
         self.last_mtime = None
         self.cache = None
         self.last_check = 0
@@ -79,7 +79,7 @@ class TaskLoop(TaskReadManager):
         obj[k] = result
         self.update_json_data()
 
-    def update(self, obj, k, v):
+    def update_input(self, obj, k, v):
         obj[k] = v
         print("k-v:", obj[k])
         self.update_json_data()
@@ -94,6 +94,7 @@ class TaskLoop(TaskReadManager):
         while 1:
             self.padding = []
             config = self.get_json_data()
+            print(config)
             for k, v in config.items():
                 statev = v.get("state", None)
                 if statev is None or not statev:
@@ -101,7 +102,7 @@ class TaskLoop(TaskReadManager):
                 if k in self.padding:
                     continue
                 self.padding.append(k)
-
+                print("padding:", self.padding)
                 self.padding.sort(
                     key=lambda x: datetime.strptime(
                         config[x]["nexttime"], "%Y/%m/%d %H:%M:%S"

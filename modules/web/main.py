@@ -33,7 +33,6 @@ def server():
 
 class app(basic):
     def __init__(self):
-        super().__init__()
         self.st = ProcessManage.get_manager()
 
     def render(self):
@@ -111,23 +110,23 @@ class app(basic):
     @use_scope("function_area", clear=True)
     def render_besiege(self):
         c_obj = self.taskConfig["besiege"]
-        render_checkbox("状态", "state", c_obj, self.update_checkbox)
+        render_checkbox("状态", "state", c_obj, self.updatecheckbox)
         render_datetime("下一次运行时间", "nexttime", c_obj, self.update_input)
 
     @use_scope("function_area", clear=True)
     def render_exploit(self):
         c_obj = self.taskConfig["exploit"]
-        render_checkbox("状态", "state", c_obj, self.update_checkbox)
+        render_checkbox("状态", "state", c_obj, self.updatecheckbox)
 
     @use_scope("function_area", clear=True)
     def render_rangking(self):
         c_obj = self.taskConfig["ranking"]
-        render_checkbox("状态", "state", c_obj, self.update_checkbox)
+        render_checkbox("状态", "state", c_obj, self.updatecheckbox)
 
     @use_scope("function_area", clear=True)
     def render_enemymain(self):
         c_obj = self.taskConfig["enemy"]
-        render_checkbox("状态", "state", c_obj, self.update_checkbox)
+        render_checkbox("状态", "state", c_obj, self.updatecheckbox)
         render_datetime("下一次运行时间", "nexttime", c_obj, self.update_input)
         render_input("等待多少分钟开启下一次扫描", "looptime", c_obj, self.update_input)
         render_datetime("结束统计时间", "endtime", c_obj, self.update_input)
@@ -135,7 +134,7 @@ class app(basic):
     @use_scope("function_area", clear=True)
     def render_battledestory(self):
         c_obj = self.taskConfig["battledestory"]
-        render_checkbox("状态", "state", c_obj, self.update_checkbox)
+        render_checkbox("状态", "state", c_obj, self.updatecheckbox)
         render_datetime("下一次运行时间", "nexttime", c_obj, self.update_input)
         render_number(
             "等待多少分钟开启下一次扫描", "looptime", c_obj, self.update_input
@@ -145,6 +144,6 @@ class app(basic):
     @use_scope("function_area", clear=True)
     def render_myfight(self):
         c_obj = self.taskConfig["myfight"]
-        render_checkbox("状态", "state", c_obj, self.update_checkbox)
+        render_checkbox("状态", "state", c_obj, self.updatecheckbox)
         render_datetime("下一次运行时间", "nexttime", c_obj, self.update_input)
         render_datetime("结束统计时间", "endtime", c_obj, self.update_input)

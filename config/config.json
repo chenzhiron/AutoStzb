@@ -4,30 +4,32 @@
     },
     "besiege": {
         "state": false,
-        "nexttime": "2019-06-01 00:00:00"
+        "nexttime": "2019/06/01 00:00:00"
     },
     "exploit": {
-        "state": false
+        "state": false,
+        "nexttime": "2019/06/01 00:00:00"
     },
     "enemy": {
         "state": false,
-        "nexttime": "2019-06-01 00:00:00",
-        "endtime": "2019-06-01 00:00:00",
+        "nexttime": "2019/06/01 00:00:00",
+        "endtime": "2019/06/01 00:00:00",
         "looptime": 60
     },
     "myfight": {
         "state": false,
-        "nexttime": "2019-06-01 00:00:00",
-        "endtime": "2019-06-01 00:00:00",
+        "nexttime": "2019/06/01 00:00:00",
+        "endtime": "2019/06/01 00:00:00",
         "looptime": 0
     },
     "ranking": {
-        "state": false
+        "state": false,
+        "nexttime": "2019/06/01 00:00:00"
     },
     "battledestory": {
         "state": false,
-        "nexttime": "2019-06-01 00:00:00",
-        "endtime": "2019-06-01 00:00:00",
+        "nexttime": "2019/06/01 00:00:00",
+        "endtime": "2019/06/01 00:00:00",
         "looptime": 60
     }
 }
