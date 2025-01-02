@@ -1,11 +1,14 @@
 from datetime import datetime
 import time
-from pywebio.output import put_code, use_scope
-from pywebio.session import register_thread
+from pywebio.output import use_scope
+from pywebio.session import register_thread, SessionNotFoundException
 from threading import Thread
 import json
 import os
 import time
+
+from modules.web.process_mange import ProcessManage
+from modules.web.utils import render_log
 
 
 class TaskReadManager:
@@ -92,9 +95,9 @@ class TaskLoop(TaskReadManager):
 
     def eventloop(self):
         while 1:
+            rl = render_log(ProcessManage.get_manager())
             self.padding = []
             config = self.get_json_data()
-            print(config)
             for k, v in config.items():
                 statev = v.get("state", None)
                 if statev is None or not statev:
@@ -108,8 +111,11 @@ class TaskLoop(TaskReadManager):
                         config[x]["nexttime"], "%Y/%m/%d %H:%M:%S"
                     )
                 )
-            with use_scope("log_area", clear=True):
-                put_code(content=self.padding)
+            try:
+                with use_scope("log_area", clear=True):
+                    next(rl)
+            except SessionNotFoundException:
+                pass
             time.sleep(1)
 
 

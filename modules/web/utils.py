@@ -4,6 +4,8 @@ import pytz
 from pywebio.output import put_row, put_column, put_text
 from pywebio.pin import put_checkbox, pin_on_change, put_input
 
+from modules.web.process_mange import ProcessManage
+
 
 def def_lable_checkbox(component):
     for v in component.spec["input"]["options"]:
@@ -78,3 +80,11 @@ def render_datetime(explaintext, inputkey, allprops, datetimefn, formatfn=format
         onchange=lambda v: datetimefn(allprops, inputkey, formatfn(v)),
         clear=True,
     )
+
+
+def render_log(pm: ProcessManage):
+    p = pm.log
+    while 1:
+        if len(p) > 0:
+            put_row([put_text(p.pop(0))])
+        yield

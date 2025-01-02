@@ -1,18 +1,19 @@
 import time
+from loguru import logger
 
-from modules.log import info
 
 class St:
     def __init__(self):
         self.taskConfig = {}
 
     def init_taskState(self):
-        from modules.taskState import taskState
+        from modules.web.taskState import taskState
+
         return taskState()
-    
+
     def get_next_task(self):
         return self.taskConfig.getTask()
-    
+
     def devices(self, config):
         from modules.devices.main import Devices
 
@@ -41,12 +42,14 @@ class St:
 
     def siegebattles(self, d, config):
         from modules.taskfn.siege_battles import SiegeBattles
+
         SiegeBattles(d, config).execute()
 
     def loop(self):
-        self.taskConfig = self.init_taskState()
+        # self.taskConfig = self.init_taskState()
         while True:
-            v = self.get_next_task()
-            if v is None:
-                time.sleep(1)
-                continue
+        #     v = self.get_next_task()
+        #     if v is None:
+            logger.info("event loop")
+            time.sleep(1)
+        # continue

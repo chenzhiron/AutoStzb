@@ -1,10 +1,8 @@
-f = None
-
+from loguru import logger
+import json
 
 def set_handle(fn):
-    global f
-    f = fn
-
-
-def info(v):
-    f(v)
+    def render_message(message):
+        v = json.loads(message)
+        fn(v['text'])
+    logger.add(render_message, serialize=True)

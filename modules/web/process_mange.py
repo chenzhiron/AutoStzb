@@ -6,7 +6,7 @@ from threading import Thread
 
 
 class ProcessManage:
-    _processes = None
+    _process = None
 
     def __init__(self):
         self.st_thread = None
@@ -36,7 +36,7 @@ class ProcessManage:
 
     def start(self):
         self.st_thread = Process(
-            None, target=ProcessManage.run_st, args=(self.st_log_queue)
+            None, target=ProcessManage.run_st, args=(self.st_log_queue,)
         )
         print("st_thread:", self.st_thread)
         self.st_thread.start()
@@ -64,7 +64,7 @@ class ProcessManage:
 
     @classmethod
     def get_manager(cls) -> "ProcessManage":
-        if ProcessManage._processes is None:
+        if ProcessManage._process is None:
             ProcessManage._process = ProcessManage()
 
         return ProcessManage._process
