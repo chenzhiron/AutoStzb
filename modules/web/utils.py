@@ -84,6 +84,7 @@ def render_datetime(explaintext, inputkey, allprops, datetimefn, formatfn=format
 
 def render_log(pm: ProcessManage):
     p = pm.log
+    offset = 0
     while 1:
         if len(p) > 0:
             put_row([put_text(p.pop(0))])

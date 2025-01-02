@@ -14,12 +14,11 @@ from modules.web.utils import render_log
 class TaskReadManager:
 
     def __init__(self):
-        # path ??
         self.file_path = "./config/config.json"
         self.last_mtime = None
         self.cache = None
         self.last_check = 0
-        self.refresh_interval = 1
+        self.refresh_interval = 5
         self.taskConfig = {}
         self.init_json()
 
@@ -61,7 +60,31 @@ class TaskReadManager:
             json.dump(self.taskConfig, f, indent=4)
 
     def get_next_task(self):
-        pass
+        while 1:
+            padding = []
+            config = self.get_json_data()
+            for k, v in config.items():
+                statev = v.get("state", None)
+                if statev is None or not statev:
+                    continue
+                if k in padding:
+                    continue
+                padding.append(k)
+                padding.sort(
+                    key=lambda x: datetime.strptime(
+                        config[x]["nexttime"], "%Y/%m/%d %H:%M:%S"
+                    )
+                )
+            if len(padding) == 0:
+                return None
+
+            tickTime = datetime.strptime(
+                config[padding[0]]["nexttime"], "%Y/%m/%d %H:%M:%S"
+            )
+            if tickTime < datetime.now():
+                return padding[0]
+
+            time.sleep(0.5)
 
 
 class TaskLoop(TaskReadManager):
@@ -105,7 +128,6 @@ class TaskLoop(TaskReadManager):
                 if k in self.padding:
                     continue
                 self.padding.append(k)
-                print("padding:", self.padding)
                 self.padding.sort(
                     key=lambda x: datetime.strptime(
                         config[x]["nexttime"], "%Y/%m/%d %H:%M:%S"
