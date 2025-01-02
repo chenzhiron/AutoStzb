@@ -1,89 +1,183 @@
-import time
 import numpy as np
-from modules.ocr.main import ocr_format_val
-from modules.utils import reg_card
+import sys
+
+sys.path.append("")
 from modules.devices.main import Devices
-from modules.taskfn.tasks_utils import battle_time
+from modules.ocr.main import ocr_format_val
+from modules.utils import export_excel, find_multiple_templates, pil_to_cv2
+from modules.taskfn.tasks_utils import BaseTypeImg, battle_time
 
 
-def role_lists(img, filtered_lines):
-    state = False
-    resarr = []
-    end_time = 0
-    for v in filtered_lines:
-        current = []
+class RoleLists(BaseTypeImg):
 
-        isnpc = ocr_format_val(
-            np.array(img.crop([1084, v[1] + 195, 1152, v[1] + 195 + 100]))
-        )
-        if isnpc == "守军":
-            continue
+    def __init__(self, d, end_time):
+        BaseTypeImg.__init__(self)
+        self.d = d
+        self.custom_end_time = end_time
+        self.end_time = 0
+        self.result = []
+        self.offset_y = 965
+        self.screenshot = None
+        self.filtered_lines = []
 
-        # 名字
-        r = ocr_format_val(
-            np.array(img.crop([1084, v[1] + 195, 1308, v[1] + 195 + 100]))
-        ) or ocr_format_val(
-            np.array(img.crop([1084, v[1] + 195 - 70, 1308, v[1] + 195]))
-        )
-        current.append(r)
+    def siege_battles(self):
+        resarr = []
 
-        # 武将名字
-        offset_top = 195 + 139 - 19
-        offset_bottom = 195 + 261
+        for v in self.filtered_lines:
+            current = []
 
-        leftv = ocr_format_val(
-            np.array(img.crop([1084, v[1] + offset_top, 1127, v[1] + offset_bottom]))
-        ) or ocr_format_val(
-            np.array(img.crop([1084, v[1] + offset_top - 70, 1127, v[1] + 261 + 139]))
-        )
-        current.append(leftv)
+            isnpc = ocr_format_val(
+                np.array(self.screenshot.crop([1084, v + 195, 1308, v + 195 + 60]))
+            )
+            if isnpc == "守军":
+                continue
 
-        centerv = ocr_format_val(
-            np.array(img.crop([1319, v[1] + offset_top, 1365, v[1] + offset_bottom]))
-        ) or ocr_format_val(
-            np.array(img.crop([1319, v[1] + offset_top - 70, 1365, v[1] + 261 + 139]))
-        )
-        current.append(centerv)
+            maxNumber = ocr_format_val(
+                np.array(
+                    self.screenshot.crop([1584, v + 185 + 70, 1762, v + 185 + 130])
+                )
+            ) or ocr_format_val(
+                np.array(
+                    self.screenshot.crop(
+                        [1584, v + 185 + 133, 1762, v + 185 + 130 + 130]
+                    )
+                )
+            )
+            print("maxNumber", maxNumber)
 
-        rightv = ocr_format_val(
-            np.array(img.crop([1547, v[1] + offset_top, 1594, v[1] + offset_bottom]))
-        ) or ocr_format_val(
-            np.array(img.crop([1547, v[1] + offset_top - 70, 1594, v[1] + 261 + 139]))
-        )
-        current.append(rightv)
+            if maxNumber is None:
+                continue
+            ln = maxNumber.split("/")[1]
+            if int(ln) < 10000:
+                continue
+            # 名字
+            r = ocr_format_val(
+                np.array(self.screenshot.crop([1084, v + 195, 1308, v + 195 + 60]))
+            ) or ocr_format_val(
+                np.array(self.screenshot.crop([1084, v + 195 - 70, 1308, v + 195]))
+            )
+            current.append(r)
 
-        end_time = battle_time(img, v[1])
-        print("current", current)
+            # 武将名字
+            offset_top = 195 + 139 - 19
+            offset_bottom = 195 + 261
 
-        resarr.append(current)
-    return (state, resarr, end_time)
+            leftv = ocr_format_val(
+                np.array(
+                    self.screenshot.crop(
+                        [1084, v + offset_top, 1127, v + offset_bottom]
+                    )
+                )
+            ) or ocr_format_val(
+                np.array(
+                    self.screenshot.crop(
+                        [1084, v + offset_top - 70, 1127, v + 261 + 139]
+                    )
+                )
+            )
+            current.append(leftv)
 
+            centerv = ocr_format_val(
+                np.array(
+                    self.screenshot.crop(
+                        [1319, v + offset_top, 1365, v + offset_bottom]
+                    )
+                )
+            ) or ocr_format_val(
+                np.array(
+                    self.screenshot.crop(
+                        [1319, v + offset_top - 70, 1365, v + 261 + 139]
+                    )
+                )
+            )
+            current.append(centerv)
 
-def loopinfo2(d, img):
-    r, filtered_lines = reg_card(img)
-    if r != 0:
-        d.swipe(950, 218 + int(r), 950, 218)
-        return (True, [])
-    state, resarr, end_time = role_lists(img, filtered_lines)
-    return (state, resarr, end_time)
+            rightv = ocr_format_val(
+                np.array(
+                    self.screenshot.crop(
+                        [1547, v + offset_top, 1594, v + offset_bottom]
+                    )
+                )
+            ) or ocr_format_val(
+                np.array(
+                    self.screenshot.crop(
+                        [1547, v + offset_top - 70, 1594, v + 261 + 139]
+                    )
+                )
+            )
+            current.append(rightv)
 
+            self.end_time = battle_time(self.screenshot, v)
+            print("current", current)
 
-def siege_main2(d, end_time):
-    rr = []
-    while True:
-        swipe_state, r2, battle_end_time = loopinfo2(d, d.screenshot())
-        if swipe_state:
-            time.sleep(0.5)
-            continue
+            resarr.append(current)
+        return resarr
 
-        if end_time > battle_end_time and battle_end_time != 0:
-            break
-        for v in r2:
-            rr.append(v)
-        d.swipe(950, 965, 950, 225)
-        time.sleep(0.5)
+    def loopinfo(self):
+        self.offset_y = 0
+        main_img = pil_to_cv2(self.screenshot.crop([40, 185, 122, 740]))
+        lines = find_multiple_templates(main_img, self.defense_template_img)
+        print("lines:", lines)
+        r_lines = []
+        for v in lines:
+            if v > 620:
+                self.offset_y = int(v)
+                break
+            else:
+                r_lines.append(v)
+
+        self.offset_y = int(lines[-1] + 360 + 195)
+
+        self.filtered_lines = r_lines
+        print("filtered_lines: ", self.filtered_lines)
+        if len(self.filtered_lines) > 0:
+            resarr = self.siege_battles()
+            return resarr
+        else:
+            return []
+
+    def execute(self):
+        while True:
+            last_end_time = self.end_time
+
+            self.screenshot = self.d.screenshot()
+            r2 = self.loopinfo()
+            print("r2:", r2)
+            if self.end_time is not None and self.custom_end_time > int(self.end_time):
+                break
+
+            r2_l = len(r2)
+            if r2_l == 0:
+                continue
+            
+            if len(self.result) >= r2_l:
+                t = 0
+                for k_r, v_r in enumerate(r2):
+                    if (
+                        self.result[-(k_r + 1)][0] == v_r[0]
+                        and self.result[-(k_r + 1)][1] == v_r[1]
+                        and self.result[-(k_r + 1)][2] == v_r[2]
+                        and last_end_time == self.end_time
+                    ):
+                        t += 1
+                if t == r2_l:
+                    print("len is len")
+                    break
+            for v in r2:
+                self.result.append(v)
+            print("self.offset_y", self.offset_y)
+            self.d.swipe(950, self.offset_y, 950, 225)
+            print(self.result)
+        seen = set()
+        filtered_data = []
+        for lst in self.result:
+            if None not in lst and tuple(lst) not in seen:
+                seen.add(tuple(lst))
+                filtered_data.append(lst)
+
+        export_excel(filtered_data, "敌军主力")
 
 
 if __name__ == "__main__":
     d = Devices("127.0.0.1:16384")
-    siege_main2(d)
+    RoleLists(d, 1735081240).execute()
