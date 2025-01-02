@@ -1,5 +1,6 @@
 from datetime import datetime
 import time
+from filelock import FileLock
 from pywebio.output import use_scope
 from pywebio.session import register_thread, SessionNotFoundException
 from threading import Thread
@@ -15,6 +16,8 @@ class TaskReadManager:
 
     def __init__(self):
         self.file_path = "./config/config.json"
+        self.lockfilename = f'{self.file_path}.lock'
+        self.lock = FileLock(self.lockfilename)
         self.last_mtime = None
         self.cache = None
         self.last_check = 0
@@ -23,9 +26,10 @@ class TaskReadManager:
         self.init_json()
 
     def _load_json(self):
-        """内部方法：从文件加载 JSON 数据"""
-        with open(self.file_path, "r") as f:
-            return json.load(f)
+        with self.lock:
+            """内部方法：从文件加载 JSON 数据"""
+            with open(self.file_path, "r") as f:
+                return json.load(f)
 
     def init_json(self):
         self.cache = self._load_json()
@@ -55,9 +59,11 @@ class TaskReadManager:
 
     def update_json_data(self):
         """更新 JSON 数据并刷新文件"""
+
         self.last_mtime = time.time()  # 模拟文件修改时间更新
-        with open(self.file_path, "w") as f:
-            json.dump(self.taskConfig, f, indent=4)
+        with self.lock:
+            with open(self.file_path, "w") as f:
+                json.dump(self.taskConfig, f, indent=4)
 
     def get_next_task(self):
         while 1:
