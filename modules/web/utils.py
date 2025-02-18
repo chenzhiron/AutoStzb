@@ -43,13 +43,13 @@ def render_checkbox(explaintext, checkboxkey, allprops, updatecheckbox):
     )
 
 
-def render_input(explaintext, inputkey, allprops, inputfn):
+def render_input(taksname, explaintext, inputkey, props, inputfn):
     explain_componet(
         [explaintext],
-        put_input(inputkey, value=allprops[inputkey]),
+        put_input(inputkey, value=props[inputkey]),
     )
     pin_on_change(
-        inputkey, onchange=lambda v: inputfn(allprops, inputkey, v), clear=True
+        inputkey, onchange=lambda v: inputfn(taksname, inputkey, v), clear=True
     )
 
 
@@ -80,12 +80,3 @@ def render_datetime(explaintext, inputkey, allprops, datetimefn, formatfn=format
         onchange=lambda v: datetimefn(allprops, inputkey, formatfn(v)),
         clear=True,
     )
-
-
-def render_log(pm: ProcessManage):
-    p = pm.log
-    offset = 0
-    while 1:
-        if len(p) > 0:
-            put_row([put_text(p.pop(0))])
-        yield

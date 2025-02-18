@@ -11,7 +11,8 @@ from pywebio.session import set_env
 from pywebio import config
 
 
-from modules.web.taskState import basic
+from db import Db
+
 from modules.static.propname import *
 from modules.web.utils import (
     render_checkbox,
@@ -20,8 +21,8 @@ from modules.web.utils import (
     render_number,
 )
 
-# from modules.web.function import private
 from modules.web.process_mange import ProcessManage
+
 
 def server():
     web = app().render
@@ -31,12 +32,12 @@ def server():
     )
 
 
-class app(basic):
+class app:
     def __init__(self):
+        self.webdb = Db("task.db")
         self.st = ProcessManage.get_manager()
 
     def render(self):
-        self.initialze()
         config(css_file="./static/style.css")
         self.set_config()
         self.init_scope()
@@ -45,7 +46,6 @@ class app(basic):
             self.render_process_btn()
             self.render_config()
             self.render_team()
-            # private.render()
 
     def set_config(self):
         set_env(output_max_width="100%")
@@ -89,8 +89,23 @@ class app(basic):
     @use_scope("function_area", clear=True)
     def render_simulator(self):
         render_input(
-            "模拟器地址", "address", self.taskConfig["simulator"], self.update_input
+            "simulator",
+            "模拟器地址",
+            "address",
+            self.webdb.select_format("simulator"),
+            self.update_input,
         )
+
+    def update_input(self, taskname, prop, v):
+        res = self.webdb.select_format(taskname)
+        res.update({prop: v})
+        self.webdb.update(taskname, res)
+
+    def updatecheckbox(
+        self,
+        taskname, prop, v
+    ):
+        pass
 
     @use_scope("team", clear=True)
     def render_team(self):
@@ -126,10 +141,12 @@ class app(basic):
     @use_scope("function_area", clear=True)
     def render_enemymain(self):
         c_obj = self.taskConfig["enemy"]
-        render_checkbox("状态", "state", c_obj, self.updatecheckbox)
-        render_datetime("下一次运行时间", "nexttime", c_obj, self.update_input)
-        render_input("等待多少分钟开启下一次扫描", "looptime", c_obj, self.update_input)
-        render_datetime("结束统计时间", "endtime", c_obj, self.update_input)
+        render_checkbox("enemy", "状态", "state", c_obj, self.updatecheckbox)
+        render_datetime("enemy", "下一次运行时间", "nexttime", c_obj, self.update_input)
+        render_input(
+            "enemy", "等待多少分钟开启下一次扫描", "looptime", c_obj, self.update_input
+        )
+        render_datetime("enemy", "结束统计时间", "endtime", c_obj, self.update_input)
 
     @use_scope("function_area", clear=True)
     def render_battledestory(self):

@@ -1,15 +1,16 @@
 import time
 from modules.log import *
-
+from db import Db
 
 class St:
     def __init__(self):
-        pass
+        self.db = Db("task.db")
 
     def get_next_task(self):
-        from modules.web.taskState import TaskReadManager
+        pass
+        # from modules.web.taskState import TaskReadManager
 
-        return TaskReadManager().get_next_task()
+        # return TaskReadManager().get_next_task()
 
     def devices(self, config):
         from modules.devices.main import Devices

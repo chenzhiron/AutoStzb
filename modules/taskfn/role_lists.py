@@ -47,9 +47,13 @@ class RoleLists(BaseTypeImg):
 
             if maxNumber is None:
                 continue
-            ln = maxNumber.split("/")[1]
-            if int(ln) < 10000:
-                continue
+            try:
+                ln = maxNumber.split("/")[1]
+                if int(ln) < 10000:
+                    continue
+            except :
+                print('warning: ', maxNumber)
+                
             # 名字
             r = ocr_format_val(
                 np.array(self.screenshot.crop([1084, v + 195, 1308, v + 195 + 60]))
@@ -136,21 +140,21 @@ class RoleLists(BaseTypeImg):
         else:
             return []
 
-    def execute(self):
+    def execute(self): 
+        i = 0
+
         while True:
             last_end_time = self.end_time
 
             self.screenshot = self.d.screenshot()
             r2 = self.loopinfo()
             print("r2:", r2)
-            if self.end_time is not None and self.custom_end_time > int(self.end_time):
+            if self.end_time is not None and self.end_time != 0 and self.custom_end_time > int(self.end_time):
                 break
 
             r2_l = len(r2)
-            if r2_l == 0:
-                continue
-            
-            if len(self.result) >= r2_l:
+
+            if len(self.result) > r2_l and r2_l > 0:
                 t = 0
                 for k_r, v_r in enumerate(r2):
                     if (
@@ -161,8 +165,11 @@ class RoleLists(BaseTypeImg):
                     ):
                         t += 1
                 if t == r2_l:
-                    print("len is len")
-                    break
+                    i+=1
+                    if i == 5:
+                        i=0
+                        print("len is len")
+                        break
             for v in r2:
                 self.result.append(v)
             print("self.offset_y", self.offset_y)

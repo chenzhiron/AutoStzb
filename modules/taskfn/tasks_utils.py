@@ -23,6 +23,7 @@ def battle_time(img, v):
                 )
             )
         )
+    print("times", times)
     return times
 
 
