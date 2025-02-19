@@ -1,6 +1,6 @@
 import sqlite3
 import json
-
+from config import tasks_config
 
 class Db:
     def __init__(self, dbname):
@@ -21,6 +21,22 @@ class Db:
         )
         conn.commit()
         conn.close()
+
+    def remove_table(self):
+        conn = self.get_conn()
+        try:
+            conn.execute("DROP TABLE IF EXISTS Task")
+            conn.commit()
+        except sqlite3.Error as e:
+            print(f"sqlite error:{e}")
+        finally:
+            conn.close()
+
+    def init_config(self, configdict:dict[str, dict]):
+        self.remove_table()
+        self._init_db()
+        for key, value in configdict.items():
+            self.write(key, value)
 
     def get_conn(self):
         return sqlite3.connect(self.dbname, timeout=10)
@@ -70,16 +86,8 @@ class Db:
 if __name__ == "__main__":
     # 测试代码
     con = Db("task.db")
-
-    con.write("simulator", {"address": "127.0.0.1:7885"})
-    
-    # 查询数据
-    r = con.select_format("simulator")
-    print(r)
-    # 更新数据
-    con.update("simulator", {"address": "127.0.0.1:10086"})
-
-    # 再次查询数据
-    r2 = con.select_format("simulator")
-    print(r2)
-    con.write("simulator", {"address": "127.0.0.1:9999"})
+    con.remove_table()
+    con.init_config(tasks_config)
+    v = con.select()
+    for r in v:
+        print(r)
