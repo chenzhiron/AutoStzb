@@ -6,12 +6,14 @@ from pywebio.output import (
     put_text,
     put_button,
     put_collapse,
+    put_scrollable,
 )
-from pywebio.session import set_env
+from pywebio.session import set_env, register_thread
 from pywebio import config
 
 
-from modules.web.taskState import basic
+from db import Db
+from modules.web.logthread import LogThread
 from modules.static.propname import *
 from modules.web.utils import (
     render_checkbox,
@@ -20,32 +22,39 @@ from modules.web.utils import (
     render_number,
 )
 
-# from modules.web.function import private
 from modules.web.process_mange import ProcessManage
+
 
 def server():
     web = app().render
-
     start_server(
         web, port=10965, auto_open_webbrowser=True, static_dir="./modules/web/static"
     )
 
 
-class app(basic):
+class app:
     def __init__(self):
+        self.webdb = Db("task.db")
+        self.webdb.init_conn()
+
         self.st = ProcessManage.get_manager()
 
     def render(self):
-        self.initialze()
         config(css_file="./static/style.css")
+        _logthread = LogThread()
+
         self.set_config()
         self.init_scope()
+        with use_scope("log_area"):
+            put_scrollable(put_scope("log"), height=600, keep_bottom=True)
 
         with use_scope("function", clear=True):
             self.render_process_btn()
             self.render_config()
             self.render_team()
-            # private.render()
+
+        register_thread(_logthread.log_thread)
+        _logthread.start()
 
     def set_config(self):
         set_env(output_max_width="100%")
@@ -89,8 +98,25 @@ class app(basic):
     @use_scope("function_area", clear=True)
     def render_simulator(self):
         render_input(
-            "模拟器地址", "address", self.taskConfig["simulator"], self.update_input
+            "simulator",
+            "模拟器地址",
+            "address",
+            self.webdb.select_format("simulator"),
+            self.update_input,
         )
+
+    def update_input(self, taskname, prop, v):
+        res = self.webdb.select_format(taskname)
+        res.update({prop: v})
+        self.webdb.update(taskname, res)
+
+    def updatecheckbox(self, taskname, prop, v):
+        res = self.webdb.select_format(taskname)
+        value = {prop: False}
+        if len(v) == 1:
+            value[prop] = True
+        res.update(value)
+        self.webdb.update(taskname, res)
 
     @use_scope("team", clear=True)
     def render_team(self):
@@ -109,41 +135,123 @@ class app(basic):
     # 主力跟拆迁一起统计，因为他们的配置和执行是一样的
     @use_scope("function_area", clear=True)
     def render_besiege(self):
-        c_obj = self.taskConfig["besiege"]
-        render_checkbox("状态", "state", c_obj, self.updatecheckbox)
-        render_datetime("下一次运行时间", "nexttime", c_obj, self.update_input)
+        render_checkbox(
+            "besiege",
+            "状态",
+            "state",
+            self.webdb.select_format("besiege"),
+            self.updatecheckbox,
+        )
+        render_datetime(
+            "besiege",
+            "下一次运行时间",
+            "nexttime",
+            self.webdb.select_format("besiege"),
+            self.update_input,
+        )
 
     @use_scope("function_area", clear=True)
     def render_exploit(self):
-        c_obj = self.taskConfig["exploit"]
-        render_checkbox("状态", "state", c_obj, self.updatecheckbox)
+        render_checkbox(
+            "exploit",
+            "状态",
+            "state",
+            self.webdb.select_format("exploit"),
+            self.updatecheckbox,
+        )
 
     @use_scope("function_area", clear=True)
     def render_rangking(self):
-        c_obj = self.taskConfig["ranking"]
-        render_checkbox("状态", "state", c_obj, self.updatecheckbox)
+        render_checkbox(
+            "ranking",
+            "状态",
+            "state",
+            self.webdb.select_format("ranking"),
+            self.updatecheckbox,
+        )
 
     @use_scope("function_area", clear=True)
     def render_enemymain(self):
-        c_obj = self.taskConfig["enemy"]
-        render_checkbox("状态", "state", c_obj, self.updatecheckbox)
-        render_datetime("下一次运行时间", "nexttime", c_obj, self.update_input)
-        render_input("等待多少分钟开启下一次扫描", "looptime", c_obj, self.update_input)
-        render_datetime("结束统计时间", "endtime", c_obj, self.update_input)
+        render_checkbox(
+            "enemy",
+            "状态",
+            "state",
+            self.webdb.select_format("enemy"),
+            self.updatecheckbox,
+        )
+        render_datetime(
+            "enemy",
+            "下一次运行时间",
+            "nexttime",
+            self.webdb.select_format("enemy"),
+            self.update_input,
+        )
+        render_input(
+            "enemy",
+            "等待多少分钟开启下一次扫描",
+            "looptime",
+            self.webdb.select_format("enemy"),
+            self.update_input,
+        )
+        render_datetime(
+            "enemy",
+            "结束统计时间",
+            "endtime",
+            self.webdb.select_format("enemy"),
+            self.update_input,
+        )
 
     @use_scope("function_area", clear=True)
     def render_battledestory(self):
-        c_obj = self.taskConfig["battledestory"]
-        render_checkbox("状态", "state", c_obj, self.updatecheckbox)
-        render_datetime("下一次运行时间", "nexttime", c_obj, self.update_input)
-        render_number(
-            "等待多少分钟开启下一次扫描", "looptime", c_obj, self.update_input
+        render_checkbox(
+            "battledestory",
+            "状态",
+            "state",
+            self.webdb.select_format("battledestory"),
+            self.updatecheckbox,
         )
-        render_datetime("结束统计时间", "endtime", c_obj, self.update_input)
+        render_datetime(
+            "battledestory",
+            "下一次运行时间",
+            "nexttime",
+            self.webdb.select_format("battledestory"),
+            self.update_input,
+        )
+        render_number(
+            "battledestory",
+            "等待多少分钟开启下一次扫描",
+            "looptime",
+            self.webdb.select_format("battledestory"),
+            self.update_input,
+        )
+        render_datetime(
+            "battledestory",
+            "结束统计时间",
+            "endtime",
+            self.webdb.select_format("battledestory"),
+            self.update_input,
+        )
 
     @use_scope("function_area", clear=True)
     def render_myfight(self):
-        c_obj = self.taskConfig["myfight"]
-        render_checkbox("状态", "state", c_obj, self.updatecheckbox)
-        render_datetime("下一次运行时间", "nexttime", c_obj, self.update_input)
-        render_datetime("结束统计时间", "endtime", c_obj, self.update_input)
+        render_checkbox(
+            "myfight",
+            "状态",
+            "state",
+            self.webdb.select_format("myfight"),
+            self.updatecheckbox,
+        )
+        render_datetime(
+            "myfight",
+            "下一次运行时间",
+            "nexttime",
+            self.webdb.select_format("myfight"),
+            self.update_input,
+        )
+        render_datetime(
+            "myfight",
+            "结束统计时间",
+            "endtime",
+            self.webdb.select_format("myfight"),
+            self.update_input,
+        )

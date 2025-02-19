@@ -1,58 +1,27 @@
-from multiprocessing import Process, Manager
-from queue import Empty
-from modules.log import set_handle
-
-from threading import Thread
-
+from multiprocessing import Process
 
 class ProcessManage:
     _process = None
 
     def __init__(self):
         self.st_thread = None
-        self.st_log_queue = Manager().Queue()
-        self.log = []
-        self.log_thread = None
-        self.log_thread_stop_flag = False
-
-    def log_thread_fn(self):
-        while not self.log_thread_stop_flag:
-            try:
-                v = self.st_log_queue.get(timeout=1)
-            except Empty:
-                continue
-
-            self.log.append(v)
 
     def stop(self):
         if self.state:
             self.st_thread.kill()
             self.st_thread = None
-            if self.log_thread and self.log_thread.is_alive():
-                self.log_thread_stop_flag = True  # 设置退出标志
-                self.log_thread.join(1)
-            print("process exit")
-            print("log_thread states:", self.log_thread.is_alive())
 
     def start(self):
-        self.st_thread = Process(
-            None, target=ProcessManage.run_st, args=(self.st_log_queue,)
-        )
-        print("st_thread:", self.st_thread)
+        self.st_thread = Process(None, target=ProcessManage.run_st)
         self.st_thread.start()
-
-        self.log_thread_stop_flag = False
-        self.log_thread = Thread(None, target=self.log_thread_fn)
-        self.log_thread.start()
 
     @property
     def state(self) -> bool:
         return self.alive
 
-    def run_st(q):
+    def run_st():
         from st import St
 
-        set_handle(q.put)
         St().loop()
 
     @property

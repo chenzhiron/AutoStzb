@@ -1,15 +1,15 @@
 import time
-from modules.log import *
-
-
+from db import Db
+from logdb import LogDb
 class St:
     def __init__(self):
-        pass
-
+        self.db = Db("task.db")
+        self.db.init_conn()
+        self.log = LogDb("log.db")
+        self.log.init_conn()
+        
     def get_next_task(self):
-        from modules.web.taskState import TaskReadManager
-
-        return TaskReadManager().get_next_task()
+        return self.db.select()
 
     def devices(self, config):
         from modules.devices.main import Devices
@@ -44,9 +44,8 @@ class St:
 
     def loop(self):
         while True:
-            v = self.get_next_task()
-            if v is None:
+            r = self.get_next_task()
+            if r is None:
                 continue
-
-            info("Task: %s" % v)
+            # self.log.write('1234', 0)
             time.sleep(1)

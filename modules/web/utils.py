@@ -4,8 +4,6 @@ import pytz
 from pywebio.output import put_row, put_column, put_text
 from pywebio.pin import put_checkbox, pin_on_change, put_input
 
-from modules.web.process_mange import ProcessManage
-
 
 def def_lable_checkbox(component):
     for v in component.spec["input"]["options"]:
@@ -29,27 +27,27 @@ def explain_componet(texts, component):
     ).style("margin-bottom:15px;")
 
 
-def render_checkbox(explaintext, checkboxkey, allprops, updatecheckbox):
+def render_checkbox(taksname, explaintext, checkboxkey, props, updatecheckbox):
     explain_componet(
         [explaintext],
         def_lable_checkbox(
-            put_checkbox(checkboxkey, options=[True], value=allprops[checkboxkey])
+            put_checkbox(checkboxkey, options=[True], value=props[checkboxkey])
         ),
     )
     pin_on_change(
         checkboxkey,
-        onchange=lambda v: updatecheckbox(allprops, checkboxkey, v),
+        onchange=lambda v: updatecheckbox(taksname, checkboxkey, v),
         clear=True,
     )
 
 
-def render_input(explaintext, inputkey, allprops, inputfn):
+def render_input(taksname, explaintext, inputkey, props, inputfn):
     explain_componet(
         [explaintext],
-        put_input(inputkey, value=allprops[inputkey]),
+        put_input(inputkey, value=props[inputkey]),
     )
     pin_on_change(
-        inputkey, onchange=lambda v: inputfn(allprops, inputkey, v), clear=True
+        inputkey, onchange=lambda v: inputfn(taksname, inputkey, v), clear=True
     )
 
 
@@ -59,17 +57,19 @@ def formatdate(v):
     return int(ts)
 
 
-def render_number(explaintext, inputkey, allprops, numberfn):
+def render_number(taksname, explaintext, inputkey, allprops, numberfn):
     explain_componet(
         [explaintext],
         put_input(inputkey, value=allprops[inputkey], type="number"),
     )
     pin_on_change(
-        inputkey, onchange=lambda v: numberfn(allprops, inputkey, v), clear=True
+        inputkey, onchange=lambda v: numberfn(taksname, inputkey, v), clear=True
     )
 
 
-def render_datetime(explaintext, inputkey, allprops, datetimefn, formatfn=formatdate):
+def render_datetime(
+    taksname, explaintext, inputkey, allprops, datetimefn, formatfn=formatdate
+):
 
     explain_componet(
         [explaintext],
@@ -77,15 +77,6 @@ def render_datetime(explaintext, inputkey, allprops, datetimefn, formatfn=format
     )
     pin_on_change(
         inputkey,
-        onchange=lambda v: datetimefn(allprops, inputkey, formatfn(v)),
+        onchange=lambda v: datetimefn(taksname, inputkey, formatfn(v)),
         clear=True,
     )
-
-
-def render_log(pm: ProcessManage):
-    p = pm.log
-    offset = 0
-    while 1:
-        if len(p) > 0:
-            put_row([put_text(p.pop(0))])
-        yield
