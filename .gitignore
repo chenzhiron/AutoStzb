@@ -10,3 +10,5 @@ toolkit/
 start.bat
 start.exe
 parser
+log.db
+task.db
