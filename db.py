@@ -66,6 +66,11 @@ class Db:
         else:
             cursor = conn.execute("SELECT config FROM Task")
         return cursor.fetchall()
+    
+    def select_task_execute(self):
+        conn = self.get_conn()
+        cursor = conn.execute('SELECT name,config FROM Task')
+        return cursor
 
     def select_format(self, name):
         conn = self.get_conn()
@@ -82,4 +87,7 @@ if __name__ == "__main__":
     con.init_config(tasks_config)
     v = con.select()
     for r in v:
+        print(r)
+    v2 = con.select_task_execute()
+    for r in v2:
         print(r)
