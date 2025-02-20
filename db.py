@@ -22,9 +22,9 @@ class Db:
         )
         conn.commit()
         conn.close()
-
-    def init_conn(self):
-        self.conn = sqlite3.connect(self.dbname, timeout=10)
+        
+    def init_write_data(self):
+        con.init_config(tasks_config)
 
     def remove_table(self):
         conn = self.get_conn()
@@ -39,7 +39,7 @@ class Db:
             self.write(key, value)
 
     def get_conn(self):
-        return self.conn
+        return sqlite3.connect(self.dbname, timeout=10)
 
     def write(self, name, config):
         conn = self.get_conn()

@@ -34,13 +34,10 @@ def server():
 
 class app:
     def __init__(self):
-        self.webdb = Db("task.db")
-        self.webdb.init_conn()
-
         self.st = ProcessManage.get_manager()
+        self.webdb = Db("task.db")
 
     def render(self):
-        config(css_file="./static/style.css")
         _logthread = LogThread()
 
         self.set_config()

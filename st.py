@@ -4,7 +4,6 @@ from logdb import LogDb
 class St:
     def __init__(self):
         self.db = Db("task.db")
-        self.db.init_conn()
         self.log = LogDb("log.db")
         self.log.init_conn()
         
