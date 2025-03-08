@@ -7,20 +7,14 @@ from modules.utils import formatDate
 def battle_time(img, v):
     # 战报时间
     times = formatDate(
-        ocr_format_val(
-            np.array(img.crop([800, v + 195 + 300, 1072, v + 195 + 300 + 50]))
-        )
+        ocr_format_val(np.array(img.crop([665, v + 240, 900, v + 240 + 40])))
     ) or formatDate(
-        ocr_format_val(
-            np.array(img.crop([800, v + 195 + 230, 1072, v + 195 + 230 + 50]))
-        )
+        ocr_format_val(np.array(img.crop([665, v + 230, 900, v + 230 + 50])))
     )
     if type(times) is str or times is None:
         times = formatDate(
             ocr_format_val(
-                np.array(
-                    img.crop([800, v + 195 + 230 + 80, 1072, v + 195 + 230 + 80 + 60])
-                )
+                np.array(img.crop([665, v + 230 + 80, 900, v + 230 + 80 + 60]))
             )
         )
     print("times", times)
