@@ -18,7 +18,7 @@ class St:
             current_timestamp = time.time()
             simulatorName = ""
             taskName = ""
-            
+
             for v in rows:
                 if v[0] == "simulator":
                     simulatorName = v[1]
@@ -49,9 +49,9 @@ class St:
         Myfight(self, d, config).execute()
 
     def exploit(self, d, config):
-        from modules.taskfn.exploit import Exploit
+        from modules.taskfn.honor import Honor
 
-        Exploit(d, config).execute()
+        Honor(d, config).execute()
 
     def fliplists(self, d, config):
         from modules.taskfn.flip_lists import FlipLists
