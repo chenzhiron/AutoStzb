@@ -33,9 +33,8 @@ class Honor(BaseTypeImg):
                         [560, v + self.offset_top, 740, v + self.offset_top + 60]
                     )
                 )
-            )
-            print("username:", username, "honornum:", honornum)
-            if username and honornum:
+            ) or 0
+            if username:
                 datadict[username] = honornum
             else:
                 continue
