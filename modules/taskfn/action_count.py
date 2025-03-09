@@ -1,12 +1,12 @@
 import numpy as np
 
-import sys
-sys.path.append("i:\\py\\autostzb")
-print(sys.path)
-
-
 from modules.ocr.main import ocr_format_val
-from modules.utils import find_multiple_templates, pil_to_cv2, export_excel
+from modules.utils import (
+    find_multiple_templates,
+    format_date_strptime,
+    pil_to_cv2,
+    export_excel,
+)
 from modules.devices.main import Devices
 from modules.taskfn.tasks_utils import BaseTypeImg, battle_time
 
@@ -90,5 +90,5 @@ class ActionCount(BaseTypeImg):
 
 if __name__ == "__main__":
     d = Devices("127.0.0.1:16384")
-    flip = ActionCount(d, 1741362840)
+    flip = ActionCount(d, format_date_strptime("2025/3/9 00:00:00"))
     flip.execute()
