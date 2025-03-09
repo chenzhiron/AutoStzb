@@ -2,7 +2,7 @@ from threading import Thread
 import time
 from pywebio.output import put_text
 from pywebio.session import SessionNotFoundException
-from logdb import LogDb
+from modules.db.logdb import LogDb
 
 
 class LogThread:

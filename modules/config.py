@@ -17,7 +17,7 @@ tasks_config = {
     },
     "ranking": {"state": False, "nexttime": "2019/06/01 00:00:00"},
     "battledestory": {
-        "state": True,
+        "state": False,
         "nexttime": "2019/06/01 00:00:00",
         "endtime": "2019/06/01 00:00:00",
         "looptime": 60,

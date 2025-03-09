@@ -1,6 +1,14 @@
 import sqlite3
 import json
-from config import tasks_config
+from modules.config import tasks_config
+from modules.db.dbexecute import (
+    CREATE_DB_TABLE,
+    DROP_DB_TABLE,
+    INSERT_DB_DATA,
+    SELECT_DB_ALL,
+    SELECT_DB_WHERE_NAME,
+    UPDATE_DB_DATA,
+)
 
 
 class Db:
@@ -11,25 +19,17 @@ class Db:
     def _init_db(self):
         # 仅在需要时创建连接（线程/进程安全）
         conn = sqlite3.connect(self.dbname, timeout=10)
-        conn.execute(
-            """
-            CREATE TABLE IF NOT EXISTS Task (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL UNIQUE,
-                config TEXT NOT NULL
-            )
-            """
-        )
+        conn.execute(CREATE_DB_TABLE)
         conn.commit()
         conn.close()
-        
+
     def init_write_data(self):
         con.init_config(tasks_config)
 
     def remove_table(self):
         conn = self.get_conn()
 
-        conn.execute("DROP TABLE IF EXISTS Task")
+        conn.execute(DROP_DB_TABLE)
         conn.commit()
 
     def init_config(self, configdict: dict[str, dict]):
@@ -45,7 +45,7 @@ class Db:
         conn = self.get_conn()
 
         conn.execute(
-            "INSERT OR IGNORE INTO Task (name, config) VALUES (?, ?)",
+            INSERT_DB_DATA,
             (name, json.dumps(config)),
         )
         conn.commit()
@@ -53,31 +53,45 @@ class Db:
     def update(self, name, config):
         conn = self.get_conn()
 
-        conn.execute(
-            "UPDATE Task SET config = ? WHERE name = ?", (json.dumps(config), name)
-        )
+        conn.execute(UPDATE_DB_DATA, (json.dumps(config), name))
         conn.commit()
 
     def select(self, name=None):
         conn = self.get_conn()
 
         if name:
-            cursor = conn.execute("SELECT config FROM Task WHERE name = ?", (name,))
+            cursor = conn.execute(SELECT_DB_WHERE_NAME, (name,))
         else:
-            cursor = conn.execute("SELECT config FROM Task")
-        return cursor.fetchall()
-    
+            cursor = conn.execute(SELECT_DB_ALL)
+        rows = cursor.fetchall()
+        conn.close()
+        return self.postprocessing(rows, name)
+
+    def postprocessing(self, rows, name=None):
+        result = {}
+        for row in rows:
+            if name:
+                result.update({name: json.loads(row[0])})
+            else:
+                result.update({row[0]: json.loads(row[1])})
+        return result
+
     def select_task_execute(self):
         conn = self.get_conn()
-        cursor = conn.execute('SELECT name,config FROM Task')
-        return cursor
+        cursor = conn.execute(SELECT_DB_ALL)
+        rows = cursor.fetchall()
+        return self.postprocessing(rows)
 
     def select_format(self, name):
         conn = self.get_conn()
 
-        cursor = conn.execute("SELECT config FROM Task WHERE name = ?", (name,))
-        for v in cursor:
-            return json.loads(v[-1])
+        cursor = conn.execute(SELECT_DB_WHERE_NAME, (name,))
+        row = cursor.fetchone()
+        conn.close()
+
+        if row:
+            return json.loads(row[0])
+        return None
 
 
 if __name__ == "__main__":
@@ -86,8 +100,8 @@ if __name__ == "__main__":
     con.remove_table()
     con.init_config(tasks_config)
     v = con.select()
-    for r in v:
-        print(r)
+    for k, v in v.items():
+        print(k, v)
     v2 = con.select_task_execute()
-    for r in v2:
-        print(r)
+    for k, v in v2.items():
+        print(k, v)

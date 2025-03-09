@@ -9,10 +9,8 @@ from pywebio.output import (
     put_scrollable,
 )
 from pywebio.session import set_env, register_thread
-from pywebio import config
 
-
-from db import Db
+from modules.db.dbinit import Db
 from modules.web.logthread import LogThread
 from modules.static.propname import *
 from modules.web.utils import (

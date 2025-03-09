@@ -1,7 +1,7 @@
 import time
 import json
-from db import Db
-from logdb import LogDb
+from modules.db.dbinit import Db
+from modules.db.logdb import LogDb
 
 import time
 
@@ -18,6 +18,7 @@ class St:
             current_timestamp = time.time()
             simulatorName = ""
             taskName = ""
+            
             for v in rows:
                 if v[0] == "simulator":
                     simulatorName = v[1]
@@ -38,36 +39,39 @@ class St:
     def devices(self, simulatorname):
         from modules.devices.main import Devices
 
-        d = Devices(simulatorname).d
+        # d = Devices(simulatorname).d
+        d = None
         return d
 
-    def myfight(self, db, d, config):
-        pass
+    def myfight(self, d, config):
+        from modules.taskfn.myfight import Myfight
 
-    def exploit(self, db, d, config):
+        Myfight(self, d, config).execute()
+
+    def exploit(self, d, config):
         from modules.taskfn.exploit import Exploit
 
-        Exploit(db, d, config).execute()
+        Exploit(d, config).execute()
 
-    def fliplists(self, db, d, config):
+    def fliplists(self, d, config):
         from modules.taskfn.flip_lists import FlipLists
 
-        FlipLists(db, d, config).execute()
+        FlipLists(d, config).execute()
 
-    def ranking(self, db, d, config):
+    def ranking(self, d, config):
         from modules.taskfn.ranking import Ranking
 
-        Ranking(db, d, config).execute()
+        Ranking(d, config).execute()
 
-    def rolelists(self, db, d, config):
+    def rolelists(self, d, config):
         from modules.taskfn.role_lists import role_lists
 
         pass
 
-    def siegebattles(self, db, d, config):
+    def siegebattles(self, d, config):
         from modules.taskfn.siege_battles import SiegeBattles
 
-        SiegeBattles(db, d, config).execute()
+        SiegeBattles(d, config).execute()
 
     def loop(self):
         while True:
@@ -76,7 +80,7 @@ class St:
             if hasattr(self, taskname):
                 d = self.devices(simulatorName)
                 method = getattr(self, taskname)
-                # method(self.db, d, config)
+                method(d, config)
             else:
                 print(f"Method {taskname} not found in St class.")
             time.sleep(1)
