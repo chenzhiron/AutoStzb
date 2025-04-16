@@ -32,7 +32,7 @@ class RoleLists(BaseTypeImg):
             if isnpc == "守军":
                 continue
 
-            maxNumber = ocr_format_val(
+            max_number = ocr_format_val(
                 np.array(
                     self.screenshot.crop([1584, v + 185 + 70, 1762, v + 185 + 130])
                 )
@@ -43,16 +43,16 @@ class RoleLists(BaseTypeImg):
                     )
                 )
             )
-            print("maxNumber", maxNumber)
+            print("max_number", max_number)
 
-            if maxNumber is None:
+            if max_number is None:
                 continue
             try:
-                ln = maxNumber.split("/")[1]
+                ln = max_number.split("/")[1]
                 if int(ln) < 10000:
                     continue
             except :
-                print('warning: ', maxNumber)
+                print('warning: ', max_number)
                 
             # 名字
             r = ocr_format_val(
