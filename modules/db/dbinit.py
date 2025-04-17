@@ -1,7 +1,7 @@
 import sqlite3
 import json
 from modules.config import tasks_config
-from modules.db.dbexecute import (
+from modules.static.dbexecute import (
     CREATE_DB_TABLE,
     DROP_DB_TABLE,
     INSERT_DB_DATA,
