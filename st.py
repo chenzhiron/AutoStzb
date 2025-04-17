@@ -1,16 +1,12 @@
-import time
 import json
 from modules.db.dbinit import Db
-from modules.db.logdb import LogDb
-
+from loguru import logger
 import time
 
 
 class St:
     def __init__(self):
         self.db = Db("task.db")
-        self.log = LogDb("log.db")
-        self.log.init_conn()
 
     def get_next_task(self):
         while True:
@@ -75,14 +71,15 @@ class St:
 
     def loop(self):
         while True:
-            simulatorName, taskname, config = self.get_next_task()
-            print(simulatorName, taskname, config)
-            if hasattr(self, taskname):
-                d = self.devices(simulatorName)
-                method = getattr(self, taskname)
-                method(d, config)
-            else:
-                print(f"Method {taskname} not found in St class.")
+            logger.info('12345')
+            # simulatorName, taskname, config = self.get_next_task()
+            # print(simulatorName, taskname, config)
+            # if hasattr(self, taskname):
+            #     d = self.devices(simulatorName)
+            #     method = getattr(self, taskname)
+            #     method(d, config)
+            # else:
+            #     print(f"Method {taskname} not found in St class.")
             time.sleep(1)
 
 

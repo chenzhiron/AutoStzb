@@ -11,8 +11,6 @@ from pywebio.output import (
 from pywebio.session import set_env, register_thread
 
 from modules.db.dbinit import Db
-from modules.web.logthread import LogThread
-from modules.static.propname import *
 from modules.web.utils import (
     render_checkbox,
     render_datetime,
@@ -20,7 +18,7 @@ from modules.web.utils import (
     render_number,
 )
 
-from modules.web.process_mange import ProcessManage
+from modules.web.process_mange import ProcessManager
 
 
 def server():
@@ -32,12 +30,10 @@ def server():
 
 class app:
     def __init__(self):
-        self.st = ProcessManage.get_manager()
+        self.st = ProcessManager.get_instance()
         self.webdb = Db("task.db")
 
     def render(self):
-        _logthread = LogThread()
-
         self.set_config()
         self.init_scope()
         with use_scope("log_area"):
@@ -47,9 +43,6 @@ class app:
             self.render_process_btn()
             self.render_config()
             self.render_team()
-
-        register_thread(_logthread.log_thread)
-        _logthread.start()
 
     def set_config(self):
         set_env(output_max_width="100%")
