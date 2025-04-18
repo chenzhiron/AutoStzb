@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import Dict
+
 import cv2
 
 

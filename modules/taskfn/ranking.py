@@ -1,7 +1,9 @@
 import time
+
 import numpy as np
+
 from modules.devices.main import Devices
-from modules.ocr.main import ocr_format_ranking, ocr_format_val, ocrnotdet
+from modules.ocr.main import ocr_format_ranking, ocr_format_val
 from modules.utils import export_excel
 
 

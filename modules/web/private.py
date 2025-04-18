@@ -1,7 +1,7 @@
-from pywebio.output import use_scope, put_collapse, put_text
-
+from pywebio.output import put_collapse, put_text
 from pywebio.output import use_scope, put_tabs
 from pywebio.pin import pin_on_change, put_input, put_checkbox
+
 from modules.web.utils import def_lable_checkbox, explain_componet
 
 

@@ -1,7 +1,6 @@
 import time
 
 import numpy as np
-from adbutils import device
 
 from modules.devices.main import Devices
 from modules.imgs.img_path import ImgNames

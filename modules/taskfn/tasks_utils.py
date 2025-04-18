@@ -1,15 +1,17 @@
+import queue
+import re
+import threading
+import time
+from datetime import datetime
+from typing import Callable, Any, Optional
+
 import cv2
 import numpy as np
 
 from modules.devices.main import Devices
 from modules.ocr.main import ocr_format_val
 from modules.utils import formatDate
-import threading
-import queue
-import time
-from typing import Callable, Any, Optional
-from datetime import datetime
-import re
+
 
 def battle_time(img, v):
     # 战报时间

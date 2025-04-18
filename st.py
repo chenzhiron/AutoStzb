@@ -1,7 +1,7 @@
 import json
-from modules.db.dbinit import Db
-from loguru import logger
 import time
+from loguru import logger
+from modules.db.dbinit import Db
 
 
 class St:
@@ -33,7 +33,6 @@ class St:
             time.sleep(1)
 
     def devices(self, simulatorname):
-        from modules.devices.main import Devices
 
         # d = Devices(simulatorname).d
         d = None
@@ -71,7 +70,6 @@ class St:
 
     def loop(self):
         while True:
-            logger.info('12345')
             # simulatorName, taskname, config = self.get_next_task()
             # print(simulatorName, taskname, config)
             # if hasattr(self, taskname):

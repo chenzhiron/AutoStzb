@@ -1,14 +1,14 @@
 import numpy as np
 
+from modules.devices.main import Devices
 from modules.ocr.main import ocr_format_val
+from modules.taskfn.tasks_utils import BaseTypeImg, battle_time
 from modules.utils import (
     find_multiple_templates,
     format_date_strptime,
     pil_to_cv2,
     export_excel,
 )
-from modules.devices.main import Devices
-from modules.taskfn.tasks_utils import BaseTypeImg, battle_time
 
 
 class ActionCount(BaseTypeImg):

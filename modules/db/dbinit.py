@@ -1,5 +1,6 @@
-import sqlite3
 import json
+import sqlite3
+
 from modules.config import tasks_config
 from modules.static.dbexecute import (
     CREATE_DB_TABLE,
