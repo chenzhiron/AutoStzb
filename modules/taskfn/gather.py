@@ -1,14 +1,12 @@
 import time
-from typing import Callable, Any
 
 import numpy as np
 
 from modules.devices.main import Devices
+from modules.imgs.img_path import ImgNames
+from modules.ocr.main import ocrnormal, ocr_format_val
 from modules.taskfn.tasks_utils import time_consuming, BaseReturnMain
 from modules.utils import is_template_matched, truncated_normal
-from modules.imgs.img_path import ImgNames
-
-from modules.ocr.main import ocrnormal, ocr_format_val
 
 
 class Gather(BaseReturnMain):

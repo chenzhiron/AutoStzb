@@ -80,3 +80,5 @@ user-agents==2.2.0
 win32-setctime==1.2.0
 xmltodict==0.14.2
 zipp==3.21.0
+
+rich~=14.0.0

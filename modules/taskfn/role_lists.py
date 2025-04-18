@@ -1,5 +1,6 @@
-import numpy as np
 import sys
+
+import numpy as np
 
 sys.path.append("")
 from modules.devices.main import Devices

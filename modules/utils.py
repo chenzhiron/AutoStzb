@@ -1,12 +1,11 @@
-import cv2
-from matplotlib import pyplot as plt
-import numpy as np
-from openpyxl import Workbook
 import os
-
 from datetime import datetime
+
+import cv2
+import numpy as np
 import pytz
 from PIL import Image
+from openpyxl import Workbook
 from scipy.stats import truncnorm
 
 
@@ -43,99 +42,7 @@ def get_formatted_time():
     return now.timestamp()
 
 
-def canny_lines(
-    img,
-    area=[140, 195, 1660, 965],
-    threshold_p=200,
-    minLineLength_p=1000,
-    maxLineGap_p=10,
-    offset=100,
-):
-    # 裁剪并转为灰度
-    cropped_img = np.array(img.crop(area).convert("L"))
-    # Canny 边缘检测
-    edges = cv2.Canny(cropped_img, 100, 200)
-    lines = cv2.HoughLinesP(
-        edges,
-        1,
-        np.pi / 180,
-        threshold=threshold_p,
-        minLineLength=minLineLength_p,
-        maxLineGap=maxLineGap_p,
-    )
-
-    # # 创建彩色图像以绘制线条
-    # line_img = cv2.cvtColor(cropped_img, cv2.COLOR_GRAY2BGR)
-
-    # # 检测到线条时，绘制每条线
-    # if lines is not None:
-    # 		for line in lines:
-    # 				x1, y1, x2, y2 = line[0]
-    # 				cv2.line(line_img, (x1, y1), (x2, y2), (0, 255, 0), 2)  # 绘制为绿色线条，宽度为 2
-
-    # plt.imshow(line_img)
-    # plt.title("Detected Lines on Image")
-    # plt.axis('off')
-    # plt.show()
-
-    try:
-        lines = lines.squeeze()
-        sorted_lines = lines[np.argsort(lines[:, 1])]
-        print("sorted_lines: ", sorted_lines)
-        filtered_lines = [sorted_lines[0]]  # 保留第一个线条
-        # 遍历排序后的线条，过滤掉相邻线条之间 y 值差距小于 100 的线条
-        for i in range(1, len(sorted_lines)):
-            if sorted_lines[i][1] - sorted_lines[i - 1][1] >= offset:
-                filtered_lines.append(sorted_lines[i])
-
-        filtered_lines = np.array(filtered_lines)
-    except Exception as e:
-        filtered_lines = []
-        print("canny_lines_error: ", e)
-    print("canny_lines_origin: ", filtered_lines)
-    return filtered_lines
-
-
-def filter_record(v):
-    offset_y = 0
-    filter_lines = []
-    for i in range(len(v)):
-        if v[i][1] > 600:
-            continue
-
-        if i == len(v) - 1:
-            filter_lines.append(v[i])
-            break
-        if v[i + 1][1] - v[i][1] > 280:
-            filter_lines.append(v[i])
-        else:
-            if i == 0:
-                offset_y = v[i + 1][1]
-                break
-            offset_y = v[i][1]
-            break
-    print("filter_lines", filter_lines)
-    print("offset_y", offset_y)
-    return (np.array(filter_lines), int(offset_y))
-
-
-def reg_one_line(v):
-    print(v[1])
-    if v[1] > 95 and v[1] < 113:
-        return 0
-    if v[1] > 40:
-        return v[1]
-    else:
-        return 0
-
-
-def reg_card(img):
-    filtered_lines = canny_lines(img)
-    r = reg_one_line(filtered_lines[0])
-    return r, filtered_lines
-
-
-def export_excel(data, filename):
+def export_excel(data: list[list], filename):
     # 创建一个新的工作簿
     wb = Workbook()
     ws = wb.active

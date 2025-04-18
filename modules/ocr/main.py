@@ -1,6 +1,8 @@
 import numpy as np
 from paddleocr import PaddleOCR
+
 from modules.devices.main import Devices
+
 ocr = PaddleOCR(
     lang="ch",
     show_log=True,
