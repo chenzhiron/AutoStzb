@@ -8,6 +8,10 @@ from PIL import Image
 from openpyxl import Workbook
 from scipy.stats import truncnorm
 
+from typing import Optional, Tuple
+import cv2
+import numpy as np
+from PIL import Image
 
 def formatDate(date_str):
     try:
@@ -106,22 +110,6 @@ def find_multiple_templates(
                 filtered_y_positions.append(y)
     return filtered_y_positions  # 返回 y 坐标列表
 
-    # # 在主图像上绘制匹配矩形框
-    # matched_img = main_img.copy()
-    # for pt in zip(*match_locations[::-1]):  # 使用[::-1] 交换坐标顺序
-    #     top_left = pt
-    #     bottom_right = (top_left[0] + w, top_left[1] + h)
-    #     cv2.rectangle(matched_img, top_left, bottom_right, (0, 255, 0), 2)
-
-    # # 显示结果
-    # plt.figure(figsize=(10, 5))
-    # plt.imshow(cv2.cvtColor(matched_img, cv2.COLOR_BGR2RGB))
-    # plt.title('Multiple Matched Regions')
-    # plt.axis('off')
-    # plt.show()
-
-    # return match_locations
-
 
 def pil_to_cv2(pil_img):
     # 将 PIL 图像转换为 RGB 模式（如果不是 RGB 模式）
@@ -135,42 +123,145 @@ def pil_to_cv2(pil_img):
 
 
 
-def is_template_matched(big_image: Image.Image, small_image_path: str, threshold: float = 0.95) -> bool:
+def is_template_matched(big_image: Image.Image, small_image: np.ndarray, threshold: float = 0.01) -> bool:
+    if is_template_matched_axis(big_image, small_image, threshold) is None:
+        return False
+    return True
+
+def preprocess_alpha_image(img_bgra: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    """处理带透明通道的小图，返回BGR图和掩码"""
+    alpha_mask = img_bgra[:, :, 3]
+    _, mask = cv2.threshold(alpha_mask, 1, 255, cv2.THRESH_BINARY)
+    img_bgr = img_bgra[:, :, :3].copy()
+    img_bgr[alpha_mask == 0] = 0  # 透明区域置黑
+    return img_bgr, mask
+
+def is_template_matched_axis(
+        big_image: Image.Image,
+        small_image_cv: np.ndarray,
+        threshold: float = 0.1  # 默认阈值需根据实际情况调整
+) -> Optional[Tuple[Tuple[int, int], float]]:
     """
-    在大图中匹配小图，如果相似度达到阈值则返回True，否则返回False
-
-    参数:
-        big_image: PIL.Image.Image类型的大图
-        small_image_path: 小图的本地文件路径
-        threshold: 相似度阈值，默认为0.95(95%)
-
-    返回:
-        bool: 是否匹配成功
+    使用 TM_SQDIFF_NORMED 进行模板匹配
+    :param big_image: PIL格式的大图
+    :param small_image_cv: OpenCV格式的小图（BGR或BGRA）
+    :param threshold: 差异阈值（越小越严格，建议 0.01~0.2）
+    :return: (匹配位置(x,y), 差异值) 或 None
     """
     try:
-        # 将PIL.Image转换为OpenCV格式(BGR)
+        # 输入检查
+        if not isinstance(small_image_cv, np.ndarray) or len(small_image_cv.shape) != 3:
+            raise ValueError("small_image_cv 必须是3通道或4通道的OpenCV图像")
+
+        # 转换大图为OpenCV BGR格式
         big_image_cv = cv2.cvtColor(np.array(big_image), cv2.COLOR_RGB2BGR)
 
-        # 读取小图
-        small_image_cv = cv2.imread(small_image_path, cv2.IMREAD_COLOR)
-        if small_image_cv is None:
-            raise ValueError(f"无法读取小图: {small_image_path}")
+        # 预处理小图（支持带透明通道的情况）
+        if small_image_cv.shape[2] == 4:
+            small_image_bgr, mask = preprocess_alpha_image(small_image_cv)
+        else:
+            small_image_bgr = small_image_cv
+            mask = None
 
-        # 获取小图尺寸
-        h, w = small_image_cv.shape[:2]
+        # 执行模板匹配（TM_SQDIFF_NORMED）
+        res = cv2.matchTemplate(
+            big_image_cv, small_image_bgr,
+            cv2.TM_SQDIFF_NORMED, mask=mask
+        )
 
-        # 进行模板匹配
-        res = cv2.matchTemplate(big_image_cv, small_image_cv, cv2.TM_CCOEFF_NORMED)
+        # 获取最小差异值和位置
+        min_val, _, min_loc, _ = cv2.minMaxLoc(res)
+        print(f"差异值: {min_val:.4f}, 位置: {min_loc}")
 
-        # 获取最大匹配值
-        max_val = np.max(res)
-
-        # 判断是否达到阈值
-        return max_val >= threshold
+        # 判断是否匹配（差异值 <= 阈值）
+        return (min_loc, min_val) if min_val <= threshold else None
 
     except Exception as e:
-        print(f"匹配过程中发生错误: {e}")
-        return False
+        print(f"匹配错误: {e}")
+        return None
+def find_top_template_matches(
+    big_image: Image.Image,
+    small_image_cv: np.ndarray,
+    threshold: float = 0.1,
+    max_results: int = 5,
+    nms_threshold: float = 0.3
+):
+    """
+    返回匹配差异值 <= threshold 的Top5结果（按差异值升序排列）
+    :param big_image: PIL格式的大图
+    :param small_image_cv: OpenCV格式的小图（BGR或BGRA）
+    :param threshold: 差异阈值（TM_SQDIFF_NORMED，越小越匹配）
+    :param max_results: 最多返回的结果数（默认5）
+    :param nms_threshold: 非最大值抑制阈值（抑制重叠框）
+    :return: [((x1,y1), diff1), ((x2,y2), diff2), ...]，最多5个
+    """
+    try:
+        # 检查输入
+        if not isinstance(small_image_cv, np.ndarray) or len(small_image_cv.shape) != 3:
+            raise ValueError("small_image_cv 必须是3通道或4通道的OpenCV图像")
+
+        # 转换大图为OpenCV BGR格式
+        big_image_cv = cv2.cvtColor(np.array(big_image), cv2.COLOR_RGB2BGR)
+
+        # 预处理小图（支持透明通道）
+        if small_image_cv.shape[2] == 4:
+            small_image_bgr, mask = preprocess_alpha_image(small_image_cv)
+        else:
+            small_image_bgr = small_image_cv
+            mask = None
+        res = cv2.matchTemplate(
+            big_image_cv, small_image_bgr,
+            cv2.TM_SQDIFF_NORMED, mask=mask
+        )
+
+        locs = np.where(res <= threshold)
+        matches = [ ((x, y), float(res[y, x])) for x, y in zip(*locs[::-1]) ]
+
+        # 按差异值升序排序（差异越小越匹配）
+        matches.sort(key=lambda x: x[1])
+
+        # 非最大值抑制（NMS）去除重叠区域
+        if nms_threshold and len(matches) > 0:
+            matches = apply_nms(matches, nms_threshold)
+
+        # 返回前max_results个结果（最多5个）
+        return matches[:max_results]
+
+    except Exception as e:
+        print(f"匹配错误: {e}")
+        return []
+
+
+def apply_nms(
+    matches,
+    threshold: float
+):
+    """
+    非最大值抑制（NMS）过滤重叠匹配
+    :param matches: [((x,y), diff), ...]
+    :param threshold: 重叠阈值（IoU）
+    :return: 过滤后的匹配点
+    """
+    if len(matches) <= 1:
+        return matches
+
+    # 提取坐标和差异值
+    boxes = []
+    scores = []
+    h, w = matches[0][0][1], matches[0][0][0]  # 假设小图尺寸一致
+
+    for (x, y), diff in matches:
+        boxes.append([x, y, x + w, y + h])
+        scores.append(diff)
+
+    # 使用OpenCV的NMS
+    indices = cv2.dnn.NMSBoxes(
+        boxes, scores,
+        score_threshold=0,
+        nms_threshold=threshold
+    )
+
+    return [matches[i] for i in indices.flatten()]
 
 
 def truncated_normal(min_val, max_val, mean=None, std=None, size=1):

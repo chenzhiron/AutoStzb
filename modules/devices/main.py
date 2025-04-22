@@ -5,6 +5,7 @@ class Devices:
         self.d = u2.connect(simulator)
 
     def click(self, x:int, y:int):
+        print('click x:',x,'y',y)
         self.d.click(x, y)
 
     def swipe(self, origin_x, origin_y, next_x, next_y, times=1):

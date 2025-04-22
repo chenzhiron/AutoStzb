@@ -17,7 +17,11 @@ class ImgNames:
     ZHENGBINGING = "zhengbinging"
     ZHENGBINGMAX = 'zhengbing_max'
     SEARCH = 'search'
-
+    JINGON = 'jingon'
+    SAODANG = 'saodang'
+    ACTIONREQUIRE = 'action_require'
+    ACTIONLIST = 'action_list'
+    ADDRESS = 'address'
     @classmethod
     def get_path(cls, img_name: str, ext: str = ".png") -> str:
         """根据常量获取图片完整路径"""

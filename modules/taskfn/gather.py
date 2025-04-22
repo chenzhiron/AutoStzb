@@ -21,13 +21,13 @@ class Gather(BaseReturnMain):
         self.result = {}
     def action_click(self, img_path: str):
         self.current_screenshot = self.device.screenshot()
-        if is_template_matched(self.current_screenshot, ImgNames.get_path(img_path)):
+        if is_template_matched(self.current_screenshot, ImgNames.get_image(img_path)):
             self.device.click(truncated_normal(375, 440), truncated_normal(735, 880))
             return True
         return False
     def action_list(self, img_path:str):
         self.current_screenshot = self.device.screenshot()
-        if is_template_matched(self.current_screenshot,ImgNames.get_path(img_path)):
+        if is_template_matched(self.current_screenshot,ImgNames.get_image(img_path)):
             if self.config['address'] == '':
                 num = self.config['num']
                 offset_x = 75 + ((170 + 40) * (num -1))
@@ -41,7 +41,7 @@ class Gather(BaseReturnMain):
         self.current_screenshot = self.device.screenshot()
         state = False
         for v in img_paths:
-            if is_template_matched(self.current_screenshot, ImgNames.get_path(v)):
+            if is_template_matched(self.current_screenshot, ImgNames.get_image(v)):
                 state = True
                 break
         if state:
@@ -49,7 +49,7 @@ class Gather(BaseReturnMain):
 
     def action_zhengbing_max(self, img_path:str):
         self.current_screenshot = self.device.screenshot()
-        if is_template_matched(self.current_screenshot, ImgNames.get_path(img_path)):
+        if is_template_matched(self.current_screenshot, ImgNames.get_image(img_path)):
             self.device.click(truncated_normal(1135,1280), truncated_normal(825,860))
 
     def action_max_time(self):

@@ -22,7 +22,7 @@ class SearchMap(BaseReturnMain):
 
     def click_jump_map(self):
         self.current_screenshot = self.device.screenshot()
-        if is_template_matched(self.current_screenshot, ImgNames.get_path(ImgNames.SEARCH)):
+        if is_template_matched(self.current_screenshot, ImgNames.get_image(ImgNames.SEARCH)):
             self.device.click(1420,95)
         else:
             self.device.click(1428,104)
