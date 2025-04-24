@@ -1,12 +1,9 @@
-import sys
-
 import numpy as np
 
-sys.path.append("")
-from modules.devices.main import Devices
 from modules.ocr.main import ocr_format_val
 from modules.utils import export_excel, find_multiple_templates, pil_to_cv2
-from modules.taskfn.tasks_utils import BaseTypeImg, battle_time
+from modules.taskfn.tasks_utils import battle_time
+from modules.taskfn.basic import BaseTypeImg
 
 
 class RoleLists(BaseTypeImg):

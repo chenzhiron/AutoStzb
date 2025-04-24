@@ -2,24 +2,14 @@ import time
 
 import numpy as np
 
-from modules.devices.main import Devices
 from modules.imgs.img_path import ImgNames
 from modules.ocr.main import ocr_format_val
-from modules.taskfn.tasks_utils import BaseReturnMain, extract_numbers_from_brackets
+from modules.taskfn.basic import Basic
+from modules.taskfn.tasks_utils import extract_numbers_from_brackets
 from modules.utils import is_template_matched, truncated_normal
 
 
-class SearchMap(BaseReturnMain):
-    def __init__(self, device: Devices, config = {}, db=None):
-        super().__init__(device)
-        self.config = {
-            'x': '852',
-            'y': '688',
-        }
-        self.db = db
-        self.current_screenshot = None
-        self.result = {}
-
+class SearchMap(Basic):
     def click_jump_map(self):
         self.current_screenshot = self.device.screenshot()
         if is_template_matched(self.current_screenshot, ImgNames.get_image(ImgNames.SEARCH)):
@@ -55,14 +45,3 @@ class SearchMap(BaseReturnMain):
             return False
         if address_result[0] == int(self.config['x']) and address_result[1] == int(self.config['y']):
             return True
-
-    def execute(self):
-        # self.click_jump_map()
-        # self.click_map_axis()
-        # time.sleep(3)
-        # self.click_verify_address()
-        pass
-if __name__=='__main__':
-    d = Devices('127.0.0.1:16384')
-    search_map = SearchMap(d)
-    search_map.execute()

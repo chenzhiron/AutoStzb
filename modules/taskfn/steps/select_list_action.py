@@ -1,21 +1,13 @@
 import numpy as np
-from numpy.f2py.auxfuncs import throw_error
 
-from modules.devices.main import Devices
 from modules.imgs.img_path import ImgNames
-from modules.taskfn.tasks_utils import BaseReturnMain, time_str_to_seconds
 from modules.ocr.main import ocr_format_val
+from modules.taskfn.basic import Basic
+from modules.taskfn.tasks_utils import time_str_to_seconds
 from modules.utils import is_template_matched_axis, truncated_normal, find_top_template_matches
 
 
-class Operation(BaseReturnMain):
-    def __init__(self, device: Devices, config={}, db=None):
-        super().__init__(device)
-        self.config = {
-            "max_distance": '30'
-        }
-        self.device = device
-        self.current_screenshot = None
+class OperationListAction(Basic):
 
     def execute(self):
         self.current_screenshot = self.device.screenshot()
@@ -56,9 +48,4 @@ class Operation(BaseReturnMain):
 
     def action_result(self):
         self.current_screenshot = self.device.screenshot()
-
-if __name__=='__main__':
-    d = Devices('127.0.0.1:16384')
-    operation = Operation(d)
-    operation.action_result()
 

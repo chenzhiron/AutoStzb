@@ -5,10 +5,8 @@ import time
 from datetime import datetime
 from typing import Callable, Any, Optional
 
-import cv2
 import numpy as np
 
-from modules.devices.main import Devices
 from modules.ocr.main import ocr_format_val
 from modules.utils import formatDate
 
@@ -65,21 +63,6 @@ def extract_numbers_from_brackets(text):
         return numbers[0], numbers[1]
     else:
         return None
-
-class BaseTypeImg:
-    def __init__(self):
-        self.attack_template_img = cv2.imread(
-            "./modules/imgs/attack_template.png", cv2.IMREAD_COLOR
-        )
-        self.defense_template_img = cv2.imread(
-            "./modules/imgs/defense_template.png", cv2.IMREAD_COLOR
-        )
-        self.exploit_template_img = cv2.imread(
-            "./modules/imgs/condinate.png", cv2.IMREAD_COLOR
-        )
-
-
-
 
 
 class AsyncTaskProcessor:
@@ -174,9 +157,3 @@ class AsyncTaskProcessor:
     def is_paused(self) -> bool:
         """检查工作线程是否因队列满而暂停"""
         return self._pause_event.is_set()
-
-class BaseReturnMain:
-    def __init__(self, d:Devices):
-        self.device = d
-    def return_main(self):
-        pass

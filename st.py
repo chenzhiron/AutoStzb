@@ -1,86 +1,96 @@
 import json
+import pprint
 import time
+
 from loguru import logger
+
 from modules.db.dbinit import Db
+
+
+class TaskScheduler:
+    def __init__(self):
+        self.db = Db("task.db")
+        self._cache = {
+            "last_check": 0,
+            "valid_tasks": []
+        }
+    
+    def get_next_task(self, latest=False):
+        """优化查询策略"""
+        if not latest:
+            if time.time() - self._cache["last_check"] < 5:
+                return self._cache["valid_tasks"].pop(0) if self._cache["valid_tasks"] else None
+
+        fresh_data = self.db.select_task_execute()
+        current_ts = time.time()
+        simulator, tasks = "", []
+        logger.info(pprint.pformat(fresh_data))
+        for key, value in fresh_data.items():
+            if key == "simulator":
+                simulator = value['address']
+                continue
+
+            if value.get("state"):
+                time_tuple = time.strptime(value["nexttime"], "%Y/%m/%d %H:%M:%S")
+                if current_ts > time.mktime(time_tuple):
+                    tasks.append((key, value) )
+
+        if simulator and tasks:
+            self._cache = {
+                "last_check": time.time(),
+                "valid_tasks": [(simulator, task[0], task[1]) for task in tasks]
+            }
+            return self._cache["valid_tasks"].pop(0)
+        return None
+
+
+from contextlib import contextmanager
+from modules.devices.main import DeviceManager, DeviceOperator
+
+class TaskFactory:
+    # import 
+    _task_map = {
+    }
+
+    @classmethod
+    def create_task(cls, task_name, operator, config):
+        logger.info(f'task_name: {task_name}')
+        task_class = cls._task_map.get(task_name)
+        if not task_class:
+            raise ValueError(f"Invalid task name: {task_name} and config: {pprint.pformat(config)}")
+        logger.info(f"Creating task: {task_name}")
+        return task_class(operator, config)
 
 
 class St:
     def __init__(self):
-        self.db = Db("task.db")
-
-    def get_next_task(self):
-        while True:
-            rows = self.db.select_task_execute()
-            current_timestamp = time.time()
-            simulatorName = ""
-            taskName = ""
-
-            for v in rows:
-                if v[0] == "simulator":
-                    simulatorName = v[1]
-                    continue
-
-                config = json.loads(v[1])
-                if config["state"]:
-                    format_str = "%Y/%m/%d %H:%M:%S"
-                    time_tuple = time.strptime(config["nexttime"], format_str)
-                    timestamp = time.mktime(time_tuple)
-                    if current_timestamp > timestamp:
-                        taskName = v[0]
-                        break
-            if len(simulatorName) > 0 and len(taskName) > 0:
-                return (simulatorName, taskName, config)
-            time.sleep(1)
-
-    def devices(self, simulatorname):
-
-        # d = Devices(simulatorname).d
-        d = None
-        return d
-
-    def myfight(self, d, config):
-        from modules.taskfn.myfight import Myfight
-
-        Myfight(self, d, config).execute()
-
-    def exploit(self, d, config):
-        from modules.taskfn.honor import Honor
-
-        Honor(d, config).execute()
-
-    def fliplists(self, d, config):
-        from modules.taskfn.flip_lists import FlipLists
-
-        FlipLists(d, config).execute()
-
-    def ranking(self, d, config):
-        from modules.taskfn.ranking import Ranking
-
-        Ranking(d, config).execute()
-
-    def rolelists(self, d, config):
-        from modules.taskfn.role_lists import role_lists
-
-        pass
-
-    def siegebattles(self, d, config):
-        from modules.taskfn.siege_battles import SiegeBattles
-
-        SiegeBattles(d, config).execute()
-
+        self.scheduler = TaskScheduler()
+    
+    @contextmanager
+    def _device_context(self, simulator_name):
+        """带资源管理的设备上下文"""
+        dm = DeviceManager(simulator_name)
+        try:
+            yield DeviceOperator(dm)
+        finally:
+            dm.release()
+    
+    def run_task(self, simulator_name, task_name, config):
+        with self._device_context(simulator_name) as operator:
+            task = TaskFactory.create_task(task_name, operator, config)
+            logger.info(f"Starting {task_name} on {simulator_name}")
+            task.execute()
+            logger.success(f"Completed {task_name}")
+    
     def loop(self):
         while True:
-            # simulatorName, taskname, config = self.get_next_task()
-            # print(simulatorName, taskname, config)
-            # if hasattr(self, taskname):
-            #     d = self.devices(simulatorName)
-            #     method = getattr(self, taskname)
-            #     method(d, config)
-            # else:
-            #     print(f"Method {taskname} not found in St class.")
-            time.sleep(1)
-
+            task_data = self.scheduler.get_next_task()
+            logger.info(f'{pprint.pprint(task_data)}')
+            if task_data:
+                self.run_task(*task_data)
+            time.sleep(1)  # 降低CPU占用
+            logger.info('12345')
 
 if __name__ == "__main__":
-    s = St()
-    s.loop()
+    system = St()
+    system.loop()
