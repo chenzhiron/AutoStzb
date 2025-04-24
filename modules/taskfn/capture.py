@@ -9,6 +9,7 @@ from modules.taskfn.steps.select_list_action import OperationListAction
 class Capture(Basic, Draft, SearchMap, OperationGoMap, OperationListAction):
     def __init__(self, operator, config):
         super().__init__(operator, config)
+        self.steps_fn = []
 
     def execute(self):
         pass

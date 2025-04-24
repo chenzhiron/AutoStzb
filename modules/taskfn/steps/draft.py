@@ -1,7 +1,11 @@
+import logging
+import pprint
 import time
 
+import cv2
 import numpy as np
 
+from modules.devices.main import DeviceOperator, DeviceManager
 from modules.imgs.img_path import ImgNames
 from modules.ocr.main import ocrnormal, ocr_format_val
 from modules.taskfn.basic import Basic
@@ -10,16 +14,15 @@ from modules.utils import is_template_matched, truncated_normal
 
 
 class Draft(Basic):
-    def action_click(self, img_path: str):
+    def action_click(self):
         self.current_screenshot = self.device.screenshot()
-        if is_template_matched(self.current_screenshot, ImgNames.get_image(img_path)):
+        if is_template_matched(self.current_screenshot, ImgNames.get_image(ImgNames.SHILI)):
             self.device.click(truncated_normal(375, 440), truncated_normal(735, 880))
             return True
-        return False
 
-    def action_list(self, img_path: str):
+    def action_list(self):
         self.current_screenshot = self.device.screenshot()
-        if is_template_matched(self.current_screenshot, ImgNames.get_image(img_path)):
+        if is_template_matched(self.current_screenshot, ImgNames.get_image(ImgNames.SHILIPAGE),0.9, cv2.TM_CCORR_NORMED):
             if self.config['address'] == '':
                 num = self.config['num']
                 offset_x = 75 + ((170 + 40) * (num - 1))
@@ -28,52 +31,52 @@ class Draft(Basic):
                 offset_y_end = offset_y + 80
                 print(offset_x, offset_x_end, offset_y, offset_y_end)
                 self.device.click(truncated_normal(offset_x, offset_x_end), truncated_normal(offset_y, offset_y_end))
+                return True
 
-    def action_zhengbing(self, img_paths: list[str]):
+    def action_zhengbing(self):
         self.current_screenshot = self.device.screenshot()
         state = False
-        for v in img_paths:
-            if is_template_matched(self.current_screenshot, ImgNames.get_image(v)):
+        for v in [ImgNames.ZHENGBING, ImgNames.ZHENGBINGING]:
+            if is_template_matched(self.current_screenshot, ImgNames.get_image(v),0.9, cv2.TM_CCORR_NORMED):
                 state = True
                 break
         if state:
             self.device.click(truncated_normal(735, 850), truncated_normal(665, 720))
+            return True
 
-    def action_zhengbing_max(self, img_path: str):
+    def action_zhengbing_max(self):
         self.current_screenshot = self.device.screenshot()
-        if is_template_matched(self.current_screenshot, ImgNames.get_image(img_path)):
+        if is_template_matched(self.current_screenshot, ImgNames.get_image(ImgNames.ZHENGBINGMAX)):
             self.device.click(truncated_normal(1135, 1280), truncated_normal(825, 860))
+            return True
 
     def action_max_time(self):
+        time.sleep(0.5)
         self.current_screenshot = self.device.screenshot()
         time_result = ocrnormal(np.array(self.current_screenshot.crop([872, 490, 980, 815])))
         max_time = time_consuming(time_result)
+        logging.info(f'max time: {max_time}')
         self.result.update({
             "time_consuming": max_time
         })
-
+        return True
     def action_click_confirm(self):
         self.device.click(truncated_normal(1325, 1550), truncated_normal(825, 860))
-
+        return True
     def action_click_confirm_end(self):
         self.current_screenshot = self.device.screenshot()
         confirm_text = ocr_format_val(np.array(self.current_screenshot.crop([860, 570, 1080, 614])))
         if confirm_text == '确定':
             self.device.click(truncated_normal(860, 1080), truncated_normal(570, 614))
             return True
-        return False
-
     def execute_draft(self):
-        self.action_click(ImgNames.SHILI)
-        time.sleep(5)
-        self.action_list(ImgNames.SHILIPAGE)
-        time.sleep(5)
-        self.action_zhengbing([ImgNames.ZHENGBING, ImgNames.ZHENGBINGING])
-        time.sleep(5)
-        self.action_zhengbing_max(ImgNames.ZHENGBINGMAX)
-        time.sleep(5)
-        self.action_max_time()
-        time.sleep(5)
-        self.action_click_confirm()
-        time.sleep(5)
-        self.action_click_confirm_end()
+        steps = [
+            self.action_click,
+            self.action_list,
+            self.action_zhengbing,
+            self.action_zhengbing_max,
+            self.action_max_time,
+            self.action_click_confirm,
+            self.action_click_confirm_end
+        ]
+        self.execute_steps(steps)
