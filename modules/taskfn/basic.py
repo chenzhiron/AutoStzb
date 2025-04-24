@@ -4,7 +4,7 @@ from modules.devices.main import DeviceOperator
 
 
 class Basic:
-    def __init__(self, device:DeviceOperator, config):
+    def __init__(self, device: DeviceOperator, config):
         self.device = device
         self.config = config
         self.result = {}

@@ -27,6 +27,7 @@ def battle_time(img, v):
     print("times", times)
     return times
 
+
 def time_str_to_seconds(time_str):
     try:
         time_obj = datetime.strptime(time_str, '%H:%M:%S')
@@ -34,6 +35,7 @@ def time_str_to_seconds(time_str):
         return total_seconds
     except (ValueError, AttributeError, TypeError):
         return 0
+
 
 def time_consuming(data):
     result = []

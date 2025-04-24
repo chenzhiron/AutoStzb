@@ -1,4 +1,3 @@
-
 from modules.taskfn.basic import Basic
 from modules.taskfn.steps.draft import Draft
 from modules.taskfn.steps.operator_action import OperationGoMap

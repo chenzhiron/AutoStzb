@@ -77,9 +77,9 @@ class FlipLists(BaseTypeImg):
             r2 = self.loopinfo()
             print("r2 info_end_time: ", r2, self.end_time)
             if (
-                self.end_time is not None
-                and self.end_time != 0
-                and self.custom_end_time > self.end_time
+                    self.end_time is not None
+                    and self.end_time != 0
+                    and self.custom_end_time > self.end_time
             ):
                 break
 

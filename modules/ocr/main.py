@@ -8,8 +8,10 @@ ocr = PaddleOCR(
     show_log=True,
 )
 
+
 def ocrnotdet(sources):
     return ocr.ocr(sources, cls=False, det=False, inv=True)
+
 
 def ocrnormal(sources):
     return ocr.ocr(sources, cls=False, inv=True)
@@ -18,6 +20,7 @@ def ocrnormal(sources):
     #     res = result[idx]
     #     for line in res:
     #         print(line)
+
 
 def ocr_format_ranking(sources):
     data = ocrnormal(sources)
@@ -52,7 +55,8 @@ def ocr_format_val(sources):
     except:
         return None
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     d = Devices('127.0.0.1:16384')
     result = ocrnormal(np.array(d.screenshot()))
     print(result)

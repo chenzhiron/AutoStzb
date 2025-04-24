@@ -32,8 +32,6 @@ def server():
     )
 
 
-
-
 class SessionManager:
     def __new__(cls, *args, **kwargs):
         if not hasattr(cls, 'instance'):
@@ -74,23 +72,24 @@ def update():
     while True:
         current_length = len(pm.renderables)
 
-            # 情况1: 有新日志追加
+        # 情况1: 有新日志追加
         if current_length > last_index:
-                new_logs = pm.renderables[last_index:current_length]
-                # 处理新增的日志（例如发送到UI）
-                for log in new_logs:
-                    put_text(log)
-                last_index = current_length  # 更新索引
+            new_logs = pm.renderables[last_index:current_length]
+            # 处理新增的日志（例如发送到UI）
+            for log in new_logs:
+                put_text(log)
+            last_index = current_length  # 更新索引
 
-            # 情况2: 日志被裁剪（例如从400条裁剪到80条）
+        # 情况2: 日志被裁剪（例如从400条裁剪到80条）
         elif current_length < last_index:
-                new_logs = pm.renderables
-                for log in new_logs:
-                    put_text(log)
-                last_index = current_length
+            new_logs = pm.renderables
+            for log in new_logs:
+                put_text(log)
+            last_index = current_length
 
         # 降低CPU占用
         time.sleep(0.5)  # 根据实际需求调整休眠时间
+
 
 def output_fn():
     while True:
@@ -98,8 +97,9 @@ def output_fn():
         time.sleep(1)
 
 
-d = threading.Thread(target=output_fn,daemon=True)
+d = threading.Thread(target=output_fn, daemon=True)
 d.start()
+
 
 class app:
     def __init__(self):

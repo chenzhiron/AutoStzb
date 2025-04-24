@@ -1,4 +1,6 @@
 from st import St
+
+
 class Myfight:
     def __init__(self, s: St, d):
         self.origin = s
@@ -11,4 +13,4 @@ class Myfight:
         self.origin.db.update("myfight", self.config)
         v2 = self.origin.db.select_task_execute()
         for r in v2:
-            print('2:',r)
+            print('2:', r)

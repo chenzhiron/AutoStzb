@@ -1,9 +1,9 @@
 import numpy as np
 
 from modules.ocr.main import ocr_format_val
-from modules.utils import export_excel, find_multiple_templates, pil_to_cv2
-from modules.taskfn.tasks_utils import battle_time
 from modules.taskfn.basic import BaseTypeImg
+from modules.taskfn.tasks_utils import battle_time
+from modules.utils import export_excel, find_multiple_templates, pil_to_cv2
 
 
 class RoleLists(BaseTypeImg):
@@ -49,9 +49,9 @@ class RoleLists(BaseTypeImg):
                 ln = max_number.split("/")[1]
                 if int(ln) < 10000:
                     continue
-            except :
+            except:
                 print('warning: ', max_number)
-                
+
             # 名字
             r = ocr_format_val(
                 np.array(self.screenshot.crop([1084, v + 195, 1308, v + 195 + 60]))
@@ -138,7 +138,7 @@ class RoleLists(BaseTypeImg):
         else:
             return []
 
-    def execute(self): 
+    def execute(self):
         i = 0
 
         while True:
@@ -156,16 +156,16 @@ class RoleLists(BaseTypeImg):
                 t = 0
                 for k_r, v_r in enumerate(r2):
                     if (
-                        self.result[-(k_r + 1)][0] == v_r[0]
-                        and self.result[-(k_r + 1)][1] == v_r[1]
-                        and self.result[-(k_r + 1)][2] == v_r[2]
-                        and last_end_time == self.end_time
+                            self.result[-(k_r + 1)][0] == v_r[0]
+                            and self.result[-(k_r + 1)][1] == v_r[1]
+                            and self.result[-(k_r + 1)][2] == v_r[2]
+                            and last_end_time == self.end_time
                     ):
                         t += 1
                 if t == r2_l:
-                    i+=1
+                    i += 1
                     if i == 5:
-                        i=0
+                        i = 0
                         print("len is len")
                         break
             for v in r2:

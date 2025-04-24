@@ -22,6 +22,7 @@ class ImgNames:
     ACTIONREQUIRE = 'action_require'
     ACTIONLIST = 'action_list'
     ADDRESS = 'address'
+
     @classmethod
     def get_path(cls, img_name: str, ext: str = ".png") -> str:
         """根据常量获取图片完整路径"""
@@ -48,6 +49,6 @@ class ImgNames:
         return img
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     attack = ImgNames.get_path(ImgNames.ZHENGBINGING)
     print(attack)

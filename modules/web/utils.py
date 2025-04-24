@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytz
 from pywebio.output import put_row, put_column, put_text, put_collapse
-from pywebio.pin import put_checkbox, pin_on_change, put_input
+from pywebio.pin import put_checkbox, put_input
 
 
 def def_lable_checkbox(component):
@@ -68,9 +68,8 @@ def render_number(taksname, explaintext, inputkey, allprops, numberfn):
 
 
 def render_datetime(
-    taksname, explaintext, inputkey, allprops, datetimefn, formatfn=formatdate
+        taksname, explaintext, inputkey, allprops, datetimefn, formatfn=formatdate
 ):
-
     explain_componet(
         [explaintext],
         put_input(inputkey, value=allprops[inputkey], type="datetime-local"),
