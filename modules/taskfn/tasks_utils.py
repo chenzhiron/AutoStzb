@@ -7,18 +7,18 @@ from typing import Callable, Any, Optional
 import numpy as np
 
 from modules.ocr.main import ocr_format_val
-from modules.utils import formatDate
+from modules.utils import convert_to_timestamp
 
 
 def battle_time(img, v):
     # 战报时间
-    times = formatDate(
+    times = convert_to_timestamp(
         ocr_format_val(np.array(img.crop([665, v + 240, 900, v + 240 + 40])))
-    ) or formatDate(
+    ) or convert_to_timestamp(
         ocr_format_val(np.array(img.crop([665, v + 230, 900, v + 230 + 50])))
     )
     if type(times) is str or times is None:
-        times = formatDate(
+        times = convert_to_timestamp(
             ocr_format_val(
                 np.array(img.crop([665, v + 230 + 80, 900, v + 230 + 80 + 60]))
             )
