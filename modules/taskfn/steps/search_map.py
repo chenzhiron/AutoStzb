@@ -14,10 +14,12 @@ class SearchMap(Basic):
         self.current_screenshot = self.device.screenshot()
         if is_template_matched(self.current_screenshot, ImgNames.get_image(ImgNames.SEARCH)):
             self.device.click(1420, 95)
+            return True
         else:
             self.device.click(1428, 104)
             time.sleep(3)
             self.device.click(1420, 95)
+            return True
 
     def click_map_axis(self):
         self.current_screenshot = self.device.screenshot()
@@ -34,6 +36,7 @@ class SearchMap(Basic):
             self.device.click(truncated_normal(200, 1400), truncated_normal(100, 600))
             time.sleep(1)
             self.device.click(truncated_normal(1410, 1580), truncated_normal(835, 885))
+            return True
 
     def click_verify_address(self):
         self.device.click(800, 460)
@@ -45,3 +48,11 @@ class SearchMap(Basic):
             return False
         if address_result[0] == int(self.config['x']) and address_result[1] == int(self.config['y']):
             return True
+
+    def execute_search_map(self):
+        steps = [
+            self.click_jump_map,
+            self.click_map_axis,
+            self.click_verify_address,
+        ]
+        self.execute_steps(steps)

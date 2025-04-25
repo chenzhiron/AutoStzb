@@ -9,7 +9,7 @@ from modules.utils import is_template_matched_axis, truncated_normal, find_top_t
 
 class OperationListAction(Basic):
 
-    def execute(self):
+    def select_list_action(self):
         self.current_screenshot = self.device.screenshot()
         distance = ocr_format_val(np.array(self.current_screenshot.crop([1182, 160, 1250, 210])))
         if distance is None:
@@ -51,3 +51,10 @@ class OperationListAction(Basic):
 
     def action_result(self):
         self.current_screenshot = self.device.screenshot()
+
+    def execute_list_action(self):
+        steps = [
+            self.select_list_action,
+            self.action_delay_time
+        ]
+        self.execute_steps(steps)
