@@ -12,7 +12,7 @@ class Basic:
         self.result = {}
         self.current_screenshot = None
 
-    def run_with_retry(self, step_func, max_retry=20, retry_interval=0.3):
+    def run_with_retry(self, step_func, max_retry=20, retry_interval=0.5):
             """
             执行一个步骤，支持重试机制
             :param step_func: 要执行的函数（如 self.action_click）

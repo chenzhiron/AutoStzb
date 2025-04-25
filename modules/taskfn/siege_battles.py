@@ -1,4 +1,5 @@
 import numpy as np
+
 from modules.ocr.main import ocr_format_val
 from modules.taskfn.basic import BaseTypeImg
 from modules.taskfn.tasks_utils import battle_time

@@ -1,29 +1,37 @@
 import numpy as np
 from paddleocr import PaddleOCR
 
-from modules.devices.main import DeviceOperator
-
 ocr = PaddleOCR(
     lang="ch",
     show_log=True,
 )
 
 
-def ocrnotdet(sources):
+def ocr_not_det(sources):
     return ocr.ocr(sources, cls=False, det=False, inv=True)
 
 
-def ocrnormal(sources):
+def ocr_normal(sources):
     return ocr.ocr(sources, cls=False, inv=True)
 
     # for idx in range(len(result)):
     #     res = result[idx]
     #     for line in res:
     #         print(line)
+def ocr_format_list(sources):
+    data = ocr_normal(sources)
+    if data[0] is None:
+        return None
+    result = []
+    for v in data[0]:
+        l = v[0][1][0]
+        name = v[1][0]
+        result.append([l, name])
 
+    return result
 
 def ocr_format_ranking(sources):
-    data = ocrnormal(sources)
+    data = ocr_normal(sources)
     if data[0] is None:
         return None
 
@@ -40,7 +48,7 @@ def ocr_format_ranking(sources):
 
 
 def ocr_format_val(sources):
-    v = ocrnormal(sources)
+    v = ocr_normal(sources)
     if v[0] is None:
         return None
     try:
@@ -58,5 +66,5 @@ def ocr_format_val(sources):
 
 if __name__ == '__main__':
     d = Devices('127.0.0.1:16384')
-    result = ocrnormal(np.array(d.screenshot()))
+    result = ocr_normal(np.array(d.screenshot()))
     print(result)

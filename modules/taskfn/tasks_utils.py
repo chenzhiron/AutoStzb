@@ -1,5 +1,4 @@
 import queue
-import re
 import threading
 import time
 from datetime import datetime
@@ -46,26 +45,61 @@ def time_consuming(data):
 
 
 def extract_numbers_from_brackets(text):
-    # 使用正则表达式查找括号内的内容
-    match = re.search(r'[（(]([^）)]+)[）)]', text)
-    if not match:
+    try:
+        # 使用正则表达式查找括号内的内容
+        match = re.search(r'[（(]([^）)]+)[）)]', text)
+        if not match:
+            return None
+        # 获取括号内的内容
+        content = match.group(1)
+
+        # 使用非数字分割字符串
+        numbers = re.split(r'[^\d]+', content)
+
+        # 过滤掉空字符串并转换为整数
+        numbers = [int(num) for num in numbers if num]
+
+        # 如果找到至少两个数字，返回前两个
+        if len(numbers) == 2:
+            return numbers[0], numbers[1]
+        else:
+            return None
+    except TypeError:
         return None
 
-    # 获取括号内的内容
-    content = match.group(1)
 
-    # 使用非数字分割字符串
-    numbers = re.split(r'[^\d]+', content)
+import re
 
-    # 过滤掉空字符串并转换为整数
-    numbers = [int(num) for num in numbers if num]
+def process_list(input_list):
+    result = []
+    for item in input_list:
+        if len(item) != 2:  # 确保每个子列表有2个元素
+            continue
 
-    # 如果找到至少两个数字，返回前两个
-    if len(numbers) == 2:
-        return numbers[0], numbers[1]
-    else:
-        return None
+        first_element = item[0]
+        second_element = item[1]
 
+        # 尝试将第二个元素转换为数字
+        try:
+            num = float(second_element)  # 先尝试转换为float
+            if num.is_integer():  # 如果是整数，转换为int
+                num = int(num)
+            result.append([first_element, num])
+        except ValueError:
+            # 转换失败，使用正则剔除非数字字符
+            cleaned = re.sub(r'[^0-9]', '', second_element)
+            if len(cleaned) > 0:
+                # 尝试将清理后的字符串转换为数字
+                try:
+                    num = int(cleaned)
+                    result.append([first_element, num])
+                except ValueError:
+                    # 如果清理后还是不能转换为数字，跳过
+                    continue
+            else:
+                # 清理后长度为0，跳过
+                continue
+    return result
 
 class AsyncTaskProcessor:
     def __init__(self, task_func: Callable[[], Any], max_queue_size: int = 10):

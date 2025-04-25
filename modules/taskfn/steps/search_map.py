@@ -2,6 +2,7 @@ import time
 
 import numpy as np
 
+from modules.devices.main import DeviceOperator, DeviceManager
 from modules.imgs.img_path import ImgNames
 from modules.ocr.main import ocr_format_val
 from modules.taskfn.basic import Basic
@@ -39,8 +40,8 @@ class SearchMap(Basic):
             return True
 
     def click_verify_address(self):
-        self.device.click(800, 460)
         time.sleep(1)
+        self.device.click(800, 460)
         self.current_screenshot = self.device.screenshot()
         ocr_result = ocr_format_val(np.array(self.current_screenshot.crop([675, 350, 930, 390])))
         address_result = extract_numbers_from_brackets(ocr_result)
@@ -56,3 +57,7 @@ class SearchMap(Basic):
             self.click_verify_address,
         ]
         self.execute_steps(steps)
+
+if __name__ == '__main__':
+    search_map = SearchMap(DeviceOperator(DeviceManager('127.0.0.1:16384')),{'x':855,'y':685})
+    search_map.execute_search_map()

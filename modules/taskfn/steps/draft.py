@@ -1,13 +1,11 @@
 import logging
-import pprint
 import time
 
 import cv2
 import numpy as np
 
-from modules.devices.main import DeviceOperator, DeviceManager
 from modules.imgs.img_path import ImgNames
-from modules.ocr.main import ocrnormal, ocr_format_val
+from modules.ocr.main import ocr_normal, ocr_format_val
 from modules.taskfn.basic import Basic
 from modules.taskfn.tasks_utils import time_consuming
 from modules.utils import is_template_matched, truncated_normal
@@ -53,7 +51,7 @@ class Draft(Basic):
     def action_max_time(self):
         time.sleep(0.5)
         self.current_screenshot = self.device.screenshot()
-        time_result = ocrnormal(np.array(self.current_screenshot.crop([872, 490, 980, 815])))
+        time_result = ocr_normal(np.array(self.current_screenshot.crop([872, 490, 980, 815])))
         max_time = time_consuming(time_result)
         logging.info(f'max time: {max_time}')
         self.result.update({
