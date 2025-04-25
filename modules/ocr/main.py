@@ -1,7 +1,7 @@
 import numpy as np
 from paddleocr import PaddleOCR
 
-from modules.devices.main import Devices
+from modules.devices.main import DeviceOperator
 
 ocr = PaddleOCR(
     lang="ch",

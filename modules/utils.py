@@ -123,8 +123,8 @@ def pil_to_cv2(pil_img):
 
 
 
-def is_template_matched(big_image: Image.Image, small_image: np.ndarray, threshold: float = 0.01) -> bool:
-    if is_template_matched_axis(big_image, small_image, threshold) is None:
+def is_template_matched(big_image: Image.Image, small_image: np.ndarray, threshold: float = 0.01, cvfn=cv2.TM_SQDIFF_NORMED) -> bool:
+    if is_template_matched_axis(big_image, small_image, threshold, cvfn) is None:
         return False
     return True
 
@@ -135,18 +135,19 @@ def preprocess_alpha_image(img_bgra: np.ndarray) -> Tuple[np.ndarray, np.ndarray
     img_bgr = img_bgra[:, :, :3].copy()
     img_bgr[alpha_mask == 0] = 0  # 透明区域置黑
     return img_bgr, mask
-
 def is_template_matched_axis(
         big_image: Image.Image,
         small_image_cv: np.ndarray,
-        threshold: float = 0.1  # 默认阈值需根据实际情况调整
+        threshold: float = 0.1,  # 默认阈值需根据实际情况调整
+        method=cv2.TM_SQDIFF_NORMED
 ) -> Optional[Tuple[Tuple[int, int], float]]:
     """
-    使用 TM_SQDIFF_NORMED 进行模板匹配
+    通用的模板匹配函数，支持所有OpenCV匹配方法
     :param big_image: PIL格式的大图
     :param small_image_cv: OpenCV格式的小图（BGR或BGRA）
-    :param threshold: 差异阈值（越小越严格，建议 0.01~0.2）
-    :return: (匹配位置(x,y), 差异值) 或 None
+    :param threshold: 匹配阈值（根据方法类型调整）
+    :param method: OpenCV匹配方法（如cv2.TM_CCOEFF_NORMED）
+    :return: (匹配位置(x,y), 匹配值) 或 None
     """
     try:
         # 输入检查
@@ -156,29 +157,33 @@ def is_template_matched_axis(
         # 转换大图为OpenCV BGR格式
         big_image_cv = cv2.cvtColor(np.array(big_image), cv2.COLOR_RGB2BGR)
 
-        # 预处理小图（支持带透明通道的情况）
+        # 预处理小图（支持透明通道）
         if small_image_cv.shape[2] == 4:
             small_image_bgr, mask = preprocess_alpha_image(small_image_cv)
         else:
             small_image_bgr = small_image_cv
             mask = None
 
-        # 执行模板匹配（TM_SQDIFF_NORMED）
-        res = cv2.matchTemplate(
-            big_image_cv, small_image_bgr,
-            cv2.TM_SQDIFF_NORMED, mask=mask
-        )
+        # 执行模板匹配
+        res = cv2.matchTemplate(big_image_cv, small_image_bgr, method, mask=mask)
 
-        # 获取最小差异值和位置
-        min_val, _, min_loc, _ = cv2.minMaxLoc(res)
-        print(f"差异值: {min_val:.4f}, 位置: {min_loc}")
-
-        # 判断是否匹配（差异值 <= 阈值）
-        return (min_loc, min_val) if min_val <= threshold else None
+        # 根据方法类型选择极值
+        if method in [cv2.TM_SQDIFF, cv2.TM_SQDIFF_NORMED]:
+            # 取最小值（值越小越匹配）
+            min_val, _, min_loc, _ = cv2.minMaxLoc(res)
+            print(f"[SQDIFF] 差异值: {min_val:.4f}, 位置: {min_loc}")
+            return (min_loc, min_val) if min_val <= threshold else None
+        else:
+            # 取最大值（值越大越匹配）
+            _, max_val, _, max_loc = cv2.minMaxLoc(res)
+            print(f"[CCORR/CCOEFF] 匹配值: {max_val:.4f}, 位置: {max_loc}")
+            return (max_loc, max_val) if max_val >= threshold else None
 
     except Exception as e:
         print(f"匹配错误: {e}")
         return None
+
+
 def find_top_template_matches(
     big_image: Image.Image,
     small_image_cv: np.ndarray,
