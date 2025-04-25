@@ -11,3 +11,4 @@ start.bat
 start.exe
 parser
 task.db
+/log/
