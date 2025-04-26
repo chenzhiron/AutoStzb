@@ -1,8 +1,10 @@
 import threading
 import time
+from datetime import datetime
 from queue import Queue
 
 from pywebio import SessionNotFoundException
+from pywebio.input import FLOAT
 from pywebio.output import (
     put_scope,
     use_scope,
@@ -10,19 +12,16 @@ from pywebio.output import (
     put_text,
     put_button,
     put_collapse,
-    put_scrollable,
+    put_scrollable, put_row,
 )
+from pywebio.pin import put_checkbox, pin_on_change, put_input
 from pywebio.platform.tornado import start_server
 from pywebio.session import set_env, register_thread
 
 from modules.db.dbinit import Db
+from modules.static.config_key_descriptions import key_descriptions
 from modules.web.process_mange import ProcessManager
-from modules.web.utils import (
-    render_checkbox,
-    render_datetime,
-    render_input,
-    render_number
-)
+from modules.web.utils import def_label_checkbox
 
 
 def server():
@@ -157,31 +156,11 @@ class app:
     def render_config(self):
         put_collapse("配置", [put_text("模拟器").onclick(self.render_simulator)])
 
-    @use_scope("function_area", clear=True)
-    def render_simulator(self):
-        render_input(
-            "simulator",
-            "模拟器地址",
-            "address",
-            self.webdb.select_format("simulator"),
-            self.update_input,
-        )
-
-    def update_input(self, taskname, prop, v):
-        res = self.webdb.select_format(taskname)
-        res.update({prop: v})
-        self.webdb.update(taskname, res)
-
-    def updatecheckbox(self, taskname, prop, v):
-        res = self.webdb.select_format(taskname)
-        value = {prop: False}
-        if len(v) == 1:
-            value[prop] = True
-        res.update(value)
-        self.webdb.update(taskname, res)
-
     @use_scope("team", clear=True)
     def render_team(self):
+        put_collapse('个人', [
+
+        ])
         put_collapse(
             "同盟",
             [
@@ -194,126 +173,111 @@ class app:
             ],
         )
 
+    @use_scope('function_area', clear=True)
+    def render_simulator(self):
+        current_config = self.webdb.select('simulator')
+        self.render_config_form(current_config, 'simulator')
+
+    def is_date_string(self, s: str) -> bool:
+        """检查字符串是否可以转换为日期时间"""
+        try:
+            datetime.strptime(s, "%Y/%m/%d %H:%M:%S")
+            return True
+        except ValueError:
+            return False
+
+    def render_config_form(self, config, name, scope='function_area'):
+        config_dict = config[name]
+
+        def render_bool(key, value):
+            put_row([
+                put_text(key_descriptions.get(key, '')),
+                def_label_checkbox(put_checkbox(key, options=[True], value=value if value else []))
+            ])
+            pin_on_change(key, onchange=lambda v: self.update_checkbox(name, key, v), clear=True)
+
+        def render_number(key, value):
+            put_row([
+                put_text(key_descriptions.get(key, '')),
+                put_input(key, type=FLOAT, value=value)
+            ])
+            pin_on_change(key, onchange=lambda v: self.update_input(name, key, v), clear=True)
+
+        def render_datetime(key, value):
+            put_row([
+                put_text(key_descriptions.get(key, '')),
+                put_input(key, type='datetime-local',
+                          value=datetime.strptime(value, "%Y/%m/%d %H:%M:%S").strftime("%Y-%m-%dT%H:%M"))
+            ])
+            pin_on_change(key, onchange=lambda v: self.update_datetime(name, key, v), clear=True)
+
+        def render_string(key, value):
+            put_row([
+                put_text(key_descriptions.get(key, '')),
+                put_input(key, value=value)
+            ])
+            pin_on_change(key, onchange=lambda v: self.update_input(name, key, v), clear=True)
+
+        # 类型处理映射
+        type_handlers = {
+            bool: render_bool,
+            int: render_number,
+            float: render_number,
+            str: lambda k, v: render_datetime(k, v) if self.is_date_string(v) else render_string(k, v)
+        }
+
+        with use_scope(scope):
+            for key, value in config_dict.items():
+                handler = type_handlers.get(type(value))
+                if handler:
+                    handler(key, value)
+
     # 主力跟拆迁一起统计，因为他们的配置和执行是一样的
     @use_scope("function_area", clear=True)
     def render_besiege(self):
-        render_checkbox(
-            "besiege",
-            "状态",
-            "state",
-            self.webdb.select_format("besiege"),
-            self.updatecheckbox,
-        )
-        render_datetime(
-            "besiege",
-            "下一次运行时间",
-            "nexttime",
-            self.webdb.select_format("besiege"),
-            self.update_input,
-        )
+        current_config = self.webdb.select('besiege')
+        self.render_config_form(current_config, 'besiege')
 
     @use_scope("function_area", clear=True)
     def render_exploit(self):
-        render_checkbox(
-            "exploit",
-            "状态",
-            "state",
-            self.webdb.select_format("exploit"),
-            self.updatecheckbox,
-        )
+        current_config = self.webdb.select('exploit')
+        self.render_config_form(current_config, 'exploit')
 
     @use_scope("function_area", clear=True)
     def render_rangking(self):
-        render_checkbox(
-            "ranking",
-            "状态",
-            "state",
-            self.webdb.select_format("ranking"),
-            self.updatecheckbox,
-        )
+        current_config = self.webdb.select('ranking')
+        self.render_config_form(current_config, 'ranking')
 
     @use_scope("function_area", clear=True)
     def render_enemymain(self):
-        render_checkbox(
-            "enemy",
-            "状态",
-            "state",
-            self.webdb.select_format("enemy"),
-            self.updatecheckbox,
-        )
-        render_datetime(
-            "enemy",
-            "下一次运行时间",
-            "nexttime",
-            self.webdb.select_format("enemy"),
-            self.update_input,
-        )
-        render_input(
-            "enemy",
-            "等待多少分钟开启下一次扫描",
-            "looptime",
-            self.webdb.select_format("enemy"),
-            self.update_input,
-        )
-        render_datetime(
-            "enemy",
-            "结束统计时间",
-            "endtime",
-            self.webdb.select_format("enemy"),
-            self.update_input,
-        )
+        current_config = self.webdb.select('enemy')
+        self.render_config_form(current_config, 'enemy')
 
     @use_scope("function_area", clear=True)
     def render_battledestory(self):
-        render_checkbox(
-            "battledestory",
-            "状态",
-            "state",
-            self.webdb.select_format("battledestory"),
-            self.updatecheckbox,
-        )
-        render_datetime(
-            "battledestory",
-            "下一次运行时间",
-            "nexttime",
-            self.webdb.select_format("battledestory"),
-            self.update_input,
-        )
-        render_number(
-            "battledestory",
-            "等待多少分钟开启下一次扫描",
-            "looptime",
-            self.webdb.select_format("battledestory"),
-            self.update_input,
-        )
-        render_datetime(
-            "battledestory",
-            "结束统计时间",
-            "endtime",
-            self.webdb.select_format("battledestory"),
-            self.update_input,
-        )
+        current_config = self.webdb.select('battledestory')
+        self.render_config_form(current_config, 'battledestory')
 
     @use_scope("function_area", clear=True)
     def render_myfight(self):
-        render_checkbox(
-            "myfight",
-            "状态",
-            "state",
-            self.webdb.select_format("myfight"),
-            self.updatecheckbox,
-        )
-        render_datetime(
-            "myfight",
-            "下一次运行时间",
-            "nexttime",
-            self.webdb.select_format("myfight"),
-            self.update_input,
-        )
-        render_datetime(
-            "myfight",
-            "结束统计时间",
-            "endtime",
-            self.webdb.select_format("myfight"),
-            self.update_input,
-        )
+        current_config = self.webdb.select('myfight')
+        self.render_config_form(current_config, 'myfight')
+
+    def update_input(self, task_name, prop, v):
+        res = self.webdb.select_format(task_name)
+        res.update({prop: v})
+        self.webdb.update(task_name, res)
+
+    def update_datatime(self, task_name, prop, v):
+        dt = datetime.strptime(v,"%Y-%m-%dT%H:%M").strftime("%Y/%m/%d %H:%M:%S")
+        res = self.webdb.select_format(task_name)
+        res.update({prop: dt})
+        self.webdb.update(task_name, res)
+
+    def update_checkbox(self, config_name, prop, v):
+        res = self.webdb.select_format(config_name)
+        value = {prop: False}
+        if len(v) == 1:
+            value[prop] = True
+        res.update(value)
+        self.webdb.update(config_name, res)

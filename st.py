@@ -26,7 +26,7 @@ class TaskScheduler:
         logger.info(pprint.pformat(fresh_data))
         for key, value in fresh_data.items():
             if key == "simulator":
-                simulator = value['address']
+                simulator = value['device_address']
                 continue
 
             if value.get("state"):

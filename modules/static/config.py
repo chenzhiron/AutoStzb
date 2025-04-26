@@ -1,6 +1,6 @@
 version = '1.0.0'
 tasks_config = {
-    "simulator": {"address": "127.0.0.1:7885"},
+    "simulator": { "device_address": "127.0.0.1:7885"},
     "besiege": {"state": False, "nexttime": "2019/06/01 00:00:00"},
     "exploit": {"state": False, "nexttime": "2019/06/01 00:00:00"},
     "enemy": {

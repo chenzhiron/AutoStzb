@@ -2,7 +2,7 @@ from pywebio.output import put_collapse, put_text
 from pywebio.output import use_scope, put_tabs
 from pywebio.pin import pin_on_change, put_input, put_checkbox
 
-from modules.web.utils import def_lable_checkbox, explain_componet
+from modules.web.utils import def_label_checkbox, explain_componet
 
 
 class SweepProp:
@@ -59,7 +59,7 @@ class SweepItem:
         renders = [
             explain_componet(
                 ["状态"],
-                def_lable_checkbox(
+                def_label_checkbox(
                     put_checkbox(
                         stall_all, options=[True], value=self.prop.get_all_state()
                     )
