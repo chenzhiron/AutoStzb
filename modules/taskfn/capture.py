@@ -8,7 +8,7 @@ from modules.taskfn.steps.select_list_action import OperationListAction
 class Capture(Basic, Draft, SearchMap, OperationGoMap, OperationListAction):
     def __init__(self, operator, config):
         super().__init__(operator, config)
-        self.steps_fn = []
+        self.steps_fn = [self.execute_draft, self.execute_search_map, self.execute_operation_go_map, self.execute_list_action]
 
     def execute(self):
         pass

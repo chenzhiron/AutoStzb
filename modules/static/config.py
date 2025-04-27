@@ -22,4 +22,27 @@ tasks_config = {
         "endtime": "2019/06/01 00:00:00",
         "looptime": 60,
     },
+    'take_land':{
+        'state': False,
+        'nexttime': "2019/06/01 00:00:00",
+        'x': 123,
+        'y': 123,
+        'draft': False,
+        'select_list': 1
+    },
+    'practice_land': {
+        'state': False,
+        'nexttime': "2019/06/01 00:00:00",
+        'x': 123,
+        'y': 123,
+        'draft': True,
+        'select_list': 1
+    },
+    'fight_city': {
+        'state': False,
+        'nexttime': "2019/06/01 00:00:00",
+        'x': 123,
+        'y': 123,
+
+    }
 }

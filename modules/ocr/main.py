@@ -14,10 +14,7 @@ def ocr_not_det(sources):
 def ocr_normal(sources):
     return ocr.ocr(sources, cls=False, inv=True)
 
-    # for idx in range(len(result)):
-    #     res = result[idx]
-    #     for line in res:
-    #         print(line)
+
 def ocr_format_list(sources):
     data = ocr_normal(sources)
     if data[0] is None:
