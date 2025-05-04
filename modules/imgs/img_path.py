@@ -22,6 +22,7 @@ class ImgNames:
     ACTIONREQUIRE = 'action_require'
     ACTIONLIST = 'action_list'
     ADDRESS = 'address'
+    DRAWRUN = 'draw_run'
 
     @classmethod
     def get_path(cls, img_name: str, ext: str = ".png") -> str:

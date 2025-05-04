@@ -212,4 +212,4 @@ def truncated_normal(min_val, max_val, mean=None, std=None, size=1):
     integers = np.round(samples).astype(int)
     integers = np.clip(integers, min_val, max_val)
 
-    return integers[0] if size == 1 else integers.tolist()
+    return int(integers[0]) if size == 1 else integers.tolist()

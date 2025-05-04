@@ -20,6 +20,7 @@ from pywebio.session import set_env, register_thread
 
 from modules.db.dbinit import Db
 from modules.static.config_key_descriptions import key_descriptions
+from modules.static.config_keys import *
 from modules.web.process_mange import ProcessManager
 from modules.web.utils import def_label_checkbox
 
@@ -167,7 +168,7 @@ class app:
                 put_text("打城主力拆迁").onclick(self.render_besiege),
                 put_text("武勋").onclick(self.render_exploit),
                 put_text("排行榜数据").onclick(self.render_rangking),
-                put_text("敌军主力").onclick(self.render_enemymain),
+                put_text("主力查询").onclick(self.render_enemy),
                 put_text("战场翻地/拆除").onclick(self.render_battledestory),
                 put_text("我方出战/防守").onclick(self.render_myfight),
             ],
@@ -235,33 +236,33 @@ class app:
     # 主力跟拆迁一起统计，因为他们的配置和执行是一样的
     @use_scope("function_area", clear=True)
     def render_besiege(self):
-        current_config = self.webdb.select('besiege')
-        self.render_config_form(current_config, 'besiege')
+        current_config = self.webdb.select(ConfigSections.BESIEGE)
+        self.render_config_form(current_config, ConfigSections.BESIEGE)
 
     @use_scope("function_area", clear=True)
     def render_exploit(self):
-        current_config = self.webdb.select('exploit')
-        self.render_config_form(current_config, 'exploit')
+        current_config = self.webdb.select(ConfigSections.EXPLOIT)
+        self.render_config_form(current_config, ConfigSections.EXPLOIT)
 
     @use_scope("function_area", clear=True)
     def render_rangking(self):
-        current_config = self.webdb.select('ranking')
-        self.render_config_form(current_config, 'ranking')
+        current_config = self.webdb.select(ConfigSections.RANKING)
+        self.render_config_form(current_config, ConfigSections.RANKING)
 
     @use_scope("function_area", clear=True)
-    def render_enemymain(self):
-        current_config = self.webdb.select('enemy')
-        self.render_config_form(current_config, 'enemy')
+    def render_enemy(self):
+        current_config = self.webdb.select(ConfigSections.ENEMY)
+        self.render_config_form(current_config, ConfigSections.ENEMY)
 
     @use_scope("function_area", clear=True)
     def render_battledestory(self):
-        current_config = self.webdb.select('battledestory')
-        self.render_config_form(current_config, 'battledestory')
+        current_config = self.webdb.select(ConfigSections.BATTLEDESTORY)
+        self.render_config_form(current_config, ConfigSections.BATTLEDESTORY)
 
     @use_scope("function_area", clear=True)
     def render_myfight(self):
-        current_config = self.webdb.select('myfight')
-        self.render_config_form(current_config, 'myfight')
+        current_config = self.webdb.select(ConfigSections.MYFIGHT)
+        self.render_config_form(current_config, ConfigSections.MYFIGHT)
 
     def update_input(self, task_name, prop, v):
         res = self.webdb.select_format(task_name)

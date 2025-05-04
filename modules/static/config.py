@@ -1,48 +1,49 @@
-version = '1.0.0'
+from modules.static.config_keys import *
+
 tasks_config = {
-    "simulator": { "device_address": "127.0.0.1:7885"},
-    "besiege": {"state": False, "nexttime": "2019/06/01 00:00:00"},
-    "exploit": {"state": False, "nexttime": "2019/06/01 00:00:00"},
-    "enemy": {
-        "state": False,
-        "nexttime": "2019/06/01 00:00:00",
-        "endtime": "2019/06/01 00:00:00",
-        "looptime": 60,
+    ConfigSections.SIMULATOR: {SimulatorKeys.DEVICE_ADDRESS: "127.0.0.1:7885"},
+    ConfigSections.BESIEGE: {BesiegeKeys.STATE: False, BesiegeKeys.NEXTTIME: "2019/06/01 00:00:00"},
+    ConfigSections.EXPLOIT: {"state": False, "nexttime": "2019/06/01 00:00:00"},
+    ConfigSections.ENEMY: {
+        EnemyKeys.STATE: False,
+        EnemyKeys.NEXTTIME: "2019/06/01 00:00:00",
+        EnemyKeys.ENDTIME: "2019/06/01 00:00:00",
+        EnemyKeys.LOOPTIME: 60,
     },
-    "myfight": {
-        "state": True,
-        "nexttime": "2019/06/01 00:00:00",
-        "endtime": "2019/06/01 00:00:00",
-        "looptime": 0,
+    ConfigSections.MYFIGHT: {
+        MyFightKeys.STATE: True,
+        MyFightKeys.NEXTTIME: "2019/06/01 00:00:00",
+        MyFightKeys.ENDTIME: "2019/06/01 00:00:00",
+        MyFightKeys.LOOPTIME: 0,
     },
-    "ranking": {"state": False, "nexttime": "2019/06/01 00:00:00"},
-    "battledestory": {
-        "state": False,
-        "nexttime": "2019/06/01 00:00:00",
-        "endtime": "2019/06/01 00:00:00",
-        "looptime": 60,
+    ConfigSections.RANKING: {RankingKeys.STATE: False, RankingKeys.NEXTTIME: "2019/06/01 00:00:00"},
+    ConfigSections.BATTLEDESTORY: {
+        BattleDestoryKeys.STATE: False,
+        BattleDestoryKeys.NEXTTIME: "2019/06/01 00:00:00",
+        BattleDestoryKeys.ENDTIME: "2019/06/01 00:00:00",
+        BattleDestoryKeys.LOOPTIME: 60,
     },
-    'take_land':{
-        'state': False,
-        'nexttime': "2019/06/01 00:00:00",
-        'x': 123,
-        'y': 123,
-        'draft': False,
-        'select_list': 1
+    ConfigSections.TAKE_LAND: {
+        TakeLandKeys.STATE: False,
+        TakeLandKeys.NEXTTIME: "2019/06/01 00:00:00",
+        TakeLandKeys.X: 123,
+        TakeLandKeys.Y: 123,
+        TakeLandKeys.DRAFT: False,
+        TakeLandKeys.SELECT_LIST: 1
     },
-    'practice_land': {
-        'state': False,
-        'nexttime': "2019/06/01 00:00:00",
-        'x': 123,
-        'y': 123,
-        'draft': True,
-        'select_list': 1
+    ConfigSections.PRACTICE_LAND: {
+        PracticeLandKeys.STATE: False,
+        PracticeLandKeys.NEXTTIME: "2019/06/01 00:00:00",
+        PracticeLandKeys.X: 123,
+        PracticeLandKeys.Y: 123,
+        PracticeLandKeys.DRAFT: True,
+        PracticeLandKeys.SELECT_LIST: 1
     },
-    'fight_city': {
-        'state': False,
-        'nexttime': "2019/06/01 00:00:00",
-        'x': 123,
-        'y': 123,
+    ConfigSections.FIGHT_CITY: {
+        FightCityKeys.STATE: False,
+        FightCityKeys.NEXTTIME: "2019/06/01 00:00:00",
+        FightCityKeys.X: 123,
+        FightCityKeys.Y: 123,
 
     }
 }
