@@ -13,7 +13,8 @@ class Capture(Basic):
     def __init__(self, operator, config):
         super().__init__(operator, config)
         self.steps_basic = StepsBasic(operator)
-
+        self.map_x = 0
+        self.map_y = 0
     def action_click(self):
         if self.steps_basic.verify_action_click():
             self.device.click(truncated_normal(375, 440), truncated_normal(735, 880))
@@ -177,16 +178,20 @@ class Capture(Basic):
         if not axis_result:
             return False
         (x, y), v = axis_result
+        self.map_x = x
+        self.map_y = y
         self.device.click(truncated_normal(x + 340, x + 10 + 340), truncated_normal(y + 220, y + 20 + 220))
         return True
 
     def action_result(self):
-        state_text = ['胜', '同归于尽', '胜成功占领', '败']
+        all_state = ['胜', '同归于尽', '胜成功占领', '败', '平']
+        next_state = ['胜', '同归于尽', '胜成功占领', '败']
         state_result = self.steps_basic.verify_map_action_result()
-        if state_result is None:
-            return None
-        elif state_result in state_text:
+        if state_result is None or state_result not in all_state:
+            return False
+        elif state_result in next_state:
             # 调用返回主页，结束
+            self.device.click(1529,43)
             return True
         else:
             my_remaining_result = self.steps_basic.verify_my_remaining()
@@ -199,18 +204,23 @@ class Capture(Basic):
             enemy_remaining = enemy_remaining_result.split('/')[0]
             if my_remaining > self.config['my_remaining'] and enemy_remaining < self.config['enemy_remaining']:
                 # 等待下一次平局,更新下一次执行时间
-                pass
+                return True
             else:
-                #  点击地图
-                draw_axis = self.steps_basic.verify_draw_run()
-                if draw_axis is None:
-                    # 地图重新跳转
-                    pass
-                else:
-                    (x, y), v = draw_axis
-                    self.device.click(truncated_normal(1240+x,1240+x+120), truncated_normal(220+y, 220+y+20))
-            return True
-        
+                self.device.click(1529, 43)
+                time.sleep(1)
+                return self.action_draw_run()
+
+    def action_draw_run(self):
+        self.device.click(self.map_x+40 + 345, self.map_y - 40 + 230)
+        time.sleep(2)
+        draw_axis = self.steps_basic.verify_draw_run()
+        if draw_axis is None:
+            return False
+        else:
+            (x, y), v = draw_axis
+
+        self.device.click(truncated_normal(1240 + x, 1240 + x + 120), truncated_normal(220 + y, 220 + y + 20))
+        return True
 
     def execute_list_action(self):
         steps = [

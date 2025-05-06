@@ -1,5 +1,8 @@
 from functools import wraps
 
+from paddle.vision import image_load
+
+
 import cv2
 import numpy as np
 
@@ -91,7 +94,8 @@ class StepsBasic:
     @auto_refresh
     def verify_search_map_address(self):
         return is_template_matched_axis(self.screenshot.crop([340, 220, 1220, 715]),
-                                        ImgNames.get_image(ImgNames.ADDRESS), 0.3)
+                                        ImgNames.get_image(ImgNames.ADDRESS),0.8,
+                                   cv2.TM_CCORR_NORMED)
 
     @auto_refresh
     def verify_map_action_result(self):
@@ -108,4 +112,5 @@ class StepsBasic:
     @auto_refresh
     def verify_draw_run(self):
         return is_template_matched_axis(self.screenshot.crop([1240,220,1590,720]),
-                                        ImgNames.get_image(ImgNames.DRAWRUN))
+                                        ImgNames.get_image(ImgNames.DRAWRUN),0.9,
+                                   cv2.TM_CCORR_NORMED)
