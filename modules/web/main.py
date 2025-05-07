@@ -270,7 +270,7 @@ class app:
         self.webdb.update(task_name, res)
 
     def update_datatime(self, task_name, prop, v):
-        dt = datetime.strptime(v,"%Y-%m-%dT%H:%M").strftime("%Y/%m/%d %H:%M:%S")
+        dt = datetime.strptime(v, "%Y-%m-%dT%H:%M").strftime("%Y/%m/%d %H:%M:%S")
         res = self.webdb.select_format(task_name)
         res.update({prop: dt})
         self.webdb.update(task_name, res)

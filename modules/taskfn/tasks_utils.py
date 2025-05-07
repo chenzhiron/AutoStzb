@@ -46,12 +46,17 @@ def time_consuming(data):
 
 def extract_numbers_from_brackets(text):
     try:
-        # 使用正则表达式查找括号内的内容
-        match = re.search(r'[（(]([^）)]+)[）)]', text)
+        # 使用正则表达式查找括号内的内容，包括中文和英文括号，并处理可能缺失的右括号
+        match = re.search(r'[（(]([^）)\n]+)', text)
         if not match:
             return None
+
         # 获取括号内的内容
         content = match.group(1)
+
+        # 移除可能存在的右括号（如果有）
+        content = content.split(')')[0] if ')' in content else content
+        content = content.split('）')[0] if '）' in content else content
 
         # 使用非数字分割字符串
         numbers = re.split(r'[^\d]+', content)
@@ -60,15 +65,16 @@ def extract_numbers_from_brackets(text):
         numbers = [int(num) for num in numbers if num]
 
         # 如果找到至少两个数字，返回前两个
-        if len(numbers) == 2:
+        if len(numbers) >= 2:
             return numbers[0], numbers[1]
         else:
             return None
-    except TypeError:
+    except (TypeError, ValueError):
         return None
 
 
 import re
+
 
 def process_list(input_list):
     result = []
@@ -100,6 +106,7 @@ def process_list(input_list):
                 # 清理后长度为0，跳过
                 continue
     return result
+
 
 class AsyncTaskProcessor:
     def __init__(self, task_func: Callable[[], Any], max_queue_size: int = 10):

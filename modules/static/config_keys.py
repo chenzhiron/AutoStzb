@@ -1,9 +1,11 @@
 class SimulatorKeys:
     DEVICE_ADDRESS = "device_address"
 
+
 class BesiegeKeys:
     STATE = "state"
     NEXTTIME = "nexttime"
+
 
 class EnemyKeys:
     STATE = "state"
@@ -11,21 +13,25 @@ class EnemyKeys:
     ENDTIME = "endtime"
     LOOPTIME = "looptime"
 
+
 class MyFightKeys:
     STATE = "state"
     NEXTTIME = "nexttime"
     ENDTIME = "endtime"
     LOOPTIME = "looptime"
 
+
 class RankingKeys:
     STATE = "state"
     NEXTTIME = "nexttime"
+
 
 class BattleDestoryKeys:
     STATE = "state"
     NEXTTIME = "nexttime"
     ENDTIME = "endtime"
     LOOPTIME = "looptime"
+
 
 class TakeLandKeys:
     STATE = "state"
@@ -35,6 +41,7 @@ class TakeLandKeys:
     DRAFT = "draft"
     SELECT_LIST = "select_list"
 
+
 class PracticeLandKeys:
     STATE = "state"
     NEXTTIME = "nexttime"
@@ -43,11 +50,13 @@ class PracticeLandKeys:
     DRAFT = "draft"
     SELECT_LIST = "select_list"
 
+
 class FightCityKeys:
     STATE = "state"
     NEXTTIME = "nexttime"
     X = "x"
     Y = "y"
+
 
 # 顶层配置键名
 class ConfigSections:

@@ -54,11 +54,11 @@ class DeviceOperator:
         self.d.set_input_ime()
         return self.d.clipboard
 
-    def input(self, v:str, clear=True):
+    def input(self, v: str, clear=True):
         logger.debug(f"Input value: {v}, clear: {clear}")
         self.d.send_keys(v, clear)
 
 
 if __name__ == "__main__":
     d = DeviceOperator(DeviceManager("127.0.0.1:16384"))
-    d.click(100,200)
+    d.click(100, 200)

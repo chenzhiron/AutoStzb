@@ -27,6 +27,7 @@ def ocr_format_list(sources):
 
     return result
 
+
 def ocr_format_ranking(sources):
     data = ocr_normal(sources)
     if data[0] is None:

@@ -1,8 +1,5 @@
 from functools import wraps
 
-from paddle.vision import image_load
-
-
 import cv2
 import numpy as np
 
@@ -14,10 +11,10 @@ from modules.utils import is_template_matched, is_template_matched_axis
 
 
 class StepsBasic:
-    def __init__(self, device:DeviceOperator):
+    def __init__(self, device: DeviceOperator):
         self.screenshot = None
         self.device = device
-        
+
     def refresh(self):
         self.screenshot = self.device.screenshot()
 
@@ -70,12 +67,13 @@ class StepsBasic:
 
     @auto_refresh
     def verify_click_address(self):
-        return ocr_format_val(np.array(self.screenshot.crop([675, 350, 930, 390])))
+        return ocr_format_val(np.array(self.screenshot.crop([675, 350, 950, 390])))
 
     @auto_refresh
-    def verify_go_map(self):
+    def verify_go_map(self, repeat=False):
+        imgName = ImgNames.JINGON if repeat else ImgNames.SAODANG
         return is_template_matched_axis(self.screenshot.crop([550, 200, 1220, 800]),
-                                        ImgNames.get_image(ImgNames.JINGON))
+                                        ImgNames.get_image(imgName), 0.15)
 
     @auto_refresh
     def verify_select_list_action(self, **kwargs):
@@ -94,8 +92,8 @@ class StepsBasic:
     @auto_refresh
     def verify_search_map_address(self):
         return is_template_matched_axis(self.screenshot.crop([340, 220, 1220, 715]),
-                                        ImgNames.get_image(ImgNames.ADDRESS),0.8,
-                                   cv2.TM_CCORR_NORMED)
+                                        ImgNames.get_image(ImgNames.ADDRESS), 0.8,
+                                        cv2.TM_CCORR_NORMED)
 
     @auto_refresh
     def verify_map_action_result(self):
@@ -103,14 +101,18 @@ class StepsBasic:
 
     @auto_refresh
     def verify_my_remaining(self):
-        return ocr_format_val(np.array(self.screenshot.crop([60,230,250,273])))
+        return ocr_format_val(np.array(self.screenshot.crop([60, 230, 250, 273])))
 
     @auto_refresh
     def verify_enemy_remaining(self):
-        return ocr_format_val(np.array(self.screenshot.crop([1315,230,1485,273])))
+        return ocr_format_val(np.array(self.screenshot.crop([1315, 230, 1485, 273])))
 
     @auto_refresh
     def verify_draw_run(self):
-        return is_template_matched_axis(self.screenshot.crop([1240,220,1590,720]),
-                                        ImgNames.get_image(ImgNames.DRAWRUN),0.9,
-                                   cv2.TM_CCORR_NORMED)
+        return is_template_matched_axis(self.screenshot.crop([1240, 220, 1590, 720]),
+                                        ImgNames.get_image(ImgNames.DRAWRUN), 0.9,
+                                        cv2.TM_CCORR_NORMED)
+
+    @auto_refresh
+    def verify_draw_run_time(self):
+        return ocr_format_val(np.array(self.screenshot.crop([770, 670, 885, 715])))

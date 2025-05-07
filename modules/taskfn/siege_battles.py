@@ -89,9 +89,9 @@ class SiegeBattles(BaseTypeImg):
             r2 = self.loopinfo()
             print("r2:", r2)
             if (
-                self.end_time is not None
-                and self.end_time != 0
-                and self.custom_end_time > int(self.end_time)
+                    self.end_time is not None
+                    and self.end_time != 0
+                    and self.custom_end_time > int(self.end_time)
             ):
                 break
 
@@ -100,9 +100,9 @@ class SiegeBattles(BaseTypeImg):
                 t = 0
                 for k_r, v_r in enumerate(r2):
                     if (
-                        self.result[-(k_r + 1)][0] == v_r[0]
-                        and self.result[-(k_r + 1)][1] == v_r[1]
-                        and self.result[-(k_r + 1)][2] == v_r[2]
+                            self.result[-(k_r + 1)][0] == v_r[0]
+                            and self.result[-(k_r + 1)][1] == v_r[1]
+                            and self.result[-(k_r + 1)][2] == v_r[2]
                     ):
                         t += 1
                 if t == r2_l:

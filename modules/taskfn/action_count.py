@@ -66,9 +66,9 @@ class ActionCount(BaseTypeImg):
                 userdict = self.loopinfo()
                 print("userdict info_end_time: ", userdict, self.end_time)
                 if (
-                    self.end_time is not None
-                    and self.end_time != 0
-                    and self.custom_end_time > self.end_time
+                        self.end_time is not None
+                        and self.end_time != 0
+                        and self.custom_end_time > self.end_time
                 ):
                     break
                 self.result.update(userdict)
