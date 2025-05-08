@@ -196,7 +196,7 @@ class Capture(Basic):
             # 调用返回主页，结束
             self.device.click(1529, 43)
             # 并结束任务执行
-            return True
+            return "TERMINATE"
         else:
             my_remaining_result = self.steps_basic.verify_my_remaining()
             enemy_remaining_result = self.steps_basic.verify_enemy_remaining()
@@ -268,10 +268,10 @@ class Capture(Basic):
 if __name__ == '__main__':
     capture = Capture(operator=DeviceOperator(DeviceManager('127.0.0.1:16384')),
                       config={"address": "",
-                              "x": 1716,
-                              "y": 1311,
-                              "num": 2,
-                              "action_list": 2,
+                              "x": 646,
+                              "y": 966,
+                              "num": 3,
+                              "action_list": 3,
                               "max_distance": 300,
                               "time_consuming": 0,
                               "my_remaining": 30000,

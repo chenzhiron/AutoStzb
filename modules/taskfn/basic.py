@@ -21,7 +21,10 @@ class Basic:
         :return: True 成功，False 失败
         """
         for _ in range(max_retry):
-            if step_func():  # 如果返回 True，说明执行成功
+            res = step_func()
+            if res == 'TERMINATE':
+                return 'TERMINATE'
+            if res:
                 return True
             time.sleep(retry_interval)
         return False  # 超过最大重试次数仍失败
@@ -37,6 +40,9 @@ class Basic:
             step_name = step.__name__
             print(f"Executing step: {step_name}")
             success = self.run_with_retry(step, max_retry, retry_interval)
+            if success == "TERMINATE":  # 显式检查终止
+                print(f"Step {step_name} requested termination.")
+                break
             if not success:
                 print(f"Step {step_name} failed after {max_retry} retries.")
                 break  # 如果某一步失败，终止整个流程
