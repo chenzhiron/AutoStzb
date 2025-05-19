@@ -3,6 +3,8 @@ import time
 import cv2
 
 from modules.devices.main import DeviceOperator
+from modules.imgs.img_path import ImgNames
+from modules.utils import is_template_matched_axis
 
 
 class Basic:
@@ -11,6 +13,22 @@ class Basic:
         self.config = config
         self.result = {}
         self.current_screenshot = None
+
+    def return_main(self):
+        return_tag = [ImgNames.get_image(ImgNames.BUILD_RETURN), ImgNames.get_image(ImgNames.BUILD_RETURN2), ImgNames.get_image(ImgNames.LIST_RETURN)]
+        while True:
+            all_none = True
+            screenshot = self.device.screenshot().crop([1200,0,1600,400])
+            for v in return_tag:
+                result = is_template_matched_axis(screenshot, v)
+                if result is not None:
+                    (x,y), score = result
+                    self.device.click(int(x) + 1200, int(y))
+                    all_none = False
+                    break
+            if all_none:
+                break
+            time.sleep(1)
 
     def run_with_retry(self, step_func, max_retry=20, retry_interval=0.5):
         """

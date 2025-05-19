@@ -24,6 +24,10 @@ class ImgNames:
     ADDRESS = 'address'
     DRAWRUN = 'draw_run'
 
+    BUILD_RETURN = 'build_return'
+    BUILD_RETURN2 = 'build_return2'
+    LIST_RETURN = 'list_return'
+
     @classmethod
     def get_path(cls, img_name: str, ext: str = ".png") -> str:
         """根据常量获取图片完整路径"""

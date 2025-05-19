@@ -277,4 +277,5 @@ if __name__ == '__main__':
                               "my_remaining": 30000,
                               "enemy_remaining": 30000,
                               })
-    capture.execute()
+    # capture.execute()
+    capture.return_main()
