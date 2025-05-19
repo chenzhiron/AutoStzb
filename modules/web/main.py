@@ -26,9 +26,8 @@ from modules.web.utils import def_label_checkbox
 
 
 def server():
-    web = app().render
     start_server(
-        web, port=10965, auto_open_webbrowser=True, static_dir="./modules/web/static"
+        App().render, port=10965, auto_open_webbrowser=True, static_dir="./modules/web/static"
     )
 
 
@@ -101,7 +100,7 @@ d = threading.Thread(target=output_fn, daemon=True)
 d.start()
 
 
-class app:
+class App:
     def __init__(self):
         self.st = ProcessManager.get_instance()
         self.webdb = Db("task.db")
@@ -160,7 +159,7 @@ class app:
     @use_scope("team", clear=True)
     def render_team(self):
         put_collapse('个人', [
-
+            put_text('扫荡').onclick(self.render_practice_land)
         ])
         put_collapse(
             "同盟",
@@ -173,6 +172,10 @@ class app:
                 put_text("我方出战/防守").onclick(self.render_myfight),
             ],
         )
+    @use_scope('function_area', clear=True)
+    def render_practice_land(self):
+        current_config = self.webdb.select(ConfigSections.PRACTICE_LAND)
+        self.render_config_form(current_config, ConfigSections.PRACTICE_LAND)
 
     @use_scope('function_area', clear=True)
     def render_simulator(self):

@@ -48,8 +48,12 @@ class PracticeLandKeys:
     X = "x"
     Y = "y"
     DRAFT = "draft"
+    ADDRESS = 'address'
     SELECT_LIST = "select_list"
-
+    MAX_DISTANCE = 'max_distance'
+    TIME_CONSUMING = 'time_consuming'
+    MY_REMAINING = 'my_remaining'
+    ENEMY_REMAINING = 'enemy_remaining'
 
 class FightCityKeys:
     STATE = "state"
