@@ -1,5 +1,6 @@
 import logging
 import time
+from enum import Enum
 
 from modules.devices.main import DeviceOperator, DeviceManager
 from modules.taskfn.basic import Basic
@@ -8,6 +9,17 @@ from modules.taskfn.tasks_utils import time_consuming, extract_numbers_from_brac
 from modules.utils import truncated_normal
 
 
+class State(Enum):
+    """所有可能的游戏状态"""
+    INIT = 'INIT'
+    DRAFT = "DRAFT"
+    SEARCH_MAP = "SEARCH_MAP"
+    GO_MAP = "GO_MAP"
+    LIST_ACTION = 'LIST_ACTION'
+    RESULT = "RESULT"
+    DRAW = 'DRAW'
+    END = "END"
+
 class Capture(Basic):
     def __init__(self, operator, config):
         super().__init__(operator, config)
@@ -15,6 +27,23 @@ class Capture(Basic):
         self.map_x = 0
         self.map_y = 0
         self.time_sleep = 0
+
+        self.current_state = State.INIT
+        self.state_handlers = {
+            State.DRAFT: self.execute_draft,
+            State.SEARCH_MAP: self.execute_search_map,
+            State.GO_MAP: self.execute_operation_go_map,
+            State.LIST_ACTION: self.execute_list_action,
+            State.RESULT: self.execute_list_action_result,
+            State.DRAW: ''
+        }
+    def init_state(self):
+        pass
+
+    def run(self):
+        self.init_state()
+        while self.current_state == State.END:
+            pass
 
     def action_click(self):
         if self.steps_basic.verify_action_click():
@@ -77,8 +106,7 @@ class Capture(Basic):
             self.action_click_confirm,
             self.action_click_confirm_end
         ]
-        self.execute_steps(steps)
-
+        return self.execute_sequence(steps)
     # -----
     def click_jump_map(self):
         if self.steps_basic.verify_click_jump_map():
@@ -123,7 +151,6 @@ class Capture(Basic):
             self.click_map_axis,
             self.click_verify_address,
         ]
-        self.execute_steps(steps)
 
     # ----
     def execute_go_map(self):
@@ -138,7 +165,6 @@ class Capture(Basic):
         steps = [
             self.execute_go_map
         ]
-        self.execute_steps(steps)
 
     # ----
 
@@ -241,7 +267,6 @@ class Capture(Basic):
             self.select_list_action,
             self.action_delay_time
         ]
-        self.execute_steps(steps)
 
     def execute_list_action_result(self):
         steps = [
@@ -249,7 +274,6 @@ class Capture(Basic):
             self.action_result,
             self.action_draw_run_time_confirm
         ]
-        self.execute_steps(steps)
 
     def execute(self):
         steps_fn = [self.execute_draft, self.execute_search_map, self.execute_operation_go_map,
