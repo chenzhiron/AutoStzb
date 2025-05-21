@@ -1,5 +1,5 @@
 import time
-from typing import Callable, List, Optional
+from typing import Callable, List
 
 import cv2
 
@@ -43,27 +43,15 @@ class Basic:
         print(f"Step {step_name} failed after {max_retry} retries.")
         return False
 
-    def execute_sequence(self,
-                         steps: List[Callable],
-                         reset_on_failure: bool = True,
-                        ):
-        """
-        增强型顺序步骤执行器
-        :param reset_on_failure: True=失败时重置进度，False=从断点继续
-        :param steps 步骤
-        """
+    def execute_sequence(self, steps: List[Callable]):
         current_step = 0
 
         while current_step < len(steps):
             step_func = steps[current_step]
-            result = self.run_with_retry(step_func)
-
-            if not result:
-                if reset_on_failure:
-                    self.return_main()
-                    current_step = 0  # 重置进度
-                return 'FAILED'
-
+            res = self.run_with_retry(step_func)
+            if not res:
+                self.return_main()
+                current_step = 0  # 重置进度
             current_step += 1
         return True
 

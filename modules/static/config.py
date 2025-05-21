@@ -36,6 +36,7 @@ tasks_config = {
         PracticeLandKeys.NEXTTIME: "2019/06/01 00:00:00",
         PracticeLandKeys.X: 123,
         PracticeLandKeys.Y: 123,
+        PracticeLandKeys.STAGE: 0,
         PracticeLandKeys.ADDRESS: '',
         PracticeLandKeys.DRAFT: True,
         PracticeLandKeys.SELECT_LIST: 1,

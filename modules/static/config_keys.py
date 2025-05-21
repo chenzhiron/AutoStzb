@@ -47,6 +47,7 @@ class PracticeLandKeys:
     NEXTTIME = "nexttime"
     X = "x"
     Y = "y"
+    STAGE = 'stage'
     DRAFT = "draft"
     ADDRESS = 'address'
     SELECT_LIST = "select_list"
