@@ -1,8 +1,12 @@
+import time
+from datetime import datetime
+from pprint import pprint
+
 from modules.devices.main import DeviceOperator, DeviceManager
 from modules.static.config_keys import PracticeLandKeys
 from modules.taskfn.basic import Basic
 from modules.taskfn.steps import EntryListPage, SearchMap, OperationGoMap, ListActionResult, SelectListAction
-from modules.taskfn.tasks_utils import add_seconds_to_time
+from modules.taskfn.tasks_utils import get_future_time
 
 
 class Capture(Basic):
@@ -12,51 +16,73 @@ class Capture(Basic):
         self.search_map = SearchMap(operator, config)
         self.go_map = OperationGoMap(operator, config)
         self.list_action = SelectListAction(operator, config)
-        self.action_result = ListActionResult(operator, config)
+        self.action_res = ListActionResult(operator, config)
+
     def run(self):
         if self.config[PracticeLandKeys.STAGE] == 0:
             if self.config[PracticeLandKeys.DRAFT]:
                 draft_result = self.draft.run()
                 if draft_result['time_consuming'] != 0:
-                    self.result[PracticeLandKeys.NEXTTIME] = add_seconds_to_time(
-                        self.config[PracticeLandKeys.NEXTTIME],
-                        draft_result['time_consuming']
-                    )
+                    self.result[PracticeLandKeys.NEXTTIME] = get_future_time(draft_result['time_consuming'])
                     return self.result
 
             # 共用逻辑（DRAFT.time_consuming=0 或 无 DRAFT）
             self.search_map.run()
             self.go_map.run()
-            action_result = self.list_action()
-            self.result.update(action_result)
+            list_res = self.list_action.run()
+            self.result.update(list_res)
             self.result[PracticeLandKeys.STAGE] = 1
-            self.result[PracticeLandKeys.NEXTTIME] = add_seconds_to_time(
-                self.config[PracticeLandKeys.NEXTTIME],
-                action_result['time_consuming']
-            )
+            self.result[PracticeLandKeys.NEXTTIME] = get_future_time(list_res['time_consuming'])
             return self.result
         elif self.config[PracticeLandKeys.STAGE] == 1:
-            return self.action_result
+            action_result = self.action_res.run()
+            print('action_result:::', action_result)
+            if action_result == 1:
+                # 等待
+                self.result[PracticeLandKeys.NEXTTIME] = get_future_time(300)
+                return self.result
+            else:
+                self.result[PracticeLandKeys.NEXTTIME] = get_future_time(
+                    self.config[PracticeLandKeys.TIME_CONSUMING]
+                )
+                self.result[PracticeLandKeys.STAGE] = 2
+                return self.result
+        elif self.config[PracticeLandKeys.STAGE] == 2:
+            if self.config[PracticeLandKeys.DRAFT]:
+                draft_result = self.draft.run()
+                if draft_result['time_consuming'] != 0:
+                    self.result[PracticeLandKeys.NEXTTIME] = get_future_time(draft_result['time_consuming'])
+                    self.result[PracticeLandKeys.STATE] = False
+                    return self.result
+            else:
+                self.result[PracticeLandKeys.STATE] = False
+                return self.result
+
         return None
 
 
-
-
-
-
-
-
 if __name__ == '__main__':
-    capture = Capture(operator=DeviceOperator(DeviceManager('127.0.0.1:16384')),
-                      config={"address": "",
-                              "x": 646,
-                              "y": 966,
-                              "num": 3,
-                              "action_list": 3,
-                              "max_distance": 300,
-                              "time_consuming": 0,
-                              "my_remaining": 30000,
-                              "enemy_remaining": 30000,
-                              })
-    # capture.execute()
-    capture.return_main()
+    list_config = {
+        "state": True,
+        "address": "",
+        "stage": 0,
+        "draft": False,
+        "nexttime": "2025/05/22 00:00:00",
+        "x": 642,
+        "y": 969,
+        "num": 5,
+        "action_list": 5,
+        "max_distance": 300,
+        "time_consuming": 0,
+        "my_remaining": 30000,
+        "enemy_remaining": 30000,
+    }
+    device = DeviceOperator(DeviceManager('127.0.0.1:16384'))
+    while list_config['state']:
+        if datetime.now() > datetime.strptime(list_config['nexttime'], "%Y/%m/%d %H:%M:%S"):
+            result = capture = Capture(operator=device, config=list_config).run()
+            list_config.update(result)
+            pprint(result)
+            pprint(list_config)
+        time.sleep(1)
+    # capture.return_main()

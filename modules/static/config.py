@@ -40,7 +40,7 @@ tasks_config = {
         PracticeLandKeys.ADDRESS: '',
         PracticeLandKeys.DRAFT: True,
         PracticeLandKeys.SELECT_LIST: 1,
-        PracticeLandKeys.MAX_DISTANCE:300,
+        PracticeLandKeys.MAX_DISTANCE: 300,
         PracticeLandKeys.TIME_CONSUMING: 0,
         PracticeLandKeys.MY_REMAINING: 30000,
         PracticeLandKeys.ENEMY_REMAINING: 30000

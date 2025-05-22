@@ -56,6 +56,7 @@ class PracticeLandKeys:
     MY_REMAINING = 'my_remaining'
     ENEMY_REMAINING = 'enemy_remaining'
 
+
 class FightCityKeys:
     STATE = "state"
     NEXTTIME = "nexttime"

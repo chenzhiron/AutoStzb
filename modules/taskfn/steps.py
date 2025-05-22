@@ -3,8 +3,7 @@ import time
 from typing import List, Callable
 
 from modules.taskfn.basic import Basic
-from modules.taskfn.custom_exception import SearchMapError, EntryListPageError, ListActionResultError
-from modules.taskfn.state_enum import State
+from modules.taskfn.custom_exception import SearchMapError, EntryListPageError
 from modules.taskfn.steps_basic import StepsBasic
 from modules.taskfn.tasks_utils import time_consuming, extract_numbers_from_brackets, time_str_to_seconds
 from modules.utils import truncated_normal
@@ -12,7 +11,7 @@ from modules.utils import truncated_normal
 
 class EntryListPage(Basic):
     def __init__(self, operator, config):
-        super().__init__(operator,config)
+        super().__init__(operator, config)
         self.steps_basic = StepsBasic(operator)
 
     def action_click(self):
@@ -20,7 +19,6 @@ class EntryListPage(Basic):
             self.device.click(truncated_normal(375, 440), truncated_normal(735, 880))
             return True
         return None
-
 
     def action_list(self):
         if self.steps_basic.verify_action_list():
@@ -36,20 +34,17 @@ class EntryListPage(Basic):
             return None
         return None
 
-
     def action_zhengbing(self):
         if self.steps_basic.verify_going_zhengbing():
             self.device.click(truncated_normal(735, 850), truncated_normal(665, 720))
             return True
         return None
 
-
     def action_zhengbing_max(self):
         if self.steps_basic.verify_zhengbing_page():
             self.device.click(truncated_normal(1135, 1280), truncated_normal(825, 860))
             return True
         return None
-
 
     def action_max_time(self):
         time.sleep(0.5)
@@ -62,13 +57,12 @@ class EntryListPage(Basic):
 
     def verify_time(self):
         if self.result['time_consuming'] == 0:
-            return State.END
+            return 0
         return True
 
     def action_click_confirm(self):
         self.device.click(truncated_normal(1325, 1550), truncated_normal(825, 860))
         return True
-
 
     def action_click_confirm_end(self):
         if self.steps_basic.verify_click_confirm_end() == '确定':
@@ -86,7 +80,7 @@ class EntryListPage(Basic):
             if not result:
                 self.return_main()
                 current_step = 0  # 重置进度
-            if State(result) == State.END:
+            if result == 0:
                 self.return_main()
                 return True
             current_step += 1
@@ -108,11 +102,11 @@ class EntryListPage(Basic):
             return self.result
         raise EntryListPageError
 
+
 class SearchMap(Basic):
     def __init__(self, operator, config):
-        super().__init__(operator,config)
+        super().__init__(operator, config)
         self.steps_basic = StepsBasic(operator)
-
 
     def click_jump_map(self):
         if self.steps_basic.verify_click_jump_map():
@@ -161,7 +155,8 @@ class SearchMap(Basic):
             return True
         raise SearchMapError
 
-class  OperationGoMap(Basic):
+
+class OperationGoMap(Basic):
     def __init__(self, operator, config):
         super().__init__(operator, config)
         self.steps_basic = StepsBasic(operator)
@@ -181,6 +176,7 @@ class  OperationGoMap(Basic):
         if self.execute_sequence(steps):
             return True
         raise OperationGoMap
+
 
 class SelectListAction(Basic):
     def __init__(self, operator, config):
@@ -208,10 +204,8 @@ class SelectListAction(Basic):
     def action_delay_time(self):
         action_time = self.steps_basic.verify_delay_time()
         if action_time is None:
-            # 错误或者重试
-            raise SelectListAction
+            return False
         action_time_result = time_str_to_seconds(action_time)
-
         if action_time_result == 0:
             # 异常或者错误
             raise SelectListAction
@@ -232,12 +226,14 @@ class SelectListAction(Basic):
             return self.result
         raise SelectListAction
 
+
 class ListActionResult(Basic):
     def __init__(self, operator, config):
         super().__init__(operator, config)
         self.map_y = None
         self.map_x = None
         self.steps_basic = StepsBasic(operator)
+        self.search_map = SearchMap(operator, config)
 
     def action_search_map_address(self):
         axis_result = self.steps_basic.verify_search_map_address()
@@ -246,7 +242,7 @@ class ListActionResult(Basic):
         (x, y), v = axis_result
         self.map_x = x
         self.map_y = y
-        self.device.click(truncated_normal(x + 340 - 20, x + 343), truncated_normal(y + 220, y + 220 + 5))
+        self.device.click(x + 340, y + 220)
         return True
 
     def action_result(self):
@@ -256,10 +252,8 @@ class ListActionResult(Basic):
         if state_result is None or state_result not in all_state:
             return False
         elif state_result in next_state:
-            # 调用返回主页，结束
             self.return_main()
-            # 并结束任务执行
-            return State.ACTION_END
+            return 0
         else:
             my_remaining_result = self.steps_basic.verify_my_remaining()
             enemy_remaining_result = self.steps_basic.verify_enemy_remaining()
@@ -271,10 +265,10 @@ class ListActionResult(Basic):
             enemy_remaining = enemy_remaining_result.split('/')[0]
             if int(my_remaining) > self.config['my_remaining'] and int(enemy_remaining) < self.config[
                 'enemy_remaining']:
-                return State.ACTION_AWAIT
+                return 1
             else:
                 self.device.click(1529, 43)
-                return State.ACTION_WITHDRAW
+                return 2
 
     def action_draw_run(self):
         self.device.click(self.map_x + 40 + 345, self.map_y - 40 + 230)
@@ -299,6 +293,18 @@ class ListActionResult(Basic):
         self.device.click(truncated_normal(1330, 1330 + 150), truncated_normal(808, 808 + 30))
         return True
 
+    def run_with_retry(self, step_func: Callable, max_retry=20, retry_interval=0.5):
+        step_name = step_func.__name__
+        for attempt in range(1, max_retry + 1):
+            # 执行操作并获取原始结果
+            raw_result = step_func()
+            if raw_result in [0, 1, 2] or raw_result:
+                return raw_result
+            print(f"Retry {attempt}/{max_retry} for {step_func.__name__}")
+            time.sleep(retry_interval * attempt)  # 递增延迟策略
+        print(f"Step {step_name} failed after {max_retry} retries.")
+        return False
+
     def execute_sequence(self, steps: List[Callable]):
         current_step = 0
 
@@ -306,7 +312,7 @@ class ListActionResult(Basic):
             step_func = steps[current_step]
             result = self.run_with_retry(step_func)
 
-            if not result:
+            if result not in [0, 1, 2] and not result:
                 self.return_main()
                 current_step = 0  # 重置进度
             current_step += 1
@@ -314,11 +320,14 @@ class ListActionResult(Basic):
 
     def run(self):
         steps = [
+            self.search_map.run,
             self.action_search_map_address,
             self.action_result,
         ]
         res = self.execute_sequence(steps)
-        if State(res) == State.ACTION_WITHDRAW:
+        if res == 2:
             if self.execute_sequence([self.action_draw_run, self.action_draw_run_time_confirm]):
-                return self.result
-        return res
+                return 0
+        else:
+            self.return_main()
+        return 0

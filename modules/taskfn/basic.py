@@ -16,14 +16,15 @@ class Basic:
         self.current_screenshot = None
 
     def return_main(self):
-        return_tag = [ImgNames.get_image(ImgNames.BUILD_RETURN), ImgNames.get_image(ImgNames.BUILD_RETURN2), ImgNames.get_image(ImgNames.LIST_RETURN)]
+        return_tag = [ImgNames.get_image(ImgNames.BUILD_RETURN), ImgNames.get_image(ImgNames.BUILD_RETURN2),
+                      ImgNames.get_image(ImgNames.LIST_RETURN)]
         while True:
             all_none = True
-            screenshot = self.device.screenshot().crop([1200,0,1600,400])
+            screenshot = self.device.screenshot().crop([1200, 0, 1600, 400])
             for v in return_tag:
                 result = is_template_matched_axis(screenshot, v)
                 if result is not None:
-                    (x,y), score = result
+                    (x, y), score = result
                     self.device.click(int(x) + 1200, int(y))
                     all_none = False
                     break
@@ -31,7 +32,7 @@ class Basic:
                 break
             time.sleep(1)
 
-    def run_with_retry(self, step_func:Callable, max_retry=20, retry_interval=0.5):
+    def run_with_retry(self, step_func: Callable, max_retry=20, retry_interval=0.5):
         step_name = step_func.__name__
         for attempt in range(1, max_retry + 1):
             # 执行操作并获取原始结果
@@ -54,6 +55,7 @@ class Basic:
                 current_step = 0  # 重置进度
             current_step += 1
         return True
+
 
 class BaseTypeImg:
     def __init__(self):
