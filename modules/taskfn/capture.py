@@ -25,7 +25,6 @@ class Capture(Basic):
                 if draft_result['time_consuming'] != 0:
                     self.result[PracticeLandKeys.NEXTTIME] = get_future_time(draft_result['time_consuming'])
                     return self.result
-
             # 共用逻辑（DRAFT.time_consuming=0 或 无 DRAFT）
             self.search_map.run()
             self.go_map.run()
@@ -33,32 +32,27 @@ class Capture(Basic):
             self.result.update(list_res)
             self.result[PracticeLandKeys.STAGE] = 1
             self.result[PracticeLandKeys.NEXTTIME] = get_future_time(list_res['time_consuming'])
-            return self.result
+
         elif self.config[PracticeLandKeys.STAGE] == 1:
             action_result = self.action_res.run()
             print('action_result:::', action_result)
             if action_result == 1:
                 # 等待
                 self.result[PracticeLandKeys.NEXTTIME] = get_future_time(300)
-                return self.result
             else:
                 self.result[PracticeLandKeys.NEXTTIME] = get_future_time(
                     self.config[PracticeLandKeys.TIME_CONSUMING]
                 )
                 self.result[PracticeLandKeys.STAGE] = 2
-                return self.result
+
         elif self.config[PracticeLandKeys.STAGE] == 2:
             if self.config[PracticeLandKeys.DRAFT]:
                 draft_result = self.draft.run()
                 if draft_result['time_consuming'] != 0:
                     self.result[PracticeLandKeys.NEXTTIME] = get_future_time(draft_result['time_consuming'])
-                    self.result[PracticeLandKeys.STATE] = False
-                    return self.result
-            else:
-                self.result[PracticeLandKeys.STATE] = False
-                return self.result
+            self.result[PracticeLandKeys.STATE] = False
 
-        return None
+        return self.result
 
 
 if __name__ == '__main__':
