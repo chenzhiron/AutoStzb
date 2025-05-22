@@ -1,45 +1,49 @@
-import logging
-import time
-
 from modules.devices.main import DeviceOperator, DeviceManager
+from modules.static.config_keys import PracticeLandKeys
 from modules.taskfn.basic import Basic
-from modules.taskfn.state_enum import State
 from modules.taskfn.steps import EntryListPage, SearchMap, OperationGoMap, ListActionResult, SelectListAction
-from modules.taskfn.steps_basic import StepsBasic
-
+from modules.taskfn.tasks_utils import add_seconds_to_time
 
 
 class Capture(Basic):
     def __init__(self, operator, config):
         super().__init__(operator, config)
-        self.steps_basic = StepsBasic(operator)
-        self.map_x = 0
-        self.map_y = 0
-        self.time_sleep = 0
-
-        self.current_state = State.INIT
-        self.state_handlers = {
-            State.DRAFT: EntryListPage(operator, config),
-            State.SEARCH_MAP: SearchMap(operator, config),
-            State.GO_MAP: OperationGoMap(operator, config),
-            State.LIST_ACTION: SelectListAction(operator, config),
-            State.RESULT: ListActionResult(operator, config),
-        }
-    def init_state(self):
-        # 校验当前状态。
-
-
-        if self.config['draft']:
-            self.current_state = State.DRAFT
-
+        self.draft = EntryListPage(operator, config)
+        self.search_map = SearchMap(operator, config)
+        self.go_map = OperationGoMap(operator, config)
+        self.list_action = SelectListAction(operator, config)
+        self.action_result = ListActionResult(operator, config)
     def run(self):
-        self.init_state()
-        while State(self.current_state) == State.END:
-            handle = self.state_handlers.get(self.current_state)
-            res = handle.run()
-            if State(res) == State.END:
-                 # 征兵结束
-                pass
+        if self.config[PracticeLandKeys.STAGE] == 0:
+            if self.config[PracticeLandKeys.DRAFT]:
+                draft_result = self.draft.run()
+                if draft_result['time_consuming'] != 0:
+                    self.result[PracticeLandKeys.NEXTTIME] = add_seconds_to_time(
+                        self.config[PracticeLandKeys.NEXTTIME],
+                        draft_result['time_consuming']
+                    )
+                    return self.result
+
+            # 共用逻辑（DRAFT.time_consuming=0 或 无 DRAFT）
+            self.search_map.run()
+            self.go_map.run()
+            action_result = self.list_action()
+            self.result.update(action_result)
+            self.result[PracticeLandKeys.STAGE] = 1
+            self.result[PracticeLandKeys.NEXTTIME] = add_seconds_to_time(
+                self.config[PracticeLandKeys.NEXTTIME],
+                action_result['time_consuming']
+            )
+            return self.result
+        elif self.config[PracticeLandKeys.STAGE] == 1:
+            return self.action_result
+        return None
+
+
+
+
+
+
 
 
 if __name__ == '__main__':

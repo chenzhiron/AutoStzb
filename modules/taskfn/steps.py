@@ -87,6 +87,7 @@ class EntryListPage(Basic):
                 self.return_main()
                 current_step = 0  # 重置进度
             if State(result) == State.END:
+                self.return_main()
                 return True
             current_step += 1
         return True

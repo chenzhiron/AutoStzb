@@ -1,7 +1,7 @@
 import queue
 import threading
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Callable, Any, Optional
 
 import numpy as np
@@ -72,6 +72,29 @@ def extract_numbers_from_brackets(text):
     except (TypeError, ValueError):
         return None
 
+
+def add_seconds_to_time(time_str, seconds):
+    """
+    将时间字符串加上指定的秒数，然后返回相同格式的字符串
+
+    参数:
+        time_str: 时间字符串，格式为 "YYYY/MM/DD HH:MM:SS"
+        seconds: 要添加的秒数（整数或浮点数）
+
+    返回:
+        新时间字符串，格式与输入相同
+    """
+    # 将字符串转换为datetime对象
+    dt_format = "%Y/%m/%d %H:%M:%S"
+    dt = datetime.strptime(time_str, dt_format)
+
+    # 加上指定的秒数
+    new_dt = dt + timedelta(seconds=seconds)
+
+    # 转换回字符串
+    new_time_str = new_dt.strftime(dt_format)
+
+    return new_time_str
 
 import re
 
