@@ -47,10 +47,11 @@ class PracticeLandKeys:
     NEXTTIME = "nexttime"
     X = "x"
     Y = "y"
+    NUM = 'num'
     STAGE = 'stage'
     DRAFT = "draft"
     ADDRESS = 'address'
-    SELECT_LIST = "select_list"
+    ACTION_LIST = "action_list"
     MAX_DISTANCE = 'max_distance'
     TIME_CONSUMING = 'time_consuming'
     MY_REMAINING = 'my_remaining'
