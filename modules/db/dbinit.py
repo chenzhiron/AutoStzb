@@ -97,7 +97,7 @@ class Db:
 
 if __name__ == "__main__":
     # 测试代码
-    con = Db("task.db")
+    con = Db("../../task.db")
     con.remove_table()
     con.init_config(tasks_config)
     v = con.select()

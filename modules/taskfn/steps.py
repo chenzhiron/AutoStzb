@@ -207,8 +207,7 @@ class SelectListAction(Basic):
             return False
         action_time_result = time_str_to_seconds(action_time)
         if action_time_result == 0:
-            # 异常或者错误
-            raise SelectListAction
+            return False
         # 行动的时间
         self.result.update({
             "time_consuming": action_time_result

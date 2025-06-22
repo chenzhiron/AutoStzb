@@ -79,14 +79,12 @@ def update():
                 put_text(log)
             last_index = current_length  # 更新索引
 
-        # 情况2: 日志被裁剪（例如从400条裁剪到80条）
+            # 情况2: 日志被裁剪（例如从400条裁剪到80条）
         elif current_length < last_index:
             new_logs = pm.renderables
             for log in new_logs:
                 put_text(log)
             last_index = current_length
-
-        # 降低CPU占用
         time.sleep(0.5)  # 根据实际需求调整休眠时间
 
 
@@ -159,7 +157,7 @@ class App:
     @use_scope("team", clear=True)
     def render_team(self):
         put_collapse('个人', [
-            put_text('扫荡').onclick(self.render_practice_land)
+            put_text('出征').onclick(self.render_practice_land)
         ])
         put_collapse(
             "同盟",
@@ -172,6 +170,7 @@ class App:
                 put_text("我方出战/防守").onclick(self.render_myfight),
             ],
         )
+
     @use_scope('function_area', clear=True)
     def render_practice_land(self):
         current_config = self.webdb.select(ConfigSections.PRACTICE_LAND)
@@ -272,7 +271,7 @@ class App:
         res.update({prop: v})
         self.webdb.update(task_name, res)
 
-    def update_datatime(self, task_name, prop, v):
+    def update_datetime(self, task_name, prop, v):
         dt = datetime.strptime(v, "%Y-%m-%dT%H:%M").strftime("%Y/%m/%d %H:%M:%S")
         res = self.webdb.select_format(task_name)
         res.update({prop: dt})

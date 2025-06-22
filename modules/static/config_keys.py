@@ -45,12 +45,13 @@ class TakeLandKeys:
 class PracticeLandKeys:
     STATE = "state"
     NEXTTIME = "nexttime"
+    NUM = 'num'
     X = "x"
     Y = "y"
     STAGE = 'stage'
     DRAFT = "draft"
     ADDRESS = 'address'
-    SELECT_LIST = "select_list"
+    ACTION_LIST = "action_list"
     MAX_DISTANCE = 'max_distance'
     TIME_CONSUMING = 'time_consuming'
     MY_REMAINING = 'my_remaining'

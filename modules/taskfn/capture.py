@@ -51,6 +51,7 @@ class Capture(Basic):
                 if draft_result['time_consuming'] != 0:
                     self.result[PracticeLandKeys.NEXTTIME] = get_future_time(draft_result['time_consuming'])
             self.result[PracticeLandKeys.STATE] = False
+            self.result[PracticeLandKeys.STAGE] = 0
 
         return self.result
 
