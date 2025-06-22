@@ -62,9 +62,13 @@ class St:
     def run_task(self, simulator_name, task_name, config):
         device = DeviceOperator(DeviceManager(simulator_name))
         logger.info(f"Starting {task_name} on {simulator_name}")
-        if task_name == 'practice_land':
-            self.practice_land(device, config)
-        logger.success(f"Completed {task_name}; {config}")
+        if hasattr(self, task_name):
+            method = getattr(self, task_name)
+            method(device, config)
+            logger.success(f"Completed {task_name}; {config}")
+        else:
+            print(f"Method {task_name} not found in St class.")
+
 
     def loop(self):
         while True:
