@@ -48,6 +48,7 @@ class PracticeLandKeys:
     NUM = 'num'
     X = "x"
     Y = "y"
+    NUM = 'num'
     STAGE = 'stage'
     DRAFT = "draft"
     ADDRESS = 'address'
