@@ -33,19 +33,9 @@ class BattleDestoryKeys:
     LOOPTIME = "looptime"
 
 
-class TakeLandKeys:
-    STATE = "state"
-    NEXTTIME = "nexttime"
-    X = "x"
-    Y = "y"
-    DRAFT = "draft"
-    SELECT_LIST = "select_list"
-
-
 class PracticeLandKeys:
     STATE = "state"
     NEXTTIME = "nexttime"
-    NUM = 'num'
     X = "x"
     Y = "y"
     NUM = 'num'
@@ -57,6 +47,33 @@ class PracticeLandKeys:
     TIME_CONSUMING = 'time_consuming'
     MY_REMAINING = 'my_remaining'
     ENEMY_REMAINING = 'enemy_remaining'
+
+
+class ATTACK_LAND:
+    STATE = "state"
+    NEXTTIME = "nexttime"
+    NUM = 'num'
+    X = "x"
+    Y = "y"
+    STAGE = 'stage'
+    DRAFT = "draft"
+    ADDRESS = 'address'
+    ACTION_LIST = "action_list"
+    MAX_DISTANCE = 'max_distance'
+    TIME_CONSUMING = 'time_consuming'
+    MY_REMAINING = 'my_remaining'
+    ENEMY_REMAINING = 'enemy_remaining'
+
+
+class SPARTA_ATTACK_LAND:
+    STATE = "state"
+    NEXTTIME = "nexttime"
+    X = "x"
+    Y = "y"
+    STAGE = 'stage'
+    ADDRESS = 'address'
+    MAX_DISTANCE = 'max_distance'
+    TIME_CONSUMING = 'time_consuming'
 
 
 class FightCityKeys:
@@ -75,6 +92,15 @@ class ConfigSections:
     MYFIGHT = "myfight"
     RANKING = "ranking"
     BATTLEDESTORY = "battledestory"
-    TAKE_LAND = "take_land"
     PRACTICE_LAND = "practice_land"
+    PRACTICE_LAND_1 = "practice_land_1"
+    PRACTICE_LAND_2 = "practice_land_2"
+    PRACTICE_LAND_3 = "practice_land_3"
+    PRACTICE_LAND_4 = "practice_land_4"
+    ATTACK_LAND = 'attack_land'
+    ATTACK_LAND_1 = 'attack_land_1'
+    ATTACK_LAND_2 = 'attack_land_2'
+    ATTACK_LAND_3 = 'attack_land_3'
+    ATTACK_LAND_4 = 'attack_land_4'
+    SPARTA_ATTACK_LAND = 'sparta_attack_land'
     FIGHT_CITY = "fight_city"

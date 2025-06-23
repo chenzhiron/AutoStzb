@@ -157,7 +157,21 @@ class App:
     @use_scope("team", clear=True)
     def render_team(self):
         put_collapse('个人', [
-            put_text('出征').onclick(self.render_practice_land)
+            put_collapse('扫荡', [
+                put_text('扫荡').onclick(self.render_practice_land),
+                put_text('扫荡1').onclick(self.render_practice_land_1),
+                put_text('扫荡2').onclick(self.render_practice_land_2),
+                put_text('扫荡3').onclick(self.render_practice_land_3),
+                put_text('扫荡4').onclick(self.render_practice_land_4),
+            ]),
+            put_collapse('出征', [
+                put_text('出征').onclick(self.render_attack_land),
+                put_text('出征1').onclick(self.render_attack_land_1),
+                put_text('出征2').onclick(self.render_attack_land_2),
+                put_text('出征3').onclick(self.render_attack_land_3),
+                put_text('出征4').onclick(self.render_attack_land_4),
+            ]),
+            put_text('斯巴达模式').onclick(self.render_sparta_attack_land),
         ])
         put_collapse(
             "同盟",
@@ -175,6 +189,56 @@ class App:
     def render_practice_land(self):
         current_config = self.webdb.select(ConfigSections.PRACTICE_LAND)
         self.render_config_form(current_config, ConfigSections.PRACTICE_LAND)
+
+    @use_scope('function_area', clear=True)
+    def render_practice_land_1(self):
+        current_config = self.webdb.select(ConfigSections.PRACTICE_LAND_1)
+        self.render_config_form(current_config, ConfigSections.PRACTICE_LAND_1)
+
+    @use_scope('function_area', clear=True)
+    def render_practice_land_2(self):
+        current_config = self.webdb.select(ConfigSections.PRACTICE_LAND_2)
+        self.render_config_form(current_config, ConfigSections.PRACTICE_LAND_2)
+
+    @use_scope('function_area', clear=True)
+    def render_practice_land_3(self):
+        current_config = self.webdb.select(ConfigSections.PRACTICE_LAND_3)
+        self.render_config_form(current_config, ConfigSections.PRACTICE_LAND_3)
+
+    @use_scope('function_area', clear=True)
+    def render_practice_land_4(self):
+        current_config = self.webdb.select(ConfigSections.PRACTICE_LAND_4)
+        self.render_config_form(current_config, ConfigSections.PRACTICE_LAND_4)
+
+    @use_scope('function_area', clear=True)
+    def render_attack_land(self):
+        current_config = self.webdb.select(ConfigSections.ATTACK_LAND)
+        self.render_config_form(current_config, ConfigSections.ATTACK_LAND)
+
+    @use_scope('function_area', clear=True)
+    def render_attack_land_1(self):
+        current_config = self.webdb.select(ConfigSections.ATTACK_LAND_1)
+        self.render_config_form(current_config, ConfigSections.ATTACK_LAND_1)
+
+    @use_scope('function_area', clear=True)
+    def render_attack_land_2(self):
+        current_config = self.webdb.select(ConfigSections.ATTACK_LAND_2)
+        self.render_config_form(current_config, ConfigSections.ATTACK_LAND_2)
+
+    @use_scope('function_area', clear=True)
+    def render_attack_land_3(self):
+        current_config = self.webdb.select(ConfigSections.ATTACK_LAND_3)
+        self.render_config_form(current_config, ConfigSections.ATTACK_LAND_3)
+
+    @use_scope('function_area', clear=True)
+    def render_attack_land_4(self):
+        current_config = self.webdb.select(ConfigSections.ATTACK_LAND_4)
+        self.render_config_form(current_config, ConfigSections.ATTACK_LAND_4)
+
+    @use_scope('function_area', clear=True)
+    def render_sparta_attack_land(self):
+        current_config = self.webdb.select(ConfigSections.SPARTA_ATTACK_LAND)
+        self.render_config_form(current_config, ConfigSections.SPARTA_ATTACK_LAND)
 
     @use_scope('function_area', clear=True)
     def render_simulator(self):
