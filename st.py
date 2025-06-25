@@ -114,19 +114,19 @@ class St:
         pass
 
     @practice_task
-    def practice_land1(self, device, config):
+    def practice_land_1(self, device, config):
         pass
 
     @practice_task
-    def practice_land2(self, device, config):
+    def practice_land_2(self, device, config):
         pass
 
     @practice_task
-    def practice_land3(self, device, config):
+    def practice_land_3(self, device, config):
         pass
 
     @practice_task
-    def practice_land4(self, device, config):
+    def practice_land_4(self, device, config):
         pass
 
     @attack_task
@@ -134,19 +134,19 @@ class St:
         pass
 
     @attack_task
-    def attack_land1(self, device, config):
+    def attack_land_1(self, device, config):
         pass
 
     @attack_task
-    def attack_land2(self, device, config):
+    def attack_land_2(self, device, config):
         pass
 
     @attack_task
-    def attack_land3(self, device, config):
+    def attack_land_3(self, device, config):
         pass
 
     @attack_task
-    def attack_land4(self, device, config):
+    def attack_land_4(self, device, config):
         pass
 
     def run_task(self, simulator_name, task_name, config):

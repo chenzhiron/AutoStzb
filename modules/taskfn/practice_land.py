@@ -5,13 +5,27 @@ from pprint import pprint
 from modules.devices.main import DeviceOperator, DeviceManager
 from modules.taskfn.capture import Capture
 from modules.taskfn.steps import OperationGoMap
+from modules.utils import truncated_normal
+
+
+class OperationGoMapPracticeLand(OperationGoMap):
+    def __init__(self, operator, config):
+        super().__init__(operator, config)
+
+    def execute_go_map(self):
+        axis_result = self.steps_basic.verify_go_map()
+        if not axis_result:
+            return False
+        (x, y), v = axis_result
+        self.device.click(truncated_normal(x + 550, x + 550 + 150), truncated_normal(y + 200, y + 200 + 30))
+        return True
 
 
 class PracticeLand(Capture):
     def __init__(self, operator, config):
         super().__init__(operator, config)
         # 需要重写 扫荡
-        self.go_map = OperationGoMap(operator, config)
+        self.go_map = OperationGoMapPracticeLand(operator, config)
 
 
 if __name__ == '__main__':

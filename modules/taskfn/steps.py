@@ -248,6 +248,7 @@ class ListActionResult(Basic):
         all_state = ['胜', '同归于尽', '胜成功占领', '败', '平']
         next_state = ['胜', '同归于尽', '胜成功占领', '败']
         state_result = self.steps_basic.verify_map_action_result()
+        print("action_result::::++++++")
         if state_result is None or state_result not in all_state:
             return False
         elif state_result in next_state:
@@ -311,9 +312,9 @@ class ListActionResult(Basic):
             step_func = steps[current_step]
             result = self.run_with_retry(step_func)
 
-            if result not in [0, 1, 2] and not result:
+            if result in [0, 1, 2] and result != True:
                 self.return_main()
-                current_step = 0  # 重置进度
+                return result
             current_step += 1
         return result
 
@@ -327,6 +328,6 @@ class ListActionResult(Basic):
         if res == 2:
             if self.execute_sequence([self.action_draw_run, self.action_draw_run_time_confirm]):
                 return 0
-        else:
+        elif res == 1:
             self.return_main()
         return 0

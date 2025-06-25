@@ -77,7 +77,7 @@ class StepsBasic:
 
     @auto_refresh
     def verify_select_list_action(self, **kwargs):
-        distance = ocr_format_val(np.array(self.screenshot.crop([1182, 160, 1250, 210])))
+        distance = ocr_format_val(np.array(self.screenshot.crop([1235, 195, 1415, 250])))
         return distance
 
     @auto_refresh

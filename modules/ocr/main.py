@@ -3,7 +3,7 @@ from paddleocr import PaddleOCR
 
 ocr = PaddleOCR(
     lang="ch",
-    show_log=True,
+    show_log=False,
 )
 
 

@@ -5,6 +5,13 @@ class SimulatorKeys:
 class BesiegeKeys:
     STATE = "state"
     NEXTTIME = "nexttime"
+    X = "x"
+    Y = "y"
+    MODE = 'mode'
+    STAGE = 'stage'
+    ADDRESS = 'address'
+    MAX_DISTANCE = 'max_distance'
+    TIME_CONSUMING = 'time_consuming'
 
 
 class EnemyKeys:

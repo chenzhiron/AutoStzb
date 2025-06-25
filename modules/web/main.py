@@ -3,7 +3,7 @@ import time
 from datetime import datetime
 from queue import Queue
 
-from pywebio import SessionNotFoundException
+from pywebio import SessionNotFoundException, config
 from pywebio.input import FLOAT
 from pywebio.output import (
     put_scope,
@@ -12,8 +12,7 @@ from pywebio.output import (
     put_text,
     put_button,
     put_collapse,
-    put_scrollable, put_row,
-)
+    put_scrollable, put_row, )
 from pywebio.pin import put_checkbox, pin_on_change, put_input
 from pywebio.platform.tornado import start_server
 from pywebio.session import set_env, register_thread
@@ -117,6 +116,7 @@ class App:
 
     def set_config(self):
         set_env(output_max_width="100%")
+        config(css_file='./static/style.css')
 
     def init_scope(self):
         put_scope(
@@ -172,11 +172,11 @@ class App:
                 put_text('出征4').onclick(self.render_attack_land_4),
             ]),
             put_text('斯巴达模式').onclick(self.render_sparta_attack_land),
+            put_text('打城').onclick(self.render_besiege)
         ])
         put_collapse(
             "同盟",
             [
-                put_text("打城主力拆迁").onclick(self.render_besiege),
                 put_text("武勋").onclick(self.render_exploit),
                 put_text("排行榜数据").onclick(self.render_rangking),
                 put_text("主力查询").onclick(self.render_enemy),
@@ -299,7 +299,6 @@ class App:
                 if handler:
                     handler(key, value)
 
-    # 主力跟拆迁一起统计，因为他们的配置和执行是一样的
     @use_scope("function_area", clear=True)
     def render_besiege(self):
         current_config = self.webdb.select(ConfigSections.BESIEGE)
