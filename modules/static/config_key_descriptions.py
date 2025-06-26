@@ -15,5 +15,7 @@ key_descriptions = {
     'max_distance': '出发最大距离',
     'time_consuming': '出发/撤退耗费时间，一般不需要手动更改',
     'my_remaining': '平局时，我方大于该数量，则等待下一次战斗。与下方条件并列',
-    'enemy_remaining': '平局时，守军小于该数量，则等待下一次战斗。与上方条件并列'
+    'enemy_remaining': '平局时，守军小于该数量，则等待下一次战斗。与上方条件并列',
+    'difficulty': "演武难度，从左往右，从1开始，5最高",
+    'retry': "演武重试最大次数"
 }

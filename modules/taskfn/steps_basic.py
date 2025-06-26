@@ -116,3 +116,32 @@ class StepsBasic:
     @auto_refresh
     def verify_draw_run_time(self):
         return ocr_format_val(np.array(self.screenshot.crop([770, 670, 885, 715])))
+
+    @auto_refresh
+    def verify_entey_neizheng(self):
+        return is_template_matched(self.screenshot.crop([0,700,600,900]),
+                                   ImgNames.get_image(ImgNames.NEI_ZHENG), 0.9, cv2.TM_CCORR_NORMED)
+
+    @auto_refresh
+    def verify_entry_martial_arts_map(self):
+        return is_template_matched(self.screenshot.crop([1150,400,1380,650]), ImgNames.get_image(ImgNames.YAN_WU), 0.9, cv2.TM_CCORR_NORMED)
+
+    @auto_refresh
+    def verify_remaining_num(self):
+        return ocr_format_val(np.array(self.screenshot.crop([685,770,920,813])))
+
+    @auto_refresh
+    def verify_select_difficulty(self):
+        return ocr_format_val(np.array(self.screenshot.crop([687,670,900,728])))
+
+    @auto_refresh
+    def select_maps_battling_bit(self):
+        return is_template_matched_axis(self.screenshot.crop([360,76,1260,730]), ImgNames.get_image(ImgNames.YAN_WU_LIST),0.8, cv2.TM_CCORR_NORMED)
+
+    @auto_refresh
+    def verify_batting_end_result(self):
+        return ocr_format_val(np.array(self.screenshot.crop([650,690,960, 780])))
+
+    @auto_refresh
+    def verify_batting_max_num(self):
+        return ocr_format_val(np.array(self.screenshot.crop([1488,785,1545,825])))

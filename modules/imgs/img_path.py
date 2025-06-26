@@ -27,6 +27,9 @@ class ImgNames:
     BUILD_RETURN = 'build_return'
     BUILD_RETURN2 = 'build_return2'
     LIST_RETURN = 'list_return'
+    NEI_ZHENG = 'neizheng'
+    YAN_WU = 'yanwu'
+    YAN_WU_LIST = 'yanwu_list'
 
     @classmethod
     def get_path(cls, img_name: str, ext: str = ".png") -> str:

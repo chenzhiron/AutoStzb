@@ -89,6 +89,12 @@ class FightCityKeys:
     X = "x"
     Y = "y"
 
+class MartialArtsKeys:
+    STATE = 'state'
+    NEXTTIME = 'nexttime'
+    DIFFICULTY = 'difficulty'
+    RETRY ='retry'
+
 
 # 顶层配置键名
 class ConfigSections:
@@ -111,3 +117,4 @@ class ConfigSections:
     ATTACK_LAND_4 = 'attack_land_4'
     SPARTA_ATTACK_LAND = 'sparta_attack_land'
     FIGHT_CITY = "fight_city"
+    MartialArts= 'martial_arts'

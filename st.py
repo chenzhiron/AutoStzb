@@ -149,6 +149,13 @@ class St:
     def attack_land_4(self, device, config):
         pass
 
+    def martial_arts(self, device, config):
+        from modules.taskfn.MartialArts import MartialArts
+        result = MartialArts(device,config).run()
+        config.update(result)
+        self.scheduler.set_new_config('MartialArts', config)
+
+
     def run_task(self, simulator_name, task_name, config):
         """执行指定任务"""
         try:

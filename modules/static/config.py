@@ -198,6 +198,11 @@ tasks_config = {
         FightCityKeys.NEXTTIME: "2019/06/01 00:00:00",
         FightCityKeys.X: 123,
         FightCityKeys.Y: 123,
-
+    },
+    ConfigSections.MartialArts: {
+        MartialArtsKeys.STATE: False,
+        MartialArtsKeys.NEXTTIME:"2019/06/01 00:00:00",
+        MartialArtsKeys.DIFFICULTY: 5,
+        MartialArtsKeys.RETRY: 20
     }
 }

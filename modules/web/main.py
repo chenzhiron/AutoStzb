@@ -172,7 +172,8 @@ class App:
                 put_text('出征4').onclick(self.render_attack_land_4),
             ]),
             put_text('斯巴达模式').onclick(self.render_sparta_attack_land),
-            put_text('打城').onclick(self.render_besiege)
+            put_text('打城').onclick(self.render_besiege),
+            put_text('演武').onclick(self.render_martial_arts)
         ])
         put_collapse(
             "同盟",
@@ -184,6 +185,11 @@ class App:
                 put_text("我方出战/防守").onclick(self.render_myfight),
             ],
         )
+
+    @use_scope('function_area', clear=True)
+    def render_martial_arts(self):
+        current_config = self.webdb.select(ConfigSections.MartialArts)
+        self.render_config_form(current_config, ConfigSections.MartialArts)
 
     @use_scope('function_area', clear=True)
     def render_practice_land(self):
