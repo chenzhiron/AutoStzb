@@ -1,9 +1,6 @@
-import threading
-import time
 from datetime import datetime
-from queue import Queue
 
-from pywebio import SessionNotFoundException, config
+from pywebio import config
 from pywebio.input import FLOAT
 from pywebio.output import (
     put_scope,
@@ -12,10 +9,10 @@ from pywebio.output import (
     put_text,
     put_button,
     put_collapse,
-    put_scrollable, put_row, )
+    put_row)
 from pywebio.pin import put_checkbox, pin_on_change, put_input
 from pywebio.platform.tornado import start_server
-from pywebio.session import set_env, register_thread
+from pywebio.session import set_env
 
 from modules.db.dbinit import Db
 from modules.static.config_key_descriptions import key_descriptions
@@ -30,85 +27,15 @@ def server():
     )
 
 
-class SessionManager:
-    def __new__(cls, *args, **kwargs):
-        if not hasattr(cls, 'instance'):
-            cls.instance = object.__new__(cls)
-            cls.session_queues = []
-        return cls.instance
-
-    def run_in_all_sessions(self, func):
-        for queue in self.session_queues:
-            queue.put(func)
-
-    def register(self, func):
-
-        def decorator(*args, **kwargs):
-            update_thread = threading.Thread(target=self.update_session, daemon=True)
-            register_thread(update_thread)
-            update_thread.start()
-
-            res = func(*args, **kwargs)
-            return res
-
-        return decorator
-
-    def update_session(self):
-        try:
-            queue = Queue()
-            self.session_queues.append(queue)
-            while True:
-                func = queue.get()
-                func()
-        except SessionNotFoundException:
-            print('关闭网页的一个链接了')
-
-
-def update():
-    pm = ProcessManager.get_instance()  # 获取 ProcessManager 单例
-    last_index = len(pm.renderables)  # 初始化上次检查的索引
-    while True:
-        current_length = len(pm.renderables)
-
-        # 情况1: 有新日志追加
-        if current_length > last_index:
-            new_logs = pm.renderables[last_index:current_length]
-            # 处理新增的日志（例如发送到UI）
-            for log in new_logs:
-                put_text(log)
-            last_index = current_length  # 更新索引
-
-            # 情况2: 日志被裁剪（例如从400条裁剪到80条）
-        elif current_length < last_index:
-            new_logs = pm.renderables
-            for log in new_logs:
-                put_text(log)
-            last_index = current_length
-        time.sleep(0.5)  # 根据实际需求调整休眠时间
-
-
-def output_fn():
-    while True:
-        SessionManager().run_in_all_sessions(update)
-        time.sleep(1)
-
-
-d = threading.Thread(target=output_fn, daemon=True)
-d.start()
-
 
 class App:
     def __init__(self):
         self.st = ProcessManager.get_instance()
         self.webdb = Db("task.db")
 
-    @SessionManager().register
     def render(self):
         self.set_config()
         self.init_scope()
-        with use_scope("log_area"):
-            put_scrollable(put_scope("log"), height=600, keep_bottom=True)
-
         with use_scope("function", clear=True):
             self.render_process_btn()
             self.render_config()
@@ -125,7 +52,6 @@ class App:
                 put_scope("memu").style("width:100px;"),
                 put_scope("function").style("width:200px;"),
                 put_scope("function_area").style("flex:1;"),
-                put_scope("log_area").style("flex:1;"),
             ],
         ).style("display:flex")
 

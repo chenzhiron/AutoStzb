@@ -1,9 +1,4 @@
-import sys
-import threading
-from multiprocessing import Process, Queue
-from queue import Empty
-
-from rich.console import ConsoleRenderable
+from multiprocessing import Process
 
 from modules.logger import logger, set_func_logger
 
@@ -13,60 +8,20 @@ class ProcessManager:
     _process = None  # 进程实例
 
     def __init__(self):
-        self._renderable_queue = Queue()  # 改用 multiprocessing.Queue
-        self.renderables = []  # 存储的日志
-        self.renderables_max_length = 400  # 日志最大存储量
-        self.renderables_reduce_length = 80  # 日志裁剪量
         self._log_thread = None  # 日志处理线程
 
     def start(self) -> None:
         """启动进程"""
         if not self.alive:
             self._process = Process(
-                target=ProcessManager._run_process,
-                args=(self._renderable_queue,)
+                target=ProcessManager._run_process
             )
             self._process.start()
-            self._start_log_thread()
 
     def stop(self) -> None:
         """停止进程"""
         if self.alive:
             self._process.terminate()
-            self._add_log_message("Process exited. Reason: Manual stop")
-
-        if self._log_thread is not None:
-            self._log_thread.join(timeout=1)
-            if self._log_thread.is_alive():
-                logger.warning("Log thread did not stop within 1 second")
-            self._log_thread = None
-
-    def _start_log_thread(self) -> None:
-        """启动日志处理线程"""
-        if self._log_thread and self._log_thread.is_alive():
-            return
-
-        self._log_thread = threading.Thread(
-            target=self._handle_log_queue,
-            daemon=True
-        )
-        self._log_thread.start()
-
-    def _handle_log_queue(self) -> None:
-        """处理日志队列"""
-        while self.alive:
-            try:
-                log = self._renderable_queue.get(timeout=1)
-                self._add_log_message(log)
-            except Empty:
-                continue
-        logger.info("Log thread stopped")
-
-    def _add_log_message(self, message: ConsoleRenderable) -> None:
-        """添加日志消息并控制存储量"""
-        self.renderables.append(message)
-        if len(self.renderables) > self.renderables_max_length:
-            self.renderables = self.renderables[self.renderables_reduce_length:]
 
     @property
     def alive(self) -> bool:
@@ -92,24 +47,7 @@ class ProcessManager:
             return 4  # 异常退出
 
     @staticmethod
-    def _run_process(queue: Queue) -> None:
-        class QueueWriter:
-            def __init__(self, queue):
-                self.queue = queue
-
-            def write(self, message):
-                if message.strip():
-                    self.queue.put(message)
-
-            def flush(self):
-                pass
-
-        sys.stdout = QueueWriter(queue)
-        sys.stderr = QueueWriter(queue)
-        """进程入口函数"""
-        # 设置日志
-        set_func_logger(func=queue.put)
-
+    def _run_process() -> None:
         try:
             from st import St
             St().loop()
