@@ -2,7 +2,7 @@ class SimulatorKeys:
     DEVICE_ADDRESS = "device_address"
 
 
-class BesiegeKeys:
+class FightCityKeys:
     STATE = "state"
     NEXTTIME = "nexttime"
     X = "x"
@@ -83,23 +83,16 @@ class SPARTA_ATTACK_LAND:
     TIME_CONSUMING = 'time_consuming'
 
 
-class FightCityKeys:
-    STATE = "state"
-    NEXTTIME = "nexttime"
-    X = "x"
-    Y = "y"
-
 class MartialArtsKeys:
     STATE = 'state'
     NEXTTIME = 'nexttime'
     DIFFICULTY = 'difficulty'
-    RETRY ='retry'
+    RETRY = 'retry'
 
 
 # 顶层配置键名
 class ConfigSections:
     SIMULATOR = "simulator"
-    BESIEGE = "besiege"
     EXPLOIT = "exploit"
     ENEMY = "enemy"
     MYFIGHT = "myfight"
@@ -117,4 +110,4 @@ class ConfigSections:
     ATTACK_LAND_4 = 'attack_land_4'
     SPARTA_ATTACK_LAND = 'sparta_attack_land'
     FIGHT_CITY = "fight_city"
-    MartialArts= 'martial_arts'
+    MartialArts = 'martial_arts'
