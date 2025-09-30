@@ -8,7 +8,7 @@ class ProcessManager:
     _process = None  # 进程实例
 
     def __init__(self):
-        self._log_thread = None  # 日志处理线程
+       pass
 
     def start(self) -> None:
         """启动进程"""
@@ -28,23 +28,6 @@ class ProcessManager:
         """检查进程是否运行中"""
         return self._process is not None and self._process.is_alive()
 
-    @property
-    def state(self) -> int:
-        """获取进程状态"""
-        if not self.renderables:
-            return 0  # 未启动
-
-        if self.alive:
-            return 1  # 运行中
-
-        # 检查最后一条日志判断退出原因
-        last_log = str(self.renderables[-1])
-        if "Manual stop" in last_log:
-            return 2  # 手动停止
-        elif "Finish" in last_log:
-            return 3  # 正常完成
-        else:
-            return 4  # 异常退出
 
     @staticmethod
     def _run_process() -> None:

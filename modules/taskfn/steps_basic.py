@@ -51,8 +51,11 @@ class StepsBasic:
 
     @auto_refresh
     def verify_zhengbing_max_time(self):
-        return ocr_normal(np.array(self.screenshot.crop([872, 490, 980, 815])))
+        return ocr_normal(np.array(self.screenshot.crop([895, 490, 1010, 815])))
 
+    @auto_refresh
+    def verify_action_zhengbing_in(self, left,top,right,bottm):
+        return ocr_normal(np.array(self.screenshot.crop([left, top, right, bottm])))
     @auto_refresh
     def verify_click_confirm_end(self):
         return ocr_format_val(np.array(self.screenshot.crop([860, 570, 1080, 614])))
@@ -67,7 +70,7 @@ class StepsBasic:
 
     @auto_refresh
     def verify_click_address(self):
-        return ocr_format_val(np.array(self.screenshot.crop([675, 350, 950, 390])))
+        return ocr_format_val(np.array(self.screenshot.crop([675, 350, 950, 400])))
 
     @auto_refresh
     def verify_go_map(self, repeat=False):
@@ -77,17 +80,17 @@ class StepsBasic:
 
     @auto_refresh
     def verify_select_list_action(self, **kwargs):
-        distance = ocr_format_val(np.array(self.screenshot.crop([1235, 195, 1415, 250])))
+        distance = ocr_format_val(self.screenshot.crop([1235, 195, 1415, 250]))
         return distance
 
     @auto_refresh
     def verify_process_list(self, **kwargs):
-        list_max = process_list(ocr_format_list(np.array(self.screenshot.crop([300, 800, 1410, 835]))))
+        list_max = process_list(ocr_format_list(self.screenshot.crop([300, 800, 1410, 835])))
         return list_max
 
     @auto_refresh
     def verify_delay_time(self):
-        return ocr_format_val(np.array(self.screenshot.crop([770, 650, 883, 690])))
+        return ocr_format_val(self.screenshot.crop([770, 650, 883, 690]))
 
     @auto_refresh
     def verify_search_map_address(self):
@@ -97,15 +100,15 @@ class StepsBasic:
 
     @auto_refresh
     def verify_map_action_result(self):
-        return ocr_format_val(np.array(self.screenshot.crop([665, 240, 880, 425])))
+        return ocr_format_val(self.screenshot.crop([665, 240, 880, 425]))
 
     @auto_refresh
     def verify_my_remaining(self):
-        return ocr_format_val(np.array(self.screenshot.crop([60, 230, 250, 273])))
+        return ocr_format_val(self.screenshot.crop([60, 230, 250, 273]))
 
     @auto_refresh
     def verify_enemy_remaining(self):
-        return ocr_format_val(np.array(self.screenshot.crop([1315, 230, 1485, 273])))
+        return ocr_format_val(self.screenshot.crop([1315, 230, 1485, 273]))
 
     @auto_refresh
     def verify_draw_run(self):
@@ -115,7 +118,7 @@ class StepsBasic:
 
     @auto_refresh
     def verify_draw_run_time(self):
-        return ocr_format_val(np.array(self.screenshot.crop([770, 670, 885, 715])))
+        return ocr_format_val(self.screenshot.crop([770, 670, 885, 715]))
 
     @auto_refresh
     def verify_entey_neizheng(self):
@@ -128,11 +131,11 @@ class StepsBasic:
 
     @auto_refresh
     def verify_remaining_num(self):
-        return ocr_format_val(np.array(self.screenshot.crop([685,770,920,813])))
+        return ocr_format_val(self.screenshot.crop([685,770,920,813]))
 
     @auto_refresh
     def verify_select_difficulty(self):
-        return ocr_format_val(np.array(self.screenshot.crop([687,670,900,728])))
+        return ocr_format_val(self.screenshot.crop([687,670,900,728]))
 
     @auto_refresh
     def select_maps_battling_bit(self):
@@ -140,8 +143,8 @@ class StepsBasic:
 
     @auto_refresh
     def verify_batting_end_result(self):
-        return ocr_format_val(np.array(self.screenshot.crop([650,690,960, 780])))
+        return ocr_format_val(self.screenshot.crop([650,690,960, 780]))
 
     @auto_refresh
     def verify_batting_max_num(self):
-        return ocr_format_val(np.array(self.screenshot.crop([1488,785,1545,825])))
+        return ocr_format_val(self.screenshot.crop([1488,785,1545,825]))

@@ -1,18 +1,18 @@
 import numpy as np
 from paddleocr import PaddleOCR
+from modules.devices.main import DeviceOperator, DeviceManager
 
 ocr = PaddleOCR(
     lang="ch",
-    show_log=False,
 )
 
 
 def ocr_not_det(sources):
-    return ocr.ocr(sources, cls=False, det=False, inv=True)
+    return ocr.ocr(np.array(sources))
 
 
 def ocr_normal(sources):
-    return ocr.ocr(sources, cls=False, inv=True)
+    return ocr.ocr(np.array(sources))
 
 
 def ocr_format_list(sources):
@@ -63,6 +63,7 @@ def ocr_format_val(sources):
 
 
 if __name__ == '__main__':
-    d = Devices('127.0.0.1:16384')
-    result = ocr_normal(np.array(d.screenshot()))
+    d = DeviceOperator(DeviceManager("127.0.0.1:16416"))
+    d.screenshot().save('1.jpg')
+    result = ocr_normal(d.screenshot())
     print(result)

@@ -1,4 +1,4 @@
-import logging
+from loguru import logger
 import time
 from typing import List, Callable
 
@@ -14,13 +14,16 @@ class EntryListPage(Basic):
         super().__init__(operator, config)
         self.steps_basic = StepsBasic(operator)
 
+
     def action_click(self):
+        logger.debug('Enter EntryListPage/action_click')
         if self.steps_basic.verify_action_click():
             self.device.click(truncated_normal(375, 440), truncated_normal(735, 880))
             return True
         return None
 
     def action_list(self):
+        logger.debug('Enter EntryListPage/action_list')
         if self.steps_basic.verify_action_list():
             if self.config['address'] == '':
                 num = self.config['num']
@@ -35,21 +38,24 @@ class EntryListPage(Basic):
         return None
 
     def action_zhengbing(self):
+        logger.debug('Enter EntryListPage/action_zhengbing')
         if self.steps_basic.verify_going_zhengbing():
             self.device.click(truncated_normal(735, 850), truncated_normal(665, 720))
             return True
         return None
 
     def action_zhengbing_max(self):
+        logger.debug('Enter EntryListPage/action_zhengbing_max')
         if self.steps_basic.verify_zhengbing_page():
             self.device.click(truncated_normal(1135, 1280), truncated_normal(825, 860))
             return True
         return None
 
     def action_max_time(self):
-        time.sleep(0.5)
+        logger.debug('Enter EntryListPage/action_max_time')
+        time.sleep(1)
         max_time = time_consuming(self.steps_basic.verify_zhengbing_max_time())
-        logging.info(f'max time: {max_time}')
+        logger.info(f'max time: {max_time}')
         self.result.update({
             "time_consuming": max_time
         })
@@ -61,46 +67,51 @@ class EntryListPage(Basic):
         return True
 
     def action_click_confirm(self):
+        logger.debug('Enter EntryListPage/action_click_confirm')
         self.device.click(truncated_normal(1325, 1550), truncated_normal(825, 860))
         return True
 
     def action_click_confirm_end(self):
+        logger.debug('Enter EntryListPage/action_click_confirm_end')
         if self.steps_basic.verify_click_confirm_end() == '确定':
             self.device.click(truncated_normal(860, 1080), truncated_normal(570, 614))
             return True
         return None
-
-    def execute_sequence(self, steps: List[Callable]):
-        current_step = 0
-
-        while current_step < len(steps):
-            step_func = steps[current_step]
-            result = self.run_with_retry(step_func)
-
-            if not result:
-                self.return_main()
-                current_step = 0  # 重置进度
-            if result == 0:
-                self.return_main()
-                return True
-            current_step += 1
+    def action_zhengbing_in(self):
+        logger.debug('Enter EntryListPage/action_zhengbing_in')
+        num = self.config['num']
+        offset_x = 75 + ((170 + 40) * (num - 1))
+        offset_x_end = 75 + (170 * num) + (40 * (num - 1))
+        offset_y = 240 + 80 + 100
+        offset_y_end = offset_y + 35
+        max_time = time_consuming(self.steps_basic.verify_action_zhengbing_in(offset_x,offset_y,offset_x_end,offset_y_end))
+        logger.info(f'max time: {max_time}')
+        if max_time == 0:
+            return False
+        self.result.update({
+            "time_consuming": max_time
+        })
         return True
 
+
     def run(self):
-        steps = [
-            self.action_click,
-            self.action_list,
-            self.action_zhengbing,
-            self.action_zhengbing_max,
-            self.action_max_time,
-            self.verify_time,
-            self.action_click_confirm,
-            self.action_click_confirm_end,
-            self.return_main
-        ]
-        if self.execute_sequence(steps):
-            return self.result
-        raise EntryListPageError
+        while 1:
+            if self.action_click_confirm_end():
+                break
+            if self.action_zhengbing_max():
+                self.action_max_time()
+                self.action_click_confirm()
+                continue
+            if self.action_zhengbing():
+                continue
+            # 已经在征兵
+            if self.action_zhengbing_in():
+                break
+            if self.action_list():
+                continue
+            if self.action_click():
+                continue
+        self.return_main()
 
 
 class SearchMap(Basic):
@@ -114,29 +125,28 @@ class SearchMap(Basic):
             return True
         else:
             self.device.click(1428, 104)
-            time.sleep(3)
+            time.sleep(2)
             self.device.click(1420, 95)
             return True
 
-    def click_map_axis(self):
+    def click_map_axis_x(self):
         if self.steps_basic.verify_click_map_axis() == '跳转':
             self.device.click(truncated_normal(1160, 1245), 855)
             time.sleep(1)
             self.device.input(str(self.config['x']), True)
             self.device.click(truncated_normal(200, 1400), truncated_normal(100, 600))
-            time.sleep(1)
+            return True
+        return None
+
+    def click_map_axis_y(self):
             self.device.click(truncated_normal(1290, 1360), 855)
             time.sleep(1)
             self.device.input(str(self.config['y']), True)
             self.device.click(truncated_normal(200, 1400), truncated_normal(100, 600))
-            time.sleep(1)
             self.device.click(truncated_normal(1410, 1580), truncated_normal(835, 885))
             return True
-        return None
-
     def click_verify_address(self):
         time.sleep(1)
-        self.device.click(760, 440)
         address_result = extract_numbers_from_brackets(self.steps_basic.verify_click_address())
         print("address_result:", address_result)
         if address_result is None:
@@ -144,17 +154,18 @@ class SearchMap(Basic):
         if address_result[0] == int(self.config['x']) and address_result[1] == int(self.config['y']):
             return True
         return None
-
+    def click_address(self):
+        self.device.click(760, 440)
+        return True
     def run(self):
-        steps = [
-            self.click_jump_map,
-            self.click_map_axis,
-            self.click_verify_address,
-        ]
-        if self.execute_sequence(steps):
-            return True
-        raise SearchMapError
-
+        while 1:
+            if self.click_address():
+                if self.click_verify_address():
+                    break
+            if self.click_map_axis_x() and self.click_map_axis_y():
+                continue
+            if self.click_jump_map():
+                continue
 
 class OperationGoMap(Basic):
     def __init__(self, operator, config):
@@ -170,13 +181,9 @@ class OperationGoMap(Basic):
         return True
 
     def run(self):
-        steps = [
-            self.execute_go_map
-        ]
-        if self.execute_sequence(steps):
-            return True
-        raise OperationGoMap
-
+        while 1:
+            if self.execute_go_map():
+                break
 
 class SelectListAction(Basic):
     def __init__(self, operator, config):

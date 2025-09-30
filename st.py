@@ -180,5 +180,5 @@ class St:
 
 
 if __name__ == "__main__":
-    system = St()
-    system.loop()
+    st = St()
+    st.loop()

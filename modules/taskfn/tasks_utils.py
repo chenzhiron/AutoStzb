@@ -14,14 +14,14 @@ from modules.utils import convert_to_timestamp
 def battle_time(img, v):
     # 战报时间
     times = convert_to_timestamp(
-        ocr_format_val(np.array(img.crop([665, v + 240, 900, v + 240 + 40])))
+        ocr_format_val(img.crop([665, v + 240, 900, v + 240 + 40]))
     ) or convert_to_timestamp(
-        ocr_format_val(np.array(img.crop([665, v + 230, 900, v + 230 + 50])))
+        ocr_format_val(img.crop([665, v + 230, 900, v + 230 + 50]))
     )
     if type(times) is str or times is None:
         times = convert_to_timestamp(
             ocr_format_val(
-                np.array(img.crop([665, v + 230 + 80, 900, v + 230 + 80 + 60]))
+                img.crop([665, v + 230 + 80, 900, v + 230 + 80 + 60])
             )
         )
     print("times", times)
@@ -38,6 +38,8 @@ def time_str_to_seconds(time_str):
 
 
 def time_consuming(data):
+    if data[0] is None:
+        return 0
     result = []
     for v in data[0]:
         custom_times = v[1][0]

@@ -30,7 +30,8 @@ class Basic:
                     break
             if all_none:
                 break
-            time.sleep(1)
+            time.sleep(0.5)
+        return True
 
     def run_with_retry(self, step_func: Callable, max_retry=20, retry_interval=0.5):
         step_name = step_func.__name__
