@@ -2,16 +2,6 @@ from modules.static.config_keys import *
 
 tasks_config = {
     ConfigSections.SIMULATOR: {SimulatorKeys.DEVICE_ADDRESS: "127.0.0.1:16416"},
-    ConfigSections.BESIEGE: {
-        BesiegeKeys.STATE: False,
-        BesiegeKeys.NEXTTIME: "2019/06/01 00:00:00",
-        BesiegeKeys.X: 123,
-        BesiegeKeys.Y: 123,
-        BesiegeKeys.MODE: 1,
-        BesiegeKeys.STAGE: 0,
-        BesiegeKeys.ADDRESS: '',
-        BesiegeKeys.MAX_DISTANCE: 300,
-        BesiegeKeys.TIME_CONSUMING: 0},
     ConfigSections.EXPLOIT: {"state": False, "nexttime": "2019/06/01 00:00:00"},
     ConfigSections.ENEMY: {
         EnemyKeys.STATE: False,
@@ -198,10 +188,14 @@ tasks_config = {
         FightCityKeys.NEXTTIME: "2019/06/01 00:00:00",
         FightCityKeys.X: 123,
         FightCityKeys.Y: 123,
+        FightCityKeys.MODE: 1,
+        FightCityKeys.STAGE: 0,
+        FightCityKeys.ADDRESS: '',
+        FightCityKeys.TIME_CONSUMING: 0
     },
     ConfigSections.MartialArts: {
         MartialArtsKeys.STATE: False,
-        MartialArtsKeys.NEXTTIME:"2019/06/01 00:00:00",
+        MartialArtsKeys.NEXTTIME: "2019/06/01 00:00:00",
         MartialArtsKeys.DIFFICULTY: 5,
         MartialArtsKeys.RETRY: 20
     }
