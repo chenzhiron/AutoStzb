@@ -1,9 +1,6 @@
 from loguru import logger
 import time
-from typing import List, Callable
-
 from modules.taskfn.basic import Basic
-from modules.taskfn.custom_exception import SearchMapError, EntryListPageError
 from modules.taskfn.steps_basic import StepsBasic
 from modules.taskfn.tasks_utils import time_consuming, extract_numbers_from_brackets, time_str_to_seconds
 from modules.utils import truncated_normal
@@ -93,23 +90,21 @@ class EntryListPage(Basic):
         })
         return True
 
-
     def run(self):
-        while 1:
-            if self.action_click_confirm_end():
+        while True:
+            if self.event_with_loading(self.action_click_confirm_end, 2):
                 break
-            if self.action_zhengbing_max():
+            if self.event_with_loading(self.action_zhengbing_max, 2):
                 self.action_max_time()
                 self.action_click_confirm()
                 continue
-            if self.action_zhengbing():
+            if self.event_with_loading(self.action_zhengbing, 2):
                 continue
-            # 已经在征兵
-            if self.action_zhengbing_in():
+            if self.event_with_loading(self.action_zhengbing_in, 2):
                 break
-            if self.action_list():
+            if self.event_with_loading(self.action_list, 2):
                 continue
-            if self.action_click():
+            if self.event_with_loading(self.action_click, 2):
                 continue
         self.return_main()
 
@@ -159,12 +154,13 @@ class SearchMap(Basic):
         return True
     def run(self):
         while 1:
-            if self.click_address():
-                if self.click_verify_address():
-                    break
-            if self.click_map_axis_x() and self.click_map_axis_y():
+            if self.event_with_loading(self.click_verify_address):
+                break
+            if self.event_with_loading(self.click_address,3):
                 continue
-            if self.click_jump_map():
+            if self.event_with_loading(self.click_map_axis_x,5) and self.event_with_loading(self.click_map_axis_y,5):
+                continue
+            if self.event_with_loading(self.click_jump_map,5):
                 continue
 
 class OperationGoMap(Basic):
@@ -182,7 +178,7 @@ class OperationGoMap(Basic):
 
     def run(self):
         while 1:
-            if self.execute_go_map():
+            if self.event_with_loading(self.execute_go_map):
                 break
 
 class SelectListAction(Basic):
@@ -224,13 +220,11 @@ class SelectListAction(Basic):
         return True
 
     def run(self):
-        steps = [
-            self.select_list_action,
-            self.action_delay_time
-        ]
-        if self.execute_sequence(steps):
-            return self.result
-        raise SelectListAction
+        while True:
+            if self.event_with_loading(self.action_delay_time):
+                break
+            if self.event_with_loading(self.select_list_action):
+                continue
 
 
 class ListActionResult(Basic):
@@ -259,8 +253,7 @@ class ListActionResult(Basic):
         if state_result is None or state_result not in all_state:
             return False
         elif state_result in next_state:
-            self.return_main()
-            return 0
+            return 1
         else:
             my_remaining_result = self.steps_basic.verify_my_remaining()
             enemy_remaining_result = self.steps_basic.verify_enemy_remaining()
@@ -272,10 +265,10 @@ class ListActionResult(Basic):
             enemy_remaining = enemy_remaining_result.split('/')[0]
             if int(my_remaining) > self.config['my_remaining'] and int(enemy_remaining) < self.config[
                 'enemy_remaining']:
-                return 1
+                return 2
             else:
                 self.device.click(1529, 43)
-                return 2
+                return 3
 
     def action_draw_run(self):
         self.device.click(self.map_x + 40 + 345, self.map_y - 40 + 230)
@@ -300,41 +293,21 @@ class ListActionResult(Basic):
         self.device.click(truncated_normal(1330, 1330 + 150), truncated_normal(808, 808 + 30))
         return True
 
-    def run_with_retry(self, step_func: Callable, max_retry=20, retry_interval=0.5):
-        step_name = step_func.__name__
-        for attempt in range(1, max_retry + 1):
-            # 执行操作并获取原始结果
-            raw_result = step_func()
-            if raw_result in [0, 1, 2] or raw_result:
-                return raw_result
-            print(f"Retry {attempt}/{max_retry} for {step_func.__name__}")
-            time.sleep(retry_interval * attempt)  # 递增延迟策略
-        print(f"Step {step_name} failed after {max_retry} retries.")
-        return False
-
-    def execute_sequence(self, steps: List[Callable]):
-        current_step = 0
-
-        while current_step < len(steps):
-            step_func = steps[current_step]
-            result = self.run_with_retry(step_func)
-
-            if result in [0, 1, 2] and result != True:
-                self.return_main()
-                return result
-            current_step += 1
-        return result
 
     def run(self):
-        steps = [
-            self.search_map.run,
-            self.action_search_map_address,
-            self.action_result,
-        ]
-        res = self.execute_sequence(steps)
-        if res == 2:
-            if self.execute_sequence([self.action_draw_run, self.action_draw_run_time_confirm]):
-                return 0
-        elif res == 1:
-            self.return_main()
-        return 0
+        while True:
+            result = self.event_with_loading(self.action_result)
+            if result == 3:
+                while True:
+                    if self.event_with_loading(self.action_draw_run_time_confirm):
+                        break
+                    if self.event_with_loading(self.action_draw_run):
+                        continue
+                break
+            elif result == 2 or result == 1:
+                self.return_main()
+                break
+            if self.event_with_loading(self.action_search_map_address):
+                continue
+            if self.event_with_loading(self.search_map.run):
+                continue

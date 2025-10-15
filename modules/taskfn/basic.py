@@ -1,6 +1,4 @@
 import time
-from typing import Callable, List
-
 import cv2
 
 from modules.devices.main import DeviceOperator
@@ -14,6 +12,7 @@ class Basic:
         self.config = config
         self.result = {}
         self.current_screenshot = None
+        self.interval_timer = {}
 
     def return_main(self):
         return_tag = [ImgNames.get_image(ImgNames.BUILD_RETURN), ImgNames.get_image(ImgNames.BUILD_RETURN2),
@@ -33,29 +32,31 @@ class Basic:
             time.sleep(0.5)
         return True
 
-    def run_with_retry(self, step_func: Callable, max_retry=20, retry_interval=0.5):
-        step_name = step_func.__name__
-        for attempt in range(1, max_retry + 1):
-            # 执行操作并获取原始结果
-            raw_result = step_func()
-            if raw_result:
-                return raw_result
-            print(f"Retry {attempt}/{max_retry} for {step_func.__name__}")
-            time.sleep(retry_interval * attempt)  # 递增延迟策略
-        print(f"Step {step_name} failed after {max_retry} retries.")
-        return False
+    def interval_clear(self, event):
+        if event in self.interval_timer:
+            del self.interval_timer[event]
 
-    def execute_sequence(self, steps: List[Callable]):
-        current_step = 0
-
-        while current_step < len(steps):
-            step_func = steps[current_step]
-            res = self.run_with_retry(step_func)
-            if not res:
-                self.return_main()
-                current_step = 0  # 重置进度
-            current_step += 1
+    def interval_is_reached(self, event, interval=3):
+        now = time.time()
+        if event in self.interval_timer:
+            if now - self.interval_timer[event] < interval:
+                return False
+        self.interval_timer[event] = now
         return True
+
+    def set_loading_timer(self, key, duration):
+        self.interval_timer[key] = time.time() + duration
+
+    def event_with_loading(self, event_fn, interval=2):
+        if not self.interval_is_reached(event_fn.__name__, interval):
+            return False
+
+        result = event_fn()
+
+        if result:
+            self.set_loading_timer(event_fn.__name__, interval)
+
+        return result
 
 
 class BaseTypeImg:
